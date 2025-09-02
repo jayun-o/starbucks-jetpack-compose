@@ -1,0 +1,76 @@
+package com.starbucks.shared
+
+import starbucks.shared.generated.resources.Res
+import starbucks.shared.generated.resources.back_arrow
+import starbucks.shared.generated.resources.book
+import starbucks.shared.generated.resources.cat
+import starbucks.shared.generated.resources.check
+import starbucks.shared.generated.resources.checkmark_image
+import starbucks.shared.generated.resources.close
+import starbucks.shared.generated.resources.delete
+import starbucks.shared.generated.resources.dollar
+import starbucks.shared.generated.resources.edit
+import starbucks.shared.generated.resources.google_logo
+import starbucks.shared.generated.resources.grid
+import starbucks.shared.generated.resources.home
+import starbucks.shared.generated.resources.log_in
+import starbucks.shared.generated.resources.log_out
+import starbucks.shared.generated.resources.map_pin
+import starbucks.shared.generated.resources.menu
+import starbucks.shared.generated.resources.right_arrow
+import starbucks.shared.generated.resources.search
+import starbucks.shared.generated.resources.shopping_cart
+import starbucks.shared.generated.resources.unlock
+import starbucks.shared.generated.resources.user
+import starbucks.shared.generated.resources.vertical_menu
+import starbucks.shared.generated.resources.weight
+import starbucks.shared.generated.resources.plus
+import starbucks.shared.generated.resources.minus
+import starbucks.shared.generated.resources.paypal_logo
+import starbucks.shared.generated.resources.shopping_cart_image
+import starbucks.shared.generated.resources.southkorea
+import starbucks.shared.generated.resources.starbucks_logo
+import starbucks.shared.generated.resources.thailand
+import starbucks.shared.generated.resources.usa
+import starbucks.shared.generated.resources.warning
+
+object Resources {
+    object Icon{
+        val Plus = Res.drawable.plus
+        val Minus = Res.drawable.minus
+        val SignIn = Res.drawable.log_in
+        val SignOut = Res.drawable.log_out
+        val Unlock = Res.drawable.unlock
+        val Search = Res.drawable.search
+        val Person = Res.drawable.user
+        val Checkmark = Res.drawable.check
+        val Edit = Res.drawable.edit
+        val Menu = Res.drawable.menu
+        val BackArrow = Res.drawable.back_arrow
+        val RightArrow = Res.drawable.right_arrow
+        val Home = Res.drawable.home
+        val ShoppingCart = Res.drawable.shopping_cart
+        val Categories = Res.drawable.grid
+        val Dollar = Res.drawable.dollar
+        val MapPin = Res.drawable.map_pin
+        val Close = Res.drawable.close
+        val Book = Res.drawable.book
+        val VerticalMenu = Res.drawable.vertical_menu
+        val Delete = Res.drawable.delete
+        val Warning = Res.drawable.warning
+        val Weight = Res.drawable.weight
+    }
+    object Image {
+        val ShoppingCart = Res.drawable.shopping_cart_image
+        val Checkmark = Res.drawable.checkmark_image
+        val Cat = Res.drawable.cat
+        val GoogleLogo = Res.drawable.google_logo
+        val PaypalLogo = Res.drawable.paypal_logo
+        val StarbucksLogo = Res.drawable.starbucks_logo
+    }
+    object Flag {
+        val Thailand = Res.drawable.thailand
+        val Usa = Res.drawable.usa
+        val Korea = Res.drawable.southkorea
+    }
+}

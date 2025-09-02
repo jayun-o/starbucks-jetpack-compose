@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "302361989840",
+    "project_id": "starbucks-465316",
+    "storage_bucket": "starbucks-465316.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302361989840:android:609cefb7882d18efbe44d5",
+        "android_client_info": {
+          "package_name": "com.typhoon.starbucks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "302361989840-04camovu20grmocnf2m5rmtch1f906ur.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.typhoon.starbucks",
+            "certificate_hash": "42a20db24e9e05256e49edee25670afc77f6be28"
+          }
+        },
+        {
+          "client_id": "302361989840-rc8562obbtmh1c4m9dmubb17ui990r1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaYMutarzlc8L4C6eKo_nRnTqmmnNU6QI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "302361989840-rc8562obbtmh1c4m9dmubb17ui990r1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

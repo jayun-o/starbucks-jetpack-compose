@@ -1,0 +1,75 @@
+package com.starbucks.shared
+
+object LocalizedStrings {
+    private val strings = mapOf(
+        "en" to mapOf(
+            "sign_in" to "Sign in",
+            "auth_success" to "Authentication successful!",
+            "bottom_bar_home" to "Starbucks",
+            "bottom_bar_order" to "Order",
+            "bottom_bar_categories" to "Categories",
+            "profile" to "Profile",
+            "blog" to "Blog",
+            "locations" to "Locations",
+            "contact_us" to "Contact Us",
+            "sign_out" to "Sign Out",
+            "admin_panel" to "Admin Panel",
+            "first_name" to "First Name",
+            "last_name" to "Last Name",
+            "email" to "Email",
+            "postal_code" to "Postal Code",
+            "address" to "Address",
+            "province" to "Province",
+            "district" to "District",
+            "sub_district" to "Sub District",
+            "location" to "Location",
+            "phone_number" to "Phone number",
+            "my_profile" to "My Profile",
+            "update" to "Update",
+            "select_province" to "Select Province",
+            "select_district" to "Select District",
+            "select_sub_district" to "Select Sub District",
+            "select_postal_code" to "Select Postal Code",
+            "isvalid_phone_number_10" to "Please enter at least 10 digits of your phone number",
+            "isvalid_phone_number_digit" to "Please enter only digits",
+            "successfully_updated" to "Successfully updated!"
+        ),
+        "th" to mapOf(
+            "sign_in" to "ลงชื่อเข้าใช้",
+            "auth_success" to "ลงชื่อเข้าใช้สำเร็จ!",
+            "bottom_bar_home" to "สตาร์บัคส์",
+            "bottom_bar_order" to "คำสั่งซื้อ",
+            "bottom_bar_categories" to "หมวดหมู่",
+            "profile" to "ข้อมูลส่วนตัว",
+            "blog" to "ข่าวสาร",
+            "contact_us" to "ติดต่อเจ้าหน้าที่",
+            "sign_out" to "ลงชื่อออก",
+            "admin_panel" to "แอดมิน",
+            "first_name" to "ชื่อ",
+            "last_name" to "นามสกุล",
+            "email" to "อีเมล",
+            "postal_code" to "รหัสไปรษณีย์",
+            "address" to "ที่อยู่",
+            "location" to "พิกัด",
+            "province" to "จังหวัด",
+            "district" to "อำเภอ",
+            "sub_district" to "ตำบล",
+            "phone_number" to "หมายเลขโทรศัพท์",
+            "my_profile" to "ข้อมูลส่วนตัว",
+            "update" to "อัปเดต",
+            "plz_select_province" to "กรุณาเลือกจังหวัด",
+            "select_province" to "เลือกจังหวัด",
+            "select_district" to "เลือกอำเภอ/เขต",
+            "select_sub_district" to "เลือกตำบล/แขวง",
+            "select_postal_code" to "เลือกรหัสไปรษณ๋",
+            "isvalid_phone_number_10" to "กรุณากรอกหมายเลขโทรศัพท์อย่างน้อย 10 ตัว",
+            "isvalid_phone_number_digit" to "กรุณากรอกเฉพาะตัวเลข",
+            "successfully_updated" to "อัปเดตสำเร็จ!"
+        )
+    )
+
+    fun get(key: String, currentLanguage: String): String {
+        val lang = LanguageManager.getCurrent()
+        return strings[lang]?.get(key) ?: key
+    }
+}
