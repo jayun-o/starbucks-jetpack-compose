@@ -41,6 +41,22 @@ kotlin {
             implementation(libs.firebase.firestore)
             implementation(libs.auth.firebase.kmp)
 
+            implementation(libs.kotlinx.serialization)
+
+            implementation(libs.coil3)
+            implementation(libs.coil3.compose)
+            implementation(libs.coil3.compose.core)
+            implementation(libs.coil3.network.ktor)
+
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization)
+
             implementation(project(path = ":shared"))
         }
     }

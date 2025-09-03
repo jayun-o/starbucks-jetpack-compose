@@ -10,6 +10,8 @@ import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
 import com.starbucks.shared.domain.Customer
 import com.starbucks.shared.util.RequestState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -19,9 +21,7 @@ data class ProfileScreenState(
     val lastName: String = "",
     val email: String = "",
     val address: String? = null,
-    val province: String? = null,
-    val district: String? = null,
-    val subDistrict: String? = null,
+    val location: String? = null,
     val postalCode: String? = null,
     val phoneNumber: String? = null
 )
@@ -37,22 +37,9 @@ class ProfileViewModel(
         get() = with(screenState) {
             firstName.trim().length in 3..50 &&
                     lastName.trim().length in 3..50 &&
-                    !address.isNullOrBlank() && address.trim().length in 3..50 &&
-                    !province.isNullOrBlank() && !isProvincePlaceholder(province) &&
-                    !district.isNullOrBlank() && !isDistrictPlaceholder(district) &&
-                    !subDistrict.isNullOrBlank() && !isSubDistrictPlaceholder(subDistrict) &&
-                    postalCode != null && postalCode.toString().length in 3..8 &&
-                    !phoneNumber.isNullOrBlank() && phoneNumber.trim().length in 10..10
+                    (postalCode.isNullOrBlank() || postalCode.trim().length in 3..8) &&
+                    (phoneNumber.isNullOrBlank() || phoneNumber.trim().length == 10)
         }
-
-    private fun isProvincePlaceholder(value: String?) =
-        value == LocalizedStrings.get("select_province", LanguageManager.language.value)
-
-    private fun isDistrictPlaceholder(value: String?) =
-        value == LocalizedStrings.get("select_district", LanguageManager.language.value)
-
-    private fun isSubDistrictPlaceholder(value: String?) =
-        value == LocalizedStrings.get("select_sub_district", LanguageManager.language.value)
 
 
     init {
@@ -66,9 +53,7 @@ class ProfileViewModel(
                         lastName = fetchedCustomer.lastName,
                         email = fetchedCustomer.email,
                         address = fetchedCustomer.address,
-                        province = fetchedCustomer.province,
-                        district = fetchedCustomer.district,
-                        subDistrict = fetchedCustomer.subDistrict,
+                        location = fetchedCustomer.location,
                         postalCode = fetchedCustomer.postalCode,
                         phoneNumber = fetchedCustomer.phoneNumber
                     )
@@ -88,20 +73,12 @@ class ProfileViewModel(
         screenState = screenState.copy(lastName = value)
     }
 
-    fun updateAddress(value: String){
+    fun updateAddress(value: String) {
         screenState = screenState.copy(address = value)
     }
 
-    fun updateProvince(value: String){
-        screenState = screenState.copy(province = value)
-    }
-
-    fun updateDistrict(value: String){
-        screenState = screenState.copy(district = value)
-    }
-
-    fun updateSubDistrict(value: String){
-        screenState = screenState.copy(subDistrict = value)
+    fun updateLocation(value: String){
+        screenState = screenState.copy(location = value)
     }
 
     fun updatePostalCode(value: String){
@@ -124,9 +101,7 @@ class ProfileViewModel(
                     lastName = screenState.lastName,
                     email = screenState.email,
                     address = screenState.address,
-                    province = screenState.province,
-                    district = screenState.district,
-                    subDistrict = screenState.subDistrict,
+                    location = screenState.location,
                     postalCode = screenState.postalCode,
                     phoneNumber = screenState.phoneNumber
                 ),

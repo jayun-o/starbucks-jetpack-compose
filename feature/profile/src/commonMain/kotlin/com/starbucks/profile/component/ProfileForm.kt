@@ -1,5 +1,6 @@
 package com.starbucks.profile.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,25 +13,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.starbucks.profile.ProfileViewModel
 import com.starbucks.shared.BorderError
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
-import com.starbucks.shared.component.AddressDropdownMenu
+import com.starbucks.shared.Resources
 import com.starbucks.shared.component.CustomTextField
-import org.koin.compose.viewmodel.koinViewModel
+import com.starbucks.shared.component.maps.MapTextField
 
 @Composable
 fun ProfileForm(
     modifier: Modifier = Modifier,
+
+//    navigateBack: () -> Unit,
+    navigateToMap: () -> Unit,
+
     firstName: String,
     onFirstNameChange: (String) -> Unit,
     lastName: String,
@@ -38,28 +38,15 @@ fun ProfileForm(
     email: String,
     address: String?,
     onAddressChange: (String) -> Unit,
-    province: String?,
-    onProvinceChange: (String) -> Unit,
-    district: String?,
-    onDistrictChange: (String) -> Unit,
-    subDistrict: String?,
-    onSubDistrictChange: (String) -> Unit,
+    location: String?,
+    onLocationChange: (String) -> Unit,
     postalCode: String?,
     onPostalCodeChange: (String) -> Unit,
     phoneNumber: String?,
     onPhoneNumberChange: (String) -> Unit
 ){
     val currentLanguage by LanguageManager.language.collectAsState()
-    val viewModel = koinViewModel<ProfileViewModel>()
-
-
-    val coroutineScope = rememberCoroutineScope()
-    var locationText by remember { mutableStateOf("") }
-
-    var selectedProvince by remember { mutableStateOf("") }
-    var selectedDistrict by remember { mutableStateOf("") }
-    var selectedSubDistrict by remember { mutableStateOf("") }
-    var selectedPostalCode by remember { mutableStateOf("") }
+    val location = ""
 
     val phoneError = phoneNumber?.let {
         when {
@@ -103,17 +90,12 @@ fun ProfileForm(
             error = address?.length !in 3..50
         )
 
-        AddressDropdownMenu(
-            selectedProvince = province ?: LocalizedStrings.get("select_province", currentLanguage),
-            selectedDistrict = district ?: "",
-            selectedSubDistrict = subDistrict ?: "",
-            postalCode = postalCode ?: "",
-            onSelectionChanged = { newProvince, newDistrict, newSubDistrict, newPostalCode ->
-                onProvinceChange(newProvince)
-                onDistrictChange(newDistrict)
-                onSubDistrictChange(newSubDistrict)
-                onPostalCodeChange(newPostalCode)
-            }
+        MapTextField(
+            value = location,
+            modifier = Modifier.clickable { navigateToMap() },
+            onValueChange = onLocationChange,
+            placeholder = LocalizedStrings.get("location", currentLanguage),
+            enabled = false
         )
 
         CustomTextField(

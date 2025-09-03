@@ -10,9 +10,7 @@ data class Customer(
     val lastName: String,
     val email: String,
     val address: String? = null,
-    val province: String? = null,
-    val district: String? = null,
-    val subDistrict: String? = null,
+    val location: String? = null,
     val postalCode: String? = null,
     val phoneNumber: String? = null,
     val cart: List<CartItem> = emptyList()

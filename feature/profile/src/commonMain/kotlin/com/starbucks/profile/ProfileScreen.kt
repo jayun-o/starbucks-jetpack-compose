@@ -38,8 +38,10 @@ import rememberMessageBarState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navigateBack: () -> Unit
-) {
+    navigateBack: () -> Unit,
+    navigateToMap: () -> Unit,
+
+    ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val screenState = viewModel.screenState
     val screenReady = viewModel.screenReady
@@ -110,16 +112,15 @@ fun ProfileScreen(
                                 email = screenState.email,
                                 address = screenState.address,
                                 onAddressChange = viewModel::updateAddress,
-                                province = screenState.province,
-                                onProvinceChange = viewModel::updateProvince,
-                                district = screenState.district,
-                                onDistrictChange = viewModel::updateDistrict,
-                                subDistrict = screenState.subDistrict,
-                                onSubDistrictChange = viewModel::updateSubDistrict,
+                                location = screenState.location,
+                                onLocationChange = viewModel::updateLocation,
+                                navigateToMap = {
+                                    navigateToMap()
+                                },
                                 postalCode = screenState.postalCode,
                                 onPostalCodeChange = viewModel::updatePostalCode,
                                 phoneNumber = screenState.phoneNumber,
-                                onPhoneNumberChange = viewModel::updatePhoneNumber
+                                onPhoneNumberChange = viewModel::updatePhoneNumber,
                             )
 
                             Spacer(modifier = Modifier.height(12.dp))

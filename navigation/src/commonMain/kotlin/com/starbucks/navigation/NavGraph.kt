@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.starbucks.auth.AuthScreen
 import com.starbucks.home.HomeGraphScreen
 import com.starbucks.profile.ProfileScreen
+import com.starbucks.shared.component.maps.MapScreen
 import com.starbucks.shared.navigation.Screen
 
 @Composable
@@ -40,6 +41,16 @@ fun SetupNavGraph(startDestination: Screen = Screen.Auth){
         }
         composable<Screen.Profile> {
             ProfileScreen(
+                navigateBack = {
+                    navController.navigateUp()
+                },
+                navigateToMap = {
+                    navController.navigate(Screen.Maps)
+                }
+            )
+        }
+        composable<Screen.Maps> {
+            MapScreen(
                 navigateBack = {
                     navController.navigateUp()
                 }

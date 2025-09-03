@@ -36,9 +36,11 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.splash.screen)
             implementation(libs.koin.android)
-            implementation("com.google.android.gms:play-services-maps:18.2.0")
-            implementation("com.google.android.libraries.places:places:3.2.0")
 
+            //googlemapsdk for android
+            implementation(libs.maps.compose)
+            implementation(libs.maps.compose.utils)
+            implementation(libs.play.services.maps)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -54,6 +56,10 @@ kotlin {
             implementation(libs.firebase.app)
 
             implementation(libs.koin.compose)
+
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
 
 
             implementation(project(path = ":navigation"))

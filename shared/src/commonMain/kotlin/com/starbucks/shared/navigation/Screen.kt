@@ -16,4 +16,6 @@ sealed class Screen {
     data object Categories: Screen()
     @Serializable
     data object Profile: Screen()
+    @Serializable
+    data object Maps: Screen()
 }

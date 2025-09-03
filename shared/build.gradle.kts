@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.cocoapods)
 }
 
 kotlin {
@@ -28,9 +29,21 @@ kotlin {
         }
     }
 
+    cocoapods {
+        version = "1.0"
+    }
+
     val ktorVersion = "2.3.4"
 
     sourceSets {
+
+        androidMain.dependencies {
+            //googlemapsdk for android
+            implementation(libs.maps.compose)
+            implementation(libs.maps.compose.utils)
+            implementation(libs.play.services.maps)
+        }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
