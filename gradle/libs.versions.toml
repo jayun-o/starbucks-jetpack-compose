@@ -26,10 +26,15 @@ splash = "1.0.1"
 #googlemapsdk for android
 mapsCompose = "5.0.4"
 playServicesMaps = "19.0.0"
+playServicesLocation= "21.3.0"
+accompanistPermissions = "0.36.0"
 
 #googlemapsdk for ios
 pods-google-maps = "9.1.1"
 pods-google-maps-utils = "6.0.0"
+
+#compass
+compass = "1.2.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -79,6 +84,20 @@ multiplatform-settings-make-observable = { module = "com.russhwolf:multiplatform
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", version.ref = "mapsCompose" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps"}
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation"}
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+
+#compass
+compass-geolocation = { module = "dev.jordond.compass:geolocation", version.ref = "compass" }
+compass-geolocation-mobile = { module = "dev.jordond.compass:geolocation-mobile", version.ref = "compass" }
+
+compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "compass" }
+compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
+
+compass-autocomplete = { module = "dev.jordond.compass:autocomplete", version.ref = "compass" }
+compass-autocomplete-mobile = { module = "dev.jordond.compass:autocomplete-mobile", version.ref = "compass" }
+
+compass-permissions-mobile = { module = "dev.jordond.compass:permissions-mobile", version.ref = "compass" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

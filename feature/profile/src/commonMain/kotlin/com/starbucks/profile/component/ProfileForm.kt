@@ -11,26 +11,29 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.starbucks.map.MapTextField
+import com.starbucks.profile.ProfileViewModel
 import com.starbucks.shared.BorderError
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
-import com.starbucks.shared.Resources
 import com.starbucks.shared.component.CustomTextField
-import com.starbucks.shared.component.maps.MapTextField
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProfileForm(
     modifier: Modifier = Modifier,
-
-//    navigateBack: () -> Unit,
     navigateToMap: () -> Unit,
-
     firstName: String,
     onFirstNameChange: (String) -> Unit,
     lastName: String,
@@ -43,11 +46,10 @@ fun ProfileForm(
     postalCode: String?,
     onPostalCodeChange: (String) -> Unit,
     phoneNumber: String?,
-    onPhoneNumberChange: (String) -> Unit
+    onPhoneNumberChange: (String) -> Unit,
+
 ){
     val currentLanguage by LanguageManager.language.collectAsState()
-    val location = ""
-
     val phoneError = phoneNumber?.let {
         when {
             it.isEmpty() -> null
@@ -56,7 +58,6 @@ fun ProfileForm(
             else -> null
         }
     }
-
 
     Column (
         modifier = modifier
@@ -91,7 +92,7 @@ fun ProfileForm(
         )
 
         MapTextField(
-            value = location,
+            value = location ?: "",
             modifier = Modifier.clickable { navigateToMap() },
             onValueChange = onLocationChange,
             placeholder = LocalizedStrings.get("location", currentLanguage),

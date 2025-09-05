@@ -6,12 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starbucks.data.domain.CustomerRepository
-import com.starbucks.shared.LanguageManager
-import com.starbucks.shared.LocalizedStrings
 import com.starbucks.shared.domain.Customer
 import com.starbucks.shared.util.RequestState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -28,10 +24,12 @@ data class ProfileScreenState(
 
 class ProfileViewModel(
     private val customerRepository: CustomerRepository,
-    ) :ViewModel(){
+
+) :ViewModel(){
     var screenReady: RequestState<Unit> by mutableStateOf(RequestState.Loading)
     var screenState: ProfileScreenState by mutableStateOf(ProfileScreenState())
         private set
+
 
     val isFormValid: Boolean
         get() = with(screenState) {

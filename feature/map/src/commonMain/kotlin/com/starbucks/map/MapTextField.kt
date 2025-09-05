@@ -1,4 +1,4 @@
-package com.starbucks.shared.component.maps
+package com.starbucks.map
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Icon
@@ -6,7 +6,6 @@ import com.starbucks.shared.Resources
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

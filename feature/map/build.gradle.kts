@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.cocoapods)
 }
 
 kotlin {
@@ -23,12 +24,32 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "navigation"
+            baseName = "map"
             isStatic = true
         }
     }
 
+    cocoapods {
+        version = "1.0"
+    }
+
+    val ktorVersion = "2.3.4"
+
     sourceSets {
+
+        androidMain.dependencies {
+            //googlemapsdk for android
+            implementation(libs.maps.compose)
+            implementation(libs.maps.compose.utils)
+            implementation(libs.play.services.maps)
+            implementation(libs.play.services.location)
+
+            // Permissions
+            implementation(libs.accompanist.permissions)
+
+            implementation(libs.koin.android)
+
+        }
 
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -41,8 +62,10 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(libs.kotlinx.serialization)
-            implementation(libs.compose.navigation)
 
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.multiplatform.settings.make.observable)
 
             // Geolocation
             implementation(libs.compass.geolocation)
@@ -60,16 +83,13 @@ kotlin {
             implementation(libs.compass.permissions.mobile)
 
             implementation(project(path = ":shared"))
-            implementation(project(path = ":feature:auth"))
-            implementation(project(path = ":feature:home"))
-            implementation(project(path = ":feature:profile"))
-            implementation(project(path = ":feature:map"))
+            implementation(project(path = ":data"))
         }
     }
 }
 
 android {
-    namespace = "com.typhoon.navigation"
+    namespace = "com.typhoon.map"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

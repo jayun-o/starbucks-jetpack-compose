@@ -28,6 +28,7 @@ kotlin {
     }
 
     sourceSets {
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -45,6 +46,7 @@ kotlin {
             implementation(project(path = ":feature:auth"))
             implementation(project(path = ":feature:home"))
             implementation(project(path = ":feature:profile"))
+            implementation(project(path = ":feature:map"))
             implementation(project(path = ":data"))
         }
     }
