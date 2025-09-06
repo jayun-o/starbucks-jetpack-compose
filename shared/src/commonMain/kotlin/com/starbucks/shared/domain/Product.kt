@@ -3,7 +3,7 @@ package com.starbucks.shared.domain
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Menu (
+data class Product (
     val id: String,
     val title: String,
     val description: String,
