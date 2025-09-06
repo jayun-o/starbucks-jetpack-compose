@@ -64,7 +64,8 @@ import rememberMessageBarState
 @Composable
 fun HomeGraphScreen(
     navigateToAuth : () -> Unit,
-    navigateToProfile: () -> Unit
+    navigateToProfile: () -> Unit,
+    navigateToAdminPanel: () -> Unit
 ){
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -101,6 +102,7 @@ fun HomeGraphScreen(
         targetValue = if (drawerState.isOpened()) 20.dp else 0.dp
     )
     val viewModel = koinViewModel<HomeGraphViewModel>()
+    val customer by viewModel.customer.collectAsState()
     val messageBarState = rememberMessageBarState()
 
     val currentLanguage by LanguageManager.language.collectAsState()
@@ -112,6 +114,7 @@ fun HomeGraphScreen(
             .systemBarsPadding()
     ){
         CustomDrawer(
+            customer = customer,
             onProfileClick = navigateToProfile,
             onContactUsClick = {},
             onSignOutClick = {
@@ -120,7 +123,7 @@ fun HomeGraphScreen(
                     onError = { message -> messageBarState.addError(message) }
                 )
             },
-            onAdminPanelClick = {}
+            onAdminPanelClick = navigateToAdminPanel
         )
         Box(
             modifier = Modifier

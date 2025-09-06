@@ -18,4 +18,7 @@ sealed class Screen {
     data object Profile: Screen()
     @Serializable
     data object Maps: Screen()
+    @Serializable
+    data object AdminPanel: Screen()
+
 }

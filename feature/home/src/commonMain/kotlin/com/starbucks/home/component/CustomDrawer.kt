@@ -1,5 +1,6 @@
 package com.starbucks.home.component
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,10 +19,13 @@ import com.starbucks.home.domain.DrawerItem
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
 import com.starbucks.shared.Resources
+import com.starbucks.shared.domain.Customer
+import com.starbucks.shared.util.RequestState
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CustomDrawer(
+    customer: RequestState<Customer>,
     onProfileClick: () -> Unit,
     onContactUsClick: () -> Unit,
     onSignOutClick: () -> Unit,
@@ -63,11 +67,15 @@ fun CustomDrawer(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        DrawerItemCard(
-            drawerItem = DrawerItem.Admin,
-            onClick = onAdminPanelClick,
-            title = LocalizedStrings.get(DrawerItem.Admin.titleKey, currentLanguage)
-        )
+        AnimatedContent(targetState = customer){ customerState ->
+            if(customerState.isSuccess() && customerState.getSuccessData().isAdmin){
+                DrawerItemCard(
+                    drawerItem = DrawerItem.Admin,
+                    onClick = onAdminPanelClick,
+                    title = LocalizedStrings.get(DrawerItem.Admin.titleKey, currentLanguage)
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
     }

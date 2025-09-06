@@ -1,5 +1,8 @@
 package com.starbucks.map
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -14,18 +17,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.starbucks.shared.FontSize
-import com.starbucks.shared.IconPrimary
-import com.starbucks.shared.LanguageManager
-import com.starbucks.shared.LocalizedStrings
-import com.starbucks.shared.RaleWayFontFamily
-import com.starbucks.shared.Resources
-import com.starbucks.shared.Surface
-import com.starbucks.shared.TextPrimary
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.mobile
 import org.jetbrains.compose.resources.painterResource
+import com.starbucks.shared.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,41 +31,44 @@ fun MapScreen(
     navigateBack: () -> Unit
 ){
     val currentLanguage by LanguageManager.language.collectAsState()
-    val geoLocation = remember { Geolocator.mobile() }
-
-    // เก็บพิกัดผู้ใช้
     var userCoordinates by remember { mutableStateOf<Coordinates?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    var permissionDenied by remember { mutableStateOf(false) }
 
-    // เรียก Geolocator เพียงครั้งเดียว
+    // ตรวจสอบ location
     LaunchedEffect(Unit) {
-        when (val result = geoLocation.current()) {
+        val geoLocation = Geolocator.mobile()
+        when(val result = geoLocation.current()) {
             is GeolocatorResult.Success -> {
                 val coords = result.data.coordinates
-//                println("LOCATION: $coords")
-//                println("LOCATION NAME: ${MobileGeocoder().placeOrNull(coords)?.locality}")
-
-                // อัปเดต userCoordinates เพื่อส่งเข้า GoogleMaps
                 userCoordinates = Coordinates(coords.latitude, coords.longitude)
             }
-            is GeolocatorResult.Error -> when (result) {
-                is GeolocatorResult.NotSupported -> println("LOCATION ERROR: ${result.message}")
-                is GeolocatorResult.NotFound -> println("LOCATION ERROR: ${result.message}")
-                is GeolocatorResult.PermissionError -> println("LOCATION ERROR: ${result.message}")
-                is GeolocatorResult.GeolocationFailed -> println("LOCATION ERROR: ${result.message}")
-                else -> {
+            is GeolocatorResult.Error -> {
+                if(result is GeolocatorResult.PermissionError) {
+                    permissionDenied = true
+                } else {
                     userCoordinates = null
                 }
             }
         }
+        loading = false
     }
 
-    Scaffold (
+    // side-effect: ถ้า permission ถูกปฏิเสธ → navigate back
+    if(permissionDenied) {
+        LaunchedEffect(Unit){
+            navigateBack()
+        }
+        return
+    }
+
+    Scaffold(
         containerColor = Surface,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = LocalizedStrings.get("location",currentLanguage),
+                        text = LocalizedStrings.get("location", currentLanguage),
                         fontFamily = RaleWayFontFamily(),
                         fontSize = FontSize.EXTRA_MEDIUM,
                         color = TextPrimary
@@ -82,17 +83,25 @@ fun MapScreen(
                         )
                     }
                 },
-                colors =
-                    TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Surface,
-                        scrolledContainerColor = Surface,
-                        navigationIconContentColor = IconPrimary,
-                        titleContentColor = TextPrimary,
-                        actionIconContentColor = IconPrimary
-                    ),
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Surface,
+                    scrolledContainerColor = Surface,
+                    navigationIconContentColor = IconPrimary,
+                    titleContentColor = TextPrimary,
+                    actionIconContentColor = IconPrimary
+                )
             )
         }
     ){
-        GoogleMaps(userCoordinates)
+        if(loading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                CircularProgressIndicator()
+            }
+        } else {
+            GoogleMaps(userCoordinates)
+        }
     }
 }

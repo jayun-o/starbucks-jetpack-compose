@@ -40,7 +40,6 @@ actual fun GoogleMaps(userLocation: Coordinates?) {
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
-            Text(text = "กำลังหาตำแหน่งของคุณ...", modifier = Modifier.align(Alignment.BottomCenter))
         }
     } else {
         // แสดงแผนที่เมื่อได้พิกัดแล้ว

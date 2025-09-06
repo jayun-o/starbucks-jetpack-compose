@@ -30,6 +30,7 @@ dependencyResolutionManagement {
 include(":data")
 include(":di")
 include(":di")
+include(":feature:admin_panel")
 
 include(":feature:map")
 include(":feature:home")

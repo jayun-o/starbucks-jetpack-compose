@@ -26,6 +26,7 @@ fun App() {
         val customerRepository = koinInject<CustomerRepository>()
         var appReady by remember { mutableStateOf(false) }
         val isUserAuthenticated = remember { customerRepository.getCurrentUserId() != null}
+
         var startDestination = remember {
             if (isUserAuthenticated) Screen.HomeGraph
             else Screen.Auth

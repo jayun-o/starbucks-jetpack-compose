@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.serialization)
+    alias(libs.plugins.google.services)
 }
 
 kotlin {
@@ -23,13 +23,12 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "navigation"
+            baseName = "admin_panel"
             isStatic = true
         }
     }
 
     sourceSets {
-
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -40,37 +39,20 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
-            implementation(libs.kotlinx.serialization)
-            implementation(libs.compose.navigation)
+            implementation(libs.messagebar.kmp)
 
-
-            // Geolocation
-            implementation(libs.compass.geolocation)
-            implementation(libs.compass.geolocation.mobile)
-
-            // Geocoding
-            implementation(libs.compass.geocoder)
-            implementation(libs.compass.geocoder.mobile)
-
-            // Autocomplete
-            implementation(libs.compass.autocomplete)
-            implementation(libs.compass.autocomplete.mobile)
-
-            // Location permissions for mobile
-            implementation(libs.compass.permissions.mobile)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
             implementation(project(path = ":shared"))
-            implementation(project(path = ":feature:auth"))
-            implementation(project(path = ":feature:home"))
-            implementation(project(path = ":feature:profile"))
-            implementation(project(path = ":feature:map"))
-            implementation(project(path = ":feature:admin_panel"))
+            implementation(project(path = ":data"))
+
         }
     }
 }
 
 android {
-    namespace = "com.typhoon.navigation"
+    namespace = "com.typhoon.admin_panel"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
