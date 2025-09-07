@@ -4,4 +4,4 @@ package com.starbucks.map
 import androidx.compose.runtime.Composable
 
 @Composable
-expect fun GoogleMaps(userLocation: Coordinates? = null)
+expect fun GoogleMaps(userLocation: Coordinates? = null, onLocationPicked: (Coordinates, String) -> Unit)

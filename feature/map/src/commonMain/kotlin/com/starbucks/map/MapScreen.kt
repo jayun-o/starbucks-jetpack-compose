@@ -24,12 +24,14 @@ import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.mobile
 import org.jetbrains.compose.resources.painterResource
 import com.starbucks.shared.*
+import kotlinx.coroutines.withTimeoutOrNull
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
-    navigateBack: () -> Unit
-){
+    navigateBack: () -> Unit,
+    onLocationPicked: (Coordinates, String) -> Unit
+) {
     val currentLanguage by LanguageManager.language.collectAsState()
     var userCoordinates by remember { mutableStateOf<Coordinates?>(null) }
     var loading by remember { mutableStateOf(true) }
@@ -38,23 +40,26 @@ fun MapScreen(
     // ตรวจสอบ location
     LaunchedEffect(Unit) {
         val geoLocation = Geolocator.mobile()
-        when(val result = geoLocation.current()) {
-            is GeolocatorResult.Success -> {
-                val coords = result.data.coordinates
-                userCoordinates = Coordinates(coords.latitude, coords.longitude)
-            }
-            is GeolocatorResult.Error -> {
-                if(result is GeolocatorResult.PermissionError) {
-                    permissionDenied = true
-                } else {
-                    userCoordinates = null
+        try {
+            val result = withTimeoutOrNull(5000L) { geoLocation.current() } // 5 วินาที timeout
+            when(result) {
+                is GeolocatorResult.Success -> {
+                    val coords = result.data.coordinates
+                    userCoordinates = Coordinates(coords.latitude, coords.longitude)
                 }
+                is GeolocatorResult.Error -> {
+                    if(result is GeolocatorResult.PermissionError) permissionDenied = true
+                    else userCoordinates = Coordinates(13.7563, 100.5017) // fallback default
+                }
+                null -> userCoordinates = Coordinates(13.7563, 100.5017) // timeout fallback
             }
+        } catch(e: Exception){
+            userCoordinates = Coordinates(13.7563, 100.5017) // fallback
         }
         loading = false
     }
 
-    // side-effect: ถ้า permission ถูกปฏิเสธ → navigate back
+
     if(permissionDenied) {
         LaunchedEffect(Unit){
             navigateBack()
@@ -101,7 +106,15 @@ fun MapScreen(
                 CircularProgressIndicator()
             }
         } else {
-            GoogleMaps(userCoordinates)
+            GoogleMaps(
+                userLocation = userCoordinates,
+                onLocationPicked = { coords, address ->
+                    val locationString = "$address"
+                    println("เลือกพิกัด: ${coords.latitude}, ${coords.longitude}")
+                    println("ที่อยู่: $address")
+                    navigateBack()
+                }
+            )
         }
     }
 }

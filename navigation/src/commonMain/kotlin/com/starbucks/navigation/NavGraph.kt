@@ -70,7 +70,12 @@ fun SetupNavGraph(startDestination: Screen = Screen.Auth){
 
         composable<Screen.Maps> {
             MapScreen(
-                navigateBack = { navController.navigateUp() }
+                navigateBack = { navController.navigateUp() },
+                onLocationPicked = { coords, address ->
+                    navController.previousBackStackEntry?.savedStateHandle?.set("coords", coords)
+                    navController.previousBackStackEntry?.savedStateHandle?.set("address", address)
+                    navController.navigateUp()
+                }
             )
         }
 
