@@ -8,8 +8,9 @@ data class Product (
     val title: String,
     val description: String,
     val thumbnail: String,
-    val category: MenuCategory,
+    val category: ProductCategory,
     val subCategory: SubCategory?  = null,
+    val basePrice: Double? = null,
     val sizes: List<Size>? = null,
     val isAvailable: Boolean,
     val isNew: Boolean,
@@ -25,17 +26,31 @@ data class SubCategory(
 )
 
 @Serializable
+data class Category(
+    val id: String = "",
+    val title: String = "",
+)
+
+@Serializable
 data class Size(
     val name: String,
     val price: Double,
-    val imageUrl: String
 )
 
 // หมวดหมู่หลัก
 @Serializable
-enum class MenuCategory {
-    BEVERAGE,
-    FOOD
+enum class ProductCategory (
+    val id: String,
+    val title: String,
+){
+    BEVERAGE(
+        id = "beverage",
+        title = "Beverage"
+    ),
+    FOOD(
+        id = "food",
+        title = "Food"
+    )
 }
 
 // Subcategory สำหรับเครื่องดื่ม
@@ -162,3 +177,17 @@ fun FoodSubCategory.toSubCategory() = SubCategory(
     title = this.title,
     imageUrl = this.imageUrl
 )
+
+fun ProductCategory.displayName(): String = when (this) {
+    ProductCategory.BEVERAGE -> ProductCategory.BEVERAGE.title
+    ProductCategory.FOOD -> ProductCategory.FOOD.title
+}
+
+//helper function query subcategories from category
+fun getSubCategoriesFor(category: ProductCategory): List<SubCategory> {
+    return when (category) {
+        ProductCategory.BEVERAGE -> BeverageSubCategory.entries.map { it.toSubCategory() }
+        ProductCategory.FOOD -> FoodSubCategory.entries.map { it.toSubCategory() }
+    }
+}
+

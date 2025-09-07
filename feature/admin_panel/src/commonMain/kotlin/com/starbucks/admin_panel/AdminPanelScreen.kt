@@ -27,7 +27,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 
 fun AdminPanelScreen(
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToManageProduct: (String?) -> Unit,
 ){
     val currentLanguage by LanguageManager.language.collectAsState()
 
@@ -75,7 +76,7 @@ fun AdminPanelScreen(
                  },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = {},
+                    onClick = { navigateToManageProduct(null) },
                     containerColor = ButtonPrimary,
                     contentColor = IconWhite,
                     content = {

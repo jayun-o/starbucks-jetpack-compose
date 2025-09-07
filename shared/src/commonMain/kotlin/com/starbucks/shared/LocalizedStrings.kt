@@ -34,6 +34,8 @@ object LocalizedStrings {
             "isvalid_phone_number_digit" to "Please enter only digits",
             "successfully_updated" to "Successfully updated!",
             "location" to "Location",
+            "new_product" to "New Product",
+            "edit_product" to "Edit Product",
         ),
         "th" to mapOf(
             "sign_in" to "ลงชื่อเข้าใช้",
@@ -66,7 +68,9 @@ object LocalizedStrings {
             "isvalid_phone_number_10" to "กรุณากรอกหมายเลขโทรศัพท์อย่างน้อย 10 ตัว",
             "isvalid_phone_number_digit" to "กรุณากรอกเฉพาะตัวเลข",
             "successfully_updated" to "อัปเดตสำเร็จ!",
-            "location" to "พิกัด"
+            "location" to "พิกัด",
+            "new_product" to "เพิ่มสินค้า",
+            "edit_product" to "แก้ไขสินค้า",
         )
     )
 

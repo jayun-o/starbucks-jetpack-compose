@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.starbucks.admin_panel.AdminPanelScreen
 import com.starbucks.auth.AuthScreen
 import com.starbucks.home.HomeGraphScreen
+import com.starbucks.manage_product.ManageProductScreen
 import com.starbucks.map.MapScreen
 import com.starbucks.profile.ProfileScreen
 import com.starbucks.shared.navigation.Screen
@@ -59,12 +61,23 @@ fun SetupNavGraph(startDestination: Screen = Screen.Auth){
             AdminPanelScreen (
                 navigateBack = {
                     navController.navigateUp()
+                },
+                navigateToManageProduct = { id ->
+                    navController.navigate(Screen.ManageProduct(id))
                 }
             )
         }
 
         composable<Screen.Maps> {
             MapScreen(
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable<Screen.ManageProduct> {
+            val id = it.toRoute<Screen.ManageProduct>().id
+            ManageProductScreen(
+                id = id,
                 navigateBack = { navController.navigateUp() }
             )
         }
