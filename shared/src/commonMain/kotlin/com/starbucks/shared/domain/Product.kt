@@ -10,12 +10,12 @@ data class Product (
     val thumbnail: String,
     val category: ProductCategory,
     val subCategory: SubCategory?  = null,
-    val basePrice: Double? = null,
+    val price: Double? = null,
     val sizes: List<Size>? = null,
-    val isAvailable: Boolean,
-    val isNew: Boolean,
-    val isDiscounted: Boolean,
-    val isPopular: Boolean,
+    val isAvailable: Boolean = false,
+    val isNew: Boolean = false,
+    val isDiscounted: Boolean = false,
+    val isPopular: Boolean = false,
 )
 
 @Serializable

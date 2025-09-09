@@ -71,6 +71,8 @@ kotlin {
             implementation(libs.multiplatform.settings.make.observable)
 
             implementation(libs.compose.navigation)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
             // Geolocation
             implementation(libs.compass.geolocation)

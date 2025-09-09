@@ -18,6 +18,9 @@ class AdminRepositoryImpl: AdminRepository {
             val currentUserId = getCurrentUserId()
             if (currentUserId != null){
                 val firestore = Firebase.firestore
+                val productCollection = firestore.collection("product")
+                productCollection.document(product.id).set(product)
+                onSuccess()
 
             } else {
                 onError("User is not available")

@@ -5,7 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.starbucks.data.domain.CustomerRepository
 import com.starbucks.map.model.Coordinates
+import com.starbucks.shared.util.RequestState
 import kotlinx.coroutines.launch
 
 data class MapScreenState(
@@ -16,8 +18,11 @@ data class MapScreenState(
     val selectedAddress: String? = null
 )
 
-class MapViewModel : ViewModel() {
-    var screenState by mutableStateOf(MapScreenState())
+class MapViewModel(
+    private val customerRepository: CustomerRepository,
+) : ViewModel() {
+    var screenReady: RequestState<Unit> by mutableStateOf(RequestState.Loading)
+    var screenState: MapScreenState by mutableStateOf(MapScreenState())
         private set
 
     init {
@@ -47,6 +52,7 @@ class MapViewModel : ViewModel() {
     }
 
     fun selectLocation(coords: Coordinates, address: String) {
+        println("Selected Location -> lat: ${coords.latitude}, lng: ${coords.longitude}, address: $address")
         screenState = screenState.copy(
             selectedCoordinates = coords,
             selectedAddress = address

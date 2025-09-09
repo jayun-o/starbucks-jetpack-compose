@@ -17,22 +17,20 @@ import starbucks.shared.generated.resources.log_in
 import starbucks.shared.generated.resources.log_out
 import starbucks.shared.generated.resources.map_pin
 import starbucks.shared.generated.resources.menu
+import starbucks.shared.generated.resources.minus
+import starbucks.shared.generated.resources.mylocation
+import starbucks.shared.generated.resources.paypal_logo
+import starbucks.shared.generated.resources.plus
 import starbucks.shared.generated.resources.right_arrow
 import starbucks.shared.generated.resources.search
 import starbucks.shared.generated.resources.shopping_cart
+import starbucks.shared.generated.resources.shopping_cart_image
+import starbucks.shared.generated.resources.starbucks_logo
 import starbucks.shared.generated.resources.unlock
 import starbucks.shared.generated.resources.user
 import starbucks.shared.generated.resources.vertical_menu
-import starbucks.shared.generated.resources.weight
-import starbucks.shared.generated.resources.plus
-import starbucks.shared.generated.resources.minus
-import starbucks.shared.generated.resources.paypal_logo
-import starbucks.shared.generated.resources.shopping_cart_image
-import starbucks.shared.generated.resources.southkorea
-import starbucks.shared.generated.resources.starbucks_logo
-import starbucks.shared.generated.resources.thailand
-import starbucks.shared.generated.resources.usa
 import starbucks.shared.generated.resources.warning
+import starbucks.shared.generated.resources.weight
 
 object Resources {
     object Icon{
@@ -59,6 +57,7 @@ object Resources {
         val Delete = Res.drawable.delete
         val Warning = Res.drawable.warning
         val Weight = Res.drawable.weight
+        val myLocation = Res.drawable.mylocation
     }
     object Image {
         val ShoppingCart = Res.drawable.shopping_cart_image
@@ -67,10 +66,5 @@ object Resources {
         val GoogleLogo = Res.drawable.google_logo
         val PaypalLogo = Res.drawable.paypal_logo
         val StarbucksLogo = Res.drawable.starbucks_logo
-    }
-    object Flag {
-        val Thailand = Res.drawable.thailand
-        val Usa = Res.drawable.usa
-        val Korea = Res.drawable.southkorea
     }
 }

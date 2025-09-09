@@ -25,17 +25,19 @@ import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
 import com.starbucks.shared.TextPrimary
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
-    viewModel: MapViewModel,
     navigateBack: () -> Unit,
 ) {
+    val viewModel = koinViewModel<MapViewModel>()
+    val screenState = viewModel.screenState
     val currentLanguage by LanguageManager.language.collectAsState()
-    val uiState = viewModel.screenState
 
-    if(uiState.permissionDenied){
+    // ถ้า permission ถูกปฏิเสธ → กลับ
+    if(screenState.permissionDenied){
         LaunchedEffect(Unit){ navigateBack() }
         return
     }
@@ -70,19 +72,21 @@ fun MapScreen(
                 )
             )
         }
-    ){
-        if (uiState.loading) {
+    ) {
+        if (screenState.loading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         } else {
-            GoogleMaps(
-                userLocation = uiState.userCoordinates,
-                onLocationPicked = { coords, address ->
-                    viewModel.selectLocation(coords, address)
-                    navigateBack()
-                }
-            )
+            screenState.userCoordinates?.let { userCoords ->
+                GoogleMaps(
+                    userLocation = userCoords,
+                    onLocationPicked = { coords, address ->
+                        viewModel.selectLocation(coords, address)
+                        navigateBack()
+                    }
+                )
+            }
         }
     }
 }

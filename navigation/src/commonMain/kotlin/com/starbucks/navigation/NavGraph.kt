@@ -10,7 +10,6 @@ import com.starbucks.auth.AuthScreen
 import com.starbucks.home.HomeGraphScreen
 import com.starbucks.manage_product.ManageProductScreen
 import com.starbucks.map.MapScreen
-import com.starbucks.map.MapViewModel
 import com.starbucks.profile.ProfileScreen
 import com.starbucks.shared.navigation.Screen
 
@@ -74,9 +73,7 @@ fun SetupNavGraph(
 
 
         composable<Screen.Maps> {
-            val mapViewModel = MapViewModel()
             MapScreen(
-                viewModel = mapViewModel,
                 navigateBack = { navController.navigateUp() },
             )
         }

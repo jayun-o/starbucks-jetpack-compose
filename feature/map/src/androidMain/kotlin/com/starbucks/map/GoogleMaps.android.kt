@@ -40,6 +40,7 @@ import com.starbucks.shared.IconWhite
 import com.starbucks.shared.Resources
 import com.starbucks.shared.White
 import com.starbucks.shared.component.SecondaryButton
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
@@ -49,35 +50,34 @@ actual fun GoogleMaps(
     onLocationPicked: (Coordinates, String) -> Unit
 ) {
     val context = LocalContext.current
-    val defaultLocation = LatLng(13.7563309, 100.5017651)
     val scope = rememberCoroutineScope()
 
+    // fallback location
+    val defaultLocation = LatLng(
+        userLocation?.latitude ?: 13.7563,
+        userLocation?.longitude ?: 100.5017
+    )
+
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(
-            userLocation?.let { LatLng(it.latitude, it.longitude) } ?: defaultLocation,
-            16f
-        )
+        position = CameraPosition.fromLatLngZoom(defaultLocation, 16f)
     }
 
     var currentAddress by remember { mutableStateOf("กำลังค้นหาที่อยู่...") }
     val selectedMarkerState = remember { MarkerState(position = defaultLocation) }
-    var userLocationLast by remember { mutableStateOf(userLocation) }
 
-    // Animate กล้องไปตำแหน่งผู้ใช้เมื่อ userLocation เปลี่ยน
+    // Animate กล้องไปตำแหน่งผู้ใช้เมื่อได้ userLocation
     LaunchedEffect(userLocation) {
         userLocation?.let { coords ->
-            if (coords != userLocationLast) {
-                val latLng = LatLng(coords.latitude, coords.longitude)
-                cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
-                userLocationLast = coords
-            }
+            val latLng = LatLng(coords.latitude, coords.longitude)
+            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+            selectedMarkerState.position = latLng
         }
     }
 
-    // Reverse geocode เฉพาะตำแหน่งที่เลือก
+    // Reverse geocode
     LaunchedEffect(selectedMarkerState.position) {
         val geocoder = Geocoder(context)
-        currentAddress = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+        currentAddress = kotlinx.coroutines.withContext(Dispatchers.IO) {
             geocoder.getFromLocation(
                 selectedMarkerState.position.latitude,
                 selectedMarkerState.position.longitude,
@@ -90,17 +90,15 @@ actual fun GoogleMaps(
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            properties = MapProperties(isMyLocationEnabled = true), // จุดฟ้าผู้ใช้
+            properties = MapProperties(isMyLocationEnabled = true), // ปิดจุดฟ้า Google HQ
             uiSettings = MapUiSettings(myLocationButtonEnabled = true),
             onMapClick = { latLng -> selectedMarkerState.position = latLng }
         ) {
-            // Marker สำหรับตำแหน่งที่เลือก
             Marker(
                 state = selectedMarkerState,
                 title = "ตำแหน่งที่เลือก",
                 snippet = currentAddress,
-                draggable = true,
-                // ใส่ icon สีเขียวหรือ custom ถ้าต้องการ
+                draggable = true
             )
         }
 
@@ -117,13 +115,14 @@ actual fun GoogleMaps(
                         scope.launch {
                             val latLng = LatLng(it.latitude, it.longitude)
                             cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                            selectedMarkerState.position = latLng
                         }
                     }
                 },
                 containerColor = White,
                 contentColor = IconPrimary
             ) {
-                Icon(painterResource(Resources.Icon.MapPin), contentDescription = "Go to Current Location")
+                Icon(painterResource(Resources.Icon.myLocation), contentDescription = "Go to Current Location")
             }
 
             FloatingActionButton(
@@ -172,7 +171,6 @@ actual fun GoogleMaps(
                 contentColor = IconWhite,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(2.dp))
         }
     }
 }

@@ -8,7 +8,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 actual suspend fun getCurrentLocation(): Coordinates {
     val geoLocation = Geolocator.mobile()
-    val result = withTimeoutOrNull(5000L) { geoLocation.current() }
+    val result = withTimeoutOrNull(15000L) { geoLocation.current() } // เพิ่ม timeout
 
     return when(result) {
         is GeolocatorResult.Success -> {

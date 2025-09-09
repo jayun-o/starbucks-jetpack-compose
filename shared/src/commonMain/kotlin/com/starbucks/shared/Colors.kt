@@ -38,4 +38,5 @@ val ButtonDisabled = GrayDarker
 
 val IconPrimary = Black
 val IconSecondary = GreenDarker
+val IconDisabled = GrayDarker
 val IconWhite = White

@@ -56,6 +56,7 @@ import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.domain.Size
 import com.starbucks.shared.domain.SubCategory
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 import rememberMessageBarState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,34 +65,27 @@ fun ManageProductScreen(
     id: String?,
     navigateBack: () -> Unit,
 ) {
-
     val currentLanguage by LanguageManager.language.collectAsState()
     val messageBarState = rememberMessageBarState()
-    // เก็บ state ของ Category / SubCategory ที่เลือก
-    var selectedCategory by remember { mutableStateOf(ProductCategory.BEVERAGE) }
-    var selectedSubCategory by remember { mutableStateOf<SubCategory?>(null) }
+    val viewModel = koinViewModel<ManageProductViewModel>()
+    val screenState = viewModel.screenState
+    val isFormValid = viewModel.isFormValid
 
-    // 🔥 Dynamic size options
-    var sizes by remember { mutableStateOf(listOf<Size>()) }
-
-    Scaffold (
+    Scaffold(
         containerColor = Surface,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = if( id == null) LocalizedStrings.get(
-                            "new_product", currentLanguage
-                        ) else LocalizedStrings.get(
-                            "edit_product", currentLanguage
-                        ),
+                        text = if (id == null) LocalizedStrings.get("new_product", currentLanguage)
+                        else LocalizedStrings.get("edit_product", currentLanguage),
                         fontFamily = RaleWayFontFamily(),
                         fontSize = FontSize.EXTRA_MEDIUM,
                         color = TextPrimary
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack){
+                    IconButton(onClick = navigateBack) {
                         Icon(
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = "Back Arrow icon",
@@ -99,17 +93,16 @@ fun ManageProductScreen(
                         )
                     }
                 },
-                colors =
-                    TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Surface,
-                        scrolledContainerColor = Surface,
-                        navigationIconContentColor = IconPrimary,
-                        titleContentColor = TextPrimary,
-                        actionIconContentColor = IconPrimary
-                    ),
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Surface,
+                    scrolledContainerColor = Surface,
+                    navigationIconContentColor = IconPrimary,
+                    titleContentColor = TextPrimary,
+                    actionIconContentColor = IconPrimary
+                )
             )
         }
-    ){ padding ->
+    ) { padding ->
         ContentWithMessageBar(
             modifier = Modifier.padding(
                 top = padding.calculateTopPadding(),
@@ -118,35 +111,31 @@ fun ManageProductScreen(
             contentBackgroundColor = Surface,
             messageBarState = messageBarState,
             errorMaxLines = 2
-        ){
-            Column (
+        ) {
+            Column(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
-                    .padding(
-                        bottom = 24.dp,
-                        top = 12.dp
-                    )
-            ){
+                    .padding(bottom = 24.dp, top = 12.dp)
+            ) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .verticalScroll(state = rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-                ){
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Thumbnail Box
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)
-                            .clip(RoundedCornerShape(size = 12.dp))
-                            .border(
-                                width = 1.dp,
-                                color = BorderIdle,
-                                shape = RoundedCornerShape(size = 12.dp)
-                            )
+                            .clip(RoundedCornerShape(12.dp))
+                            .border(1.dp, BorderIdle, RoundedCornerShape(12.dp))
                             .background(SurfaceLighter)
-                            .clickable {  },
+                            .clickable {
+                                // TODO: Open image picker
+                            },
                         contentAlignment = Alignment.Center
-                    ){
+                    ) {
                         Icon(
                             painter = painterResource(Resources.Icon.Plus),
                             contentDescription = "Plus icon",
@@ -154,78 +143,80 @@ fun ManageProductScreen(
                             modifier = Modifier.size(24.dp)
                         )
                     }
+
+                    // Title & Description
                     CustomTextField(
-                        value = "",
-                        onValueChange = {},
+                        value = screenState.title,
+                        onValueChange = viewModel::updateTitle,
                         placeholder = "Title"
                     )
+
                     CustomTextField(
                         modifier = Modifier.height(168.dp),
-                        value = "",
-                        onValueChange = {},
+                        value = screenState.description,
+                        onValueChange = viewModel::updateDescription,
                         placeholder = "Description",
                         expanded = true
                     )
+
+                    // Category & SubCategory
                     CategoriesDropdown(
-                        category = selectedCategory,
-                        onCategorySelected = {
-                            selectedCategory = it
-                            selectedSubCategory = null
-                        },
+                        category = screenState.category,
+                        onCategorySelected = viewModel::updateCategory,
                         modifier = Modifier.fillMaxWidth()
                     )
 
                     SubCategoriesDropdown(
-                        category = selectedCategory,
-                        selectedSubCategory = selectedSubCategory,
-                        onSubCategorySelected = { selectedSubCategory = it },
+                        category = screenState.category,
+                        selectedSubCategory = screenState.subCategory,
+                        onSubCategorySelected = viewModel::updateSubCategory,
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    if (selectedCategory.title == "Beverage"){
+                    // Size options (เฉพาะ BEVERAGE)
+                    if (screenState.category == ProductCategory.BEVERAGE) {
                         Text("Size Options", color = TextPrimary, fontSize = FontSize.REGULAR)
-                        // Add new option button
+
                         SecondaryButton(
                             onClick = {
-                                sizes = sizes + Size(name = "", price = 0.0)
+                                val newSizes = (screenState.sizes ?: emptyList()) + Size(name = "", price = 0.0)
+                                viewModel.updateSizes(newSizes)
                             },
                             text = "Add size option",
                             icon = Resources.Icon.Plus,
                             borderColor = ButtonPrimary,
                             contentColor = IconPrimary,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         )
-                        sizes.forEachIndexed { index, size ->
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
+
+                        (screenState.sizes ?: emptyList()).forEachIndexed { index, size ->
+                            Column(modifier = Modifier.fillMaxWidth()) {
                                 CustomTextField(
                                     value = size.name,
                                     onValueChange = { newValue ->
-                                        sizes = sizes.toMutableList().also {
-                                            it[index] = it[index].copy(name = newValue)
-                                        }
+                                        val newSizes = screenState.sizes!!.toMutableList()
+                                        newSizes[index] = newSizes[index].copy(name = newValue)
+                                        viewModel.updateSizes(newSizes)
                                     },
                                     placeholder = "Size Name"
                                 )
-                                // Price
+
                                 CustomTextField(
                                     value = size.price.toString(),
                                     onValueChange = { newValue ->
                                         val parsed = newValue.toDoubleOrNull() ?: 0.0
-                                        sizes = sizes.toMutableList().also {
-                                            it[index] = it[index].copy(price = parsed)
-                                        }
+                                        val newSizes = screenState.sizes!!.toMutableList()
+                                        newSizes[index] = newSizes[index].copy(price = parsed)
+                                        viewModel.updateSizes(newSizes)
                                     },
                                     placeholder = "Price",
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                                 )
-                                // ลบ option
+
                                 SecondaryButton(
                                     onClick = {
-                                        sizes = sizes.toMutableList().also { it.removeAt(index) }
+                                        val newSizes = screenState.sizes!!.toMutableList().also { it.removeAt(index) }
+                                        viewModel.updateSizes(newSizes)
                                     },
                                     text = "Delete size",
                                     icon = Resources.Icon.Delete,
@@ -233,38 +224,32 @@ fun ManageProductScreen(
                                     contentColor = IconPrimary,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(top = 12.dp),
+                                        .padding(top = 12.dp)
                                 )
                             }
                         }
                     } else {
                         CustomTextField(
-                            value = "",
-                            onValueChange = {},
-                            placeholder = "Size"
-                        )
-                        CustomTextField(
-                        value = "",
-                        onValueChange = {},
-                        placeholder = "Price",
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
+                            value = "${screenState.price}",
+                            onValueChange = { value ->
+                                if (value.isEmpty() || value.toDoubleOrNull() != null) {
+                                    viewModel.updatePrice(value.toDoubleOrNull() ?: 0.0)
+                                }
+                            },
+                            placeholder = "Price",
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
                             )
                         )
                     }
-
-
-
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                //Test Button
+                // Test button
                 Button(
                     onClick = {
-                        println("Selected Category: ${selectedCategory.title}")
-                        println("Selected SubCategory: ${selectedSubCategory?.title ?: "None"}")
-                        println("Sizes: $sizes")
+                        println("ScreenState: $screenState")
                     },
                     modifier = Modifier.padding(top = 24.dp)
                 ) {
@@ -273,11 +258,19 @@ fun ManageProductScreen(
 
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = if (id == null) "Add new product"
-                    else "Update",
-                    icon = if (id == null) Resources.Icon.Plus
-                    else Resources.Icon.Checkmark,
-                    onClick = {}
+                    text = if (id == null) "Add new product" else "Update",
+                    icon = if (id == null) Resources.Icon.Plus else Resources.Icon.Checkmark,
+                    enabled = isFormValid,
+                    onClick = {
+                        viewModel.createNewProduct(
+                            onSuccess = {
+                                messageBarState.addSuccess("Product added successfully!")
+                            },
+                            onError = { message ->
+                                messageBarState.addError(message)
+                            }
+                        )
+                    }
                 )
             }
         }
