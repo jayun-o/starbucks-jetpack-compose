@@ -33,7 +33,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.starbucks.shared.Alpha
+import com.starbucks.map.model.Coordinates
 import com.starbucks.shared.ButtonPrimary
 import com.starbucks.shared.IconPrimary
 import com.starbucks.shared.IconWhite
@@ -50,123 +50,98 @@ actual fun GoogleMaps(
 ) {
     val context = LocalContext.current
     val defaultLocation = LatLng(13.7563309, 100.5017651)
-    val scope = rememberCoroutineScope() // สำหรับ animate camera
+    val scope = rememberCoroutineScope()
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
             userLocation?.let { LatLng(it.latitude, it.longitude) } ?: defaultLocation,
-            16f // zoom ระดับเริ่มต้น
+            16f
         )
     }
 
-
     var currentAddress by remember { mutableStateOf("กำลังค้นหาที่อยู่...") }
-    val markerState = remember { MarkerState(position = defaultLocation) }
+    val selectedMarkerState = remember { MarkerState(position = defaultLocation) }
+    var userLocationLast by remember { mutableStateOf(userLocation) }
 
-    // Zoom ไปตำแหน่งผู้ใช้ครั้งแรก
+    // Animate กล้องไปตำแหน่งผู้ใช้เมื่อ userLocation เปลี่ยน
     LaunchedEffect(userLocation) {
-        userLocation?.let {
-            val latLng = LatLng(it.latitude, it.longitude)
-            // Animate camera เพิ่ม smooth effect หลังจาก load
-            cameraPositionState.animate(CameraUpdateFactory.newLatLng(latLng))
-            markerState.position = latLng
+        userLocation?.let { coords ->
+            if (coords != userLocationLast) {
+                val latLng = LatLng(coords.latitude, coords.longitude)
+                cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                userLocationLast = coords
+            }
         }
     }
 
-
-    // Reverse geocode จาก markerState
-    LaunchedEffect(markerState.position) {
+    // Reverse geocode เฉพาะตำแหน่งที่เลือก
+    LaunchedEffect(selectedMarkerState.position) {
         val geocoder = Geocoder(context)
         currentAddress = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             geocoder.getFromLocation(
-                markerState.position.latitude,
-                markerState.position.longitude,
+                selectedMarkerState.position.latitude,
+                selectedMarkerState.position.longitude,
                 1
             )?.firstOrNull()?.getAddressLine(0) ?: "ไม่พบที่อยู่"
         }
     }
 
-
     Box(modifier = Modifier.fillMaxSize()) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            properties = MapProperties(isMyLocationEnabled = true),
+            properties = MapProperties(isMyLocationEnabled = true), // จุดฟ้าผู้ใช้
             uiSettings = MapUiSettings(myLocationButtonEnabled = true),
-            onMapClick = { latLng ->
-                markerState.position = latLng
-            }
+            onMapClick = { latLng -> selectedMarkerState.position = latLng }
         ) {
+            // Marker สำหรับตำแหน่งที่เลือก
             Marker(
-                state = markerState,
+                state = selectedMarkerState,
                 title = "ตำแหน่งที่เลือก",
                 snippet = currentAddress,
-                draggable = true
+                draggable = true,
+                // ใส่ icon สีเขียวหรือ custom ถ้าต้องการ
             )
         }
 
-        if (userLocation != null) {
-            val scope = rememberCoroutineScope()
-
-            // จัดปุ่มเป็น Column อยู่ขอบขวากลาง
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 220.dp), // กัน panel ล่าง
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // FAB current location
-                FloatingActionButton(
-                    onClick = {
+        // ปุ่ม Zoom + Current Location
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 220.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FloatingActionButton(
+                onClick = {
+                    userLocation?.let {
                         scope.launch {
-                            val latLng = LatLng(userLocation.latitude, userLocation.longitude)
+                            val latLng = LatLng(it.latitude, it.longitude)
                             cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
-                            markerState.position = latLng
                         }
-                    },
-                    containerColor = White,
-                    contentColor = IconPrimary
-                ) {
-                    Icon(
-                        painter = painterResource(Resources.Icon.MapPin),
-                        contentDescription = "Go to Current Location"
-                    )
-                }
+                    }
+                },
+                containerColor = White,
+                contentColor = IconPrimary
+            ) {
+                Icon(painterResource(Resources.Icon.MapPin), contentDescription = "Go to Current Location")
+            }
 
-                // FAB Zoom +
-                FloatingActionButton(
-                    onClick = {
-                        scope.launch {
-                            cameraPositionState.animate(CameraUpdateFactory.zoomIn())
-                        }
-                    },
-                    containerColor = White,
-                    contentColor = IconPrimary
-                ) {
-                    Icon(
-                        painter = painterResource(Resources.Icon.Plus),
-                        contentDescription = "Zoom in"
-                    )
-                }
+            FloatingActionButton(
+                onClick = { scope.launch { cameraPositionState.animate(CameraUpdateFactory.zoomIn()) } },
+                containerColor = White,
+                contentColor = IconPrimary
+            ) {
+                Icon(painterResource(Resources.Icon.Plus), contentDescription = "Zoom in")
+            }
 
-                // FAB Zoom -
-                FloatingActionButton(
-                    onClick = {
-                        scope.launch {
-                            cameraPositionState.animate(CameraUpdateFactory.zoomOut())
-                        }
-                    },
-                    containerColor = White,
-                    contentColor = IconPrimary
-                ) {
-                    Icon(
-                    painter = painterResource(Resources.Icon.Minus),
-                    contentDescription = "Zoom out"
-                    )
-                }
+            FloatingActionButton(
+                onClick = { scope.launch { cameraPositionState.animate(CameraUpdateFactory.zoomOut()) } },
+                containerColor = White,
+                contentColor = IconPrimary
+            ) {
+                Icon(painterResource(Resources.Icon.Minus), contentDescription = "Zoom out")
             }
         }
-
 
         // Panel ล่าง
         Column(
@@ -184,8 +159,8 @@ actual fun GoogleMaps(
                 onClick = {
                     onLocationPicked(
                         Coordinates(
-                            markerState.position.latitude,
-                            markerState.position.longitude
+                            selectedMarkerState.position.latitude,
+                            selectedMarkerState.position.longitude
                         ),
                         currentAddress
                     )

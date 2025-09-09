@@ -41,7 +41,6 @@ import rememberMessageBarState
 fun ProfileScreen(
     navigateBack: () -> Unit,
     navigateToMap: () -> Unit,
-
     ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val screenState = viewModel.screenState

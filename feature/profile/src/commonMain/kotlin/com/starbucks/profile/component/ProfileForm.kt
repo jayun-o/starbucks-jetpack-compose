@@ -11,24 +11,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.starbucks.map.MapTextField
-import com.starbucks.profile.ProfileViewModel
+import com.starbucks.map.component.MapTextField
 import com.starbucks.shared.BorderError
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
 import com.starbucks.shared.component.CustomTextField
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProfileForm(
@@ -98,6 +91,13 @@ fun ProfileForm(
             placeholder = LocalizedStrings.get("location", currentLanguage),
             enabled = false
         )
+        CustomTextField(
+            value = postalCode ?: "",
+            onValueChange = onPostalCodeChange,
+            placeholder = LocalizedStrings.get("postal_code", currentLanguage),
+            error = postalCode?.length !in 3..50
+        )
+
 
         CustomTextField(
             value = phoneNumber ?: "",

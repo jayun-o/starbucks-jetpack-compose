@@ -10,11 +10,15 @@ import com.starbucks.auth.AuthScreen
 import com.starbucks.home.HomeGraphScreen
 import com.starbucks.manage_product.ManageProductScreen
 import com.starbucks.map.MapScreen
+import com.starbucks.map.MapViewModel
 import com.starbucks.profile.ProfileScreen
 import com.starbucks.shared.navigation.Screen
 
 @Composable
-fun SetupNavGraph(startDestination: Screen = Screen.Auth){
+fun SetupNavGraph(
+    startDestination: Screen = Screen.Auth
+
+){
     val navController = rememberNavController()
 
     NavHost(
@@ -68,16 +72,15 @@ fun SetupNavGraph(startDestination: Screen = Screen.Auth){
             )
         }
 
+
         composable<Screen.Maps> {
+            val mapViewModel = MapViewModel()
             MapScreen(
+                viewModel = mapViewModel,
                 navigateBack = { navController.navigateUp() },
-                onLocationPicked = { coords, address ->
-                    navController.previousBackStackEntry?.savedStateHandle?.set("coords", coords)
-                    navController.previousBackStackEntry?.savedStateHandle?.set("address", address)
-                    navController.navigateUp()
-                }
             )
         }
+
 
         composable<Screen.ManageProduct> {
             val id = it.toRoute<Screen.ManageProduct>().id

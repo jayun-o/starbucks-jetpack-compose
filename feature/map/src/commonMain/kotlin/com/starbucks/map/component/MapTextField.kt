@@ -1,4 +1,4 @@
-package com.starbucks.map
+package com.starbucks.map.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Icon
@@ -28,6 +28,8 @@ import com.starbucks.shared.Alpha
 import com.starbucks.shared.BorderError
 import com.starbucks.shared.BorderIdle
 import com.starbucks.shared.FontSize
+import com.starbucks.shared.GreenDarker
+import com.starbucks.shared.IconPrimary
 import com.starbucks.shared.IconSecondary
 import com.starbucks.shared.MontserratFontFamily
 import com.starbucks.shared.SurfaceDarker
@@ -83,9 +85,9 @@ fun MapTextField(
                             fontSize = FontSize.REGULAR
                         )
                         Icon(
-                            modifier = Modifier.alpha(Alpha.DISABLED),
                             painter = painterResource(Resources.Icon.MapPin),
                             contentDescription = null,
+                            tint = IconSecondary
                         )
                     }
                 }

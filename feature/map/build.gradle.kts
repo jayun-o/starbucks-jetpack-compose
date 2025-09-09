@@ -70,6 +70,8 @@ kotlin {
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.multiplatform.settings.make.observable)
 
+            implementation(libs.compose.navigation)
+
             // Geolocation
             implementation(libs.compass.geolocation)
             implementation(libs.compass.geolocation.mobile)
