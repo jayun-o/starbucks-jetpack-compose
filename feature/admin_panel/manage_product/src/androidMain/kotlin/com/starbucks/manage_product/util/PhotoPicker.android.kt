@@ -14,20 +14,22 @@ import dev.gitlive.firebase.storage.File
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class PhotoPicker {
 
-    private var openPhotoPicker by mutableStateOf(false)
+    private var openPhotoPicker = mutableStateOf(false)
+
     actual fun open() {
-        openPhotoPicker = true
+        openPhotoPicker.value = true
     }
+
     @Composable
     actual fun InitializePhotoPicker(onImageSelect: (File?) -> Unit) {
-        val openPhotoPickerState = remember { openPhotoPicker }
+        val openPhotoPickerState by remember { openPhotoPicker }
         val pickMedia = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickVisualMedia(),
         ) { uri ->
             //if uri is actually not null, calling a on image select and passing the actual file
             //or if this uri is null, calling on image select and passing the null
             uri?.let { onImageSelect(File(it)) } ?: onImageSelect(null)
-            openPhotoPicker = false
+            openPhotoPicker.value = false
         }
 
         LaunchedEffect(openPhotoPickerState) {
@@ -40,6 +42,4 @@ actual class PhotoPicker {
             }
         }
     }
-
-
 }

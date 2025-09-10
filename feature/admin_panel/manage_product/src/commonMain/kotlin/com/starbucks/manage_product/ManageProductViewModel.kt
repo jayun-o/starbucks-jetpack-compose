@@ -11,6 +11,8 @@ import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.domain.Size
 import com.starbucks.shared.domain.SubCategory
 import com.starbucks.shared.domain.getSubCategoriesFor
+import com.starbucks.shared.util.RequestState
+import dev.gitlive.firebase.storage.File
 import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -20,7 +22,7 @@ data class ManageProductScreenState(
     val id: String = Uuid.random().toHexString(),
     val title: String = "",
     val description: String = "",
-    val thumbnail: String = "thumbnail",
+    val thumbnail: String = "",
     val category: ProductCategory = ProductCategory.BEVERAGE,
     val subCategory: SubCategory?  = null,
     val price: Double = 0.0,
@@ -31,6 +33,9 @@ class ManageProductViewModel(
     private val adminRepository: AdminRepository
 ): ViewModel()  {
     var screenState by mutableStateOf(ManageProductScreenState())
+        private set
+
+    var thumbnailUploaderState: RequestState<Unit> by mutableStateOf(RequestState.Idle)
         private set
 
     val isFormValid: Boolean
@@ -47,7 +52,6 @@ class ManageProductViewModel(
             return screenState.title.isNotBlank() &&
                     screenState.description.isNotBlank() &&
                     screenState.thumbnail.isNotBlank() &&
-                    screenState.category != null &&
                     screenState.subCategory != null &&
                     sizesValid
         }
@@ -64,6 +68,10 @@ class ManageProductViewModel(
 
     fun updateThumbnail(value: String) {
         screenState = screenState.copy(thumbnail = value)
+    }
+
+    fun updateThumbnailUploaderState(value: RequestState<Unit>) {
+        thumbnailUploaderState = value
     }
 
     fun updateCategory(value: ProductCategory) {
@@ -112,6 +120,33 @@ class ManageProductViewModel(
                 onError = onError
             )
         }
+    }
 
+    fun uploadThumbnailToStorage(
+        file: File?,
+        onSuccess: () -> Unit
+        ){
+        if (file == null){
+            updateThumbnailUploaderState(RequestState.Error("File is null. Error while selecting an image."))
+            return
+        }
+
+        updateThumbnailUploaderState(RequestState.Loading)
+
+        viewModelScope.launch {
+            try {
+                val downloadUrl = adminRepository.uploadImageToStorage(file)
+                if (downloadUrl.isNullOrEmpty()){
+                    throw Exception("Failed to retrieve a download URL after the upload.")
+                }
+
+                onSuccess()
+                updateThumbnailUploaderState(RequestState.Success(Unit))
+                updateThumbnail(downloadUrl)
+
+            } catch (e: Exception){
+                updateThumbnailUploaderState(RequestState.Error("Error while uploading: $e"))
+            }
+        }
     }
 }

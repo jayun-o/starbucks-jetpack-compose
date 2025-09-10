@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,11 +18,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -33,10 +36,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.starbucks.manage_product.component.CategoriesDropdown
 import com.starbucks.manage_product.component.SubCategoriesDropdown
+import com.starbucks.manage_product.util.PhotoPicker
 import com.starbucks.shared.BorderIdle
 import com.starbucks.shared.ButtonPrimary
 import com.starbucks.shared.FontSize
@@ -49,13 +59,19 @@ import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
 import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextPrimary
+import com.starbucks.shared.TextSecondary
 import com.starbucks.shared.component.CustomTextField
+import com.starbucks.shared.component.ErrorCard
+import com.starbucks.shared.component.LoadingCard
 import com.starbucks.shared.component.PrimaryButton
 import com.starbucks.shared.component.SecondaryButton
 import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.domain.Size
 import com.starbucks.shared.domain.SubCategory
+import com.starbucks.shared.util.DisplayResult
+import com.starbucks.shared.util.RequestState
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import rememberMessageBarState
 
@@ -68,8 +84,22 @@ fun ManageProductScreen(
     val currentLanguage by LanguageManager.language.collectAsState()
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<ManageProductViewModel>()
+    val thumbnailUploaderState = viewModel.thumbnailUploaderState
     val screenState = viewModel.screenState
     val isFormValid = viewModel.isFormValid
+
+    val photoPicker = koinInject<PhotoPicker>()
+
+    photoPicker.InitializePhotoPicker(
+        onImageSelect = { file ->
+            viewModel.uploadThumbnailToStorage(
+                file = file,
+                onSuccess = {
+                    messageBarState.addSuccess("Thumbnail uploaded successfully!")
+                }
+            )
+        }
+    )
 
     Scaffold(
         containerColor = Surface,
@@ -131,16 +161,62 @@ fun ManageProductScreen(
                             .clip(RoundedCornerShape(12.dp))
                             .border(1.dp, BorderIdle, RoundedCornerShape(12.dp))
                             .background(SurfaceLighter)
-                            .clickable {
-                                // TODO: Open image picker
+                            .clickable (
+                                enabled = thumbnailUploaderState.isIdle(),
+                            ){
+                                photoPicker.open()
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            painter = painterResource(Resources.Icon.Plus),
-                            contentDescription = "Plus icon",
-                            tint = IconPrimary,
-                            modifier = Modifier.size(24.dp)
+                        thumbnailUploaderState.DisplayResult(
+                            onIdle = {
+                                Icon(
+                                    modifier = Modifier.size(24.dp),
+                                    painter = painterResource(Resources.Icon.Plus),
+                                    contentDescription = "Camera icon",
+                                    tint = IconPrimary
+                                )
+                            },
+                            onLoading = {
+                                LoadingCard(modifier = Modifier.fillMaxSize())
+                            },
+                            onSuccess = {
+                                AsyncImage(
+                                    modifier = Modifier.fillMaxSize(),
+                                    model = ImageRequest.Builder(
+                                        LocalPlatformContext.current
+                                    ).data(screenState.thumbnail)
+                                        .crossfade(enable = true)
+                                        .build(),
+                                    contentDescription = "Product thumbnail image",
+                                    contentScale = ContentScale.Crop
+                                )
+                            },
+                            onError = { message ->
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ){
+                                    ErrorCard(message = message)
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    TextButton(
+                                        onClick = {
+                                            viewModel.updateThumbnailUploaderState(RequestState.Idle)
+                                        },
+                                        colors = ButtonDefaults.textButtonColors(
+                                            containerColor = Color.Transparent,
+                                            contentColor = TextSecondary
+                                        )
+                                    ){
+                                        Text(
+                                            text = "Try again",
+                                            fontSize = FontSize.SMALL,
+                                            color = TextPrimary
+                                        )
+                                    }
+                                }
+                            }
                         )
                     }
 
@@ -246,15 +322,15 @@ fun ManageProductScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Test button
-                Button(
-                    onClick = {
-                        println("ScreenState: $screenState")
-                    },
-                    modifier = Modifier.padding(top = 24.dp)
-                ) {
-                    Text("Save Product")
-                }
+//                // Test button
+//                Button(
+//                    onClick = {
+//                        println("ScreenState: $screenState")
+//                    },
+//                    modifier = Modifier.padding(top = 24.dp)
+//                ) {
+//                    Text("Save Product")
+//                }
 
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth(),

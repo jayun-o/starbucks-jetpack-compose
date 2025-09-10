@@ -39,7 +39,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(libs.firebase.firestore)
-//            implementation(libs.firebase.common.ktx)
+            implementation(libs.firebase.storage)
             implementation(libs.auth.firebase.kmp)
 
             implementation(libs.kotlinx.serialization)
