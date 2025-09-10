@@ -129,7 +129,7 @@ enum class FoodSubCategory (
     ),
     SANDWICH_BISTRO(
         id = "sandwich_bistro",
-        title = "Sandwich & BISTRO",
+        title = "Sandwich & Bistro",
         imageUrl = "https://firebasestorage.googleapis.com/v0/b/starbucks-465316.firebasestorage.app/o/FoodImage%2FSANDWICH_BISTRO.jpg?alt=media&token=bb540d25-7d9a-4c05-97ec-4d105b833557"
 
     ),

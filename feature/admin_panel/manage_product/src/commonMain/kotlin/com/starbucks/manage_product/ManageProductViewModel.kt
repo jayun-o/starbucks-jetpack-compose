@@ -102,7 +102,13 @@ class ManageProductViewModel(
                     price = screenState.price,
                     sizes = screenState.sizes
                 ),
-                onSuccess = onSuccess,
+                onSuccess = {
+                    // Reset sizes หลังสร้าง product สำเร็จ
+                    if (screenState.category == ProductCategory.BEVERAGE) {
+                        updateSizes(emptyList())
+                    }
+                    onSuccess()
+                },
                 onError = onError
             )
         }
