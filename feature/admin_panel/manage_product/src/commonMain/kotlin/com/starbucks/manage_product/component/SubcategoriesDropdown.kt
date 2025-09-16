@@ -34,6 +34,7 @@ import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.domain.SubCategory
 import com.starbucks.shared.domain.getSubCategoriesFor
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubCategoriesDropdown(
@@ -112,7 +113,6 @@ fun SubCategoriesDropdown(
                         },
                         modifier = Modifier.background(SurfaceLighter)
                     )
-
                 }
             }
         }

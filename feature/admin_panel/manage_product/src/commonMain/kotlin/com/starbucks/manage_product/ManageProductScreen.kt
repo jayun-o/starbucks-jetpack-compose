@@ -17,7 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,9 +29,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +47,7 @@ import com.starbucks.shared.BorderIdle
 import com.starbucks.shared.ButtonPrimary
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.IconPrimary
+import com.starbucks.shared.IconWhite
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
 import com.starbucks.shared.RaleWayFontFamily
@@ -67,7 +64,6 @@ import com.starbucks.shared.component.PrimaryButton
 import com.starbucks.shared.component.SecondaryButton
 import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.domain.Size
-import com.starbucks.shared.domain.SubCategory
 import com.starbucks.shared.util.DisplayResult
 import com.starbucks.shared.util.RequestState
 import org.jetbrains.compose.resources.painterResource
@@ -181,16 +177,43 @@ fun ManageProductScreen(
                                 LoadingCard(modifier = Modifier.fillMaxSize())
                             },
                             onSuccess = {
-                                AsyncImage(
+                                Box(
                                     modifier = Modifier.fillMaxSize(),
-                                    model = ImageRequest.Builder(
-                                        LocalPlatformContext.current
-                                    ).data(screenState.thumbnail)
-                                        .crossfade(enable = true)
-                                        .build(),
-                                    contentDescription = "Product thumbnail image",
-                                    contentScale = ContentScale.Crop
-                                )
+                                    contentAlignment = Alignment.TopEnd
+                                ){
+                                    AsyncImage(
+                                        modifier = Modifier.fillMaxSize(),
+                                        model = ImageRequest.Builder(
+                                            LocalPlatformContext.current
+                                        ).data(screenState.thumbnail)
+                                            .crossfade(enable = true)
+                                            .build(),
+                                        contentDescription = "Product thumbnail image",
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(
+                                                top = 12.dp,
+                                                end = 12.dp
+                                            )
+                                            .clip(RoundedCornerShape(size = 6.dp))
+                                            .background(ButtonPrimary)
+                                            .clickable { viewModel.deleteThumbnailFromStorage(
+                                                onSuccess = { messageBarState.addSuccess("Thumbnail deleted successfully!") },
+                                                onError = { message -> messageBarState.addError(message) }
+                                            ) }
+                                            .padding(all = 12.dp),
+                                        contentAlignment = Alignment.Center
+                                    ){
+                                        Icon(
+                                            modifier = Modifier.size(14.dp),
+                                            painter = painterResource(Resources.Icon.Delete),
+                                            contentDescription = "Delete icon",
+                                            tint = IconWhite
+                                        )
+                                    }
+                                }
                             },
                             onError = { message ->
                                 Column(
@@ -206,13 +229,12 @@ fun ManageProductScreen(
                                         },
                                         colors = ButtonDefaults.textButtonColors(
                                             containerColor = Color.Transparent,
-                                            contentColor = TextSecondary
                                         )
                                     ){
                                         Text(
                                             text = "Try again",
                                             fontSize = FontSize.SMALL,
-                                            color = TextPrimary
+                                            color = TextSecondary
                                         )
                                     }
                                 }
@@ -253,18 +275,6 @@ fun ManageProductScreen(
                     if (screenState.category == ProductCategory.BEVERAGE) {
                         Text("Size Options", color = TextPrimary, fontSize = FontSize.REGULAR)
 
-                        SecondaryButton(
-                            onClick = {
-                                val newSizes = (screenState.sizes ?: emptyList()) + Size(name = "", price = 0.0)
-                                viewModel.updateSizes(newSizes)
-                            },
-                            text = "Add size option",
-                            icon = Resources.Icon.Plus,
-                            borderColor = ButtonPrimary,
-                            contentColor = IconPrimary,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
                         (screenState.sizes ?: emptyList()).forEachIndexed { index, size ->
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 CustomTextField(
@@ -289,6 +299,7 @@ fun ManageProductScreen(
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                                 )
 
+
                                 SecondaryButton(
                                     onClick = {
                                         val newSizes = screenState.sizes!!.toMutableList().also { it.removeAt(index) }
@@ -304,6 +315,17 @@ fun ManageProductScreen(
                                 )
                             }
                         }
+                        SecondaryButton(
+                            onClick = {
+                                val newSizes = (screenState.sizes ?: emptyList()) + Size(name = "", price = 0.0)
+                                viewModel.updateSizes(newSizes)
+                            },
+                            text = "Add size option",
+                            icon = Resources.Icon.Plus,
+                            borderColor = ButtonPrimary,
+                            contentColor = IconPrimary,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     } else {
                         CustomTextField(
                             value = "${screenState.price}",
@@ -341,7 +363,6 @@ fun ManageProductScreen(
                         viewModel.createNewProduct(
                             onSuccess = {
                                 messageBarState.addSuccess("Product added successfully!")
-                                navigateBack()
                             },
                             onError = { message ->
                                 messageBarState.addError(message)

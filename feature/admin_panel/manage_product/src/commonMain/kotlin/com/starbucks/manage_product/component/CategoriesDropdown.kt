@@ -61,9 +61,8 @@ fun CategoriesDropdown(
             onExpandedChange = { expanded = !expanded },
             modifier = modifier
         ) {
-            // TextField ที่แสดง Category ที่เลือก
             TextField(
-                value = selectedCategory.displayName(),
+                value = selectedCategory.displayName() ?: "select category",
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = {

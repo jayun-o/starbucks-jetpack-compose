@@ -94,6 +94,20 @@ class ManageProductViewModel(
         screenState = screenState.copy(sizes = value)
     }
 
+    @OptIn(ExperimentalUuidApi::class)
+    private fun resetState() {
+        screenState = screenState.copy(
+            id = Uuid.random().toHexString(),
+            title = "",
+            description = "",
+            thumbnail = "",
+            subCategory = null,
+            price = 0.0,
+            sizes = null
+        )
+    }
+
+
     fun createNewProduct(
         onSuccess: () -> Unit,
         onError: (String) -> Unit
@@ -112,9 +126,10 @@ class ManageProductViewModel(
                 ),
                 onSuccess = {
                     // Reset sizes หลังสร้าง product สำเร็จ
-                    if (screenState.category == ProductCategory.BEVERAGE) {
-                        updateSizes(emptyList())
-                    }
+//                    if (screenState.category == ProductCategory.BEVERAGE) {
+//                        updateSizes(emptyList())
+//                    }
+                    resetState()
                     onSuccess()
                 },
                 onError = onError
@@ -139,7 +154,6 @@ class ManageProductViewModel(
                 if (downloadUrl.isNullOrEmpty()){
                     throw Exception("Failed to retrieve a download URL after the upload.")
                 }
-
                 onSuccess()
                 updateThumbnailUploaderState(RequestState.Success(Unit))
                 updateThumbnail(downloadUrl)
@@ -147,6 +161,23 @@ class ManageProductViewModel(
             } catch (e: Exception){
                 updateThumbnailUploaderState(RequestState.Error("Error while uploading: $e"))
             }
+        }
+    }
+
+    fun deleteThumbnailFromStorage(
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ){
+        viewModelScope.launch {
+            adminRepository.deleteImageFromStorage(
+                downloadUrl = screenState.thumbnail,
+                onSuccess = {
+                    updateThumbnail("")
+                    updateThumbnailUploaderState(RequestState.Idle)
+                    onSuccess()
+                },
+                onError = onError
+            )
         }
     }
 }
