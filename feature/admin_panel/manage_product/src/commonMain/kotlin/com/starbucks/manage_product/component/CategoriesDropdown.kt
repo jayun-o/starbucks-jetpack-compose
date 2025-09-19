@@ -62,7 +62,7 @@ fun CategoriesDropdown(
             modifier = modifier
         ) {
             TextField(
-                value = selectedCategory.displayName() ?: "select category",
+                value = selectedCategory.displayName(),
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = {

@@ -1,6 +1,8 @@
 package com.starbucks.manage_product
 
 import ContentWithMessageBar
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +31,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +66,7 @@ import com.starbucks.shared.component.ErrorCard
 import com.starbucks.shared.component.LoadingCard
 import com.starbucks.shared.component.PrimaryButton
 import com.starbucks.shared.component.SecondaryButton
+import com.starbucks.shared.component.SizeOptionsSection
 import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.domain.Size
 import com.starbucks.shared.util.DisplayResult
@@ -271,74 +276,35 @@ fun ManageProductScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    // Size options (เฉพาะ BEVERAGE)
-                    if (screenState.category == ProductCategory.BEVERAGE) {
-                        Text("Size Options", color = TextPrimary, fontSize = FontSize.REGULAR)
-
-                        (screenState.sizes ?: emptyList()).forEachIndexed { index, size ->
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                CustomTextField(
-                                    value = size.name,
-                                    onValueChange = { newValue ->
-                                        val newSizes = screenState.sizes!!.toMutableList()
-                                        newSizes[index] = newSizes[index].copy(name = newValue)
-                                        viewModel.updateSizes(newSizes)
-                                    },
-                                    placeholder = "Size Name"
-                                )
-
-                                CustomTextField(
-                                    value = size.price.toString(),
-                                    onValueChange = { newValue ->
-                                        val parsed = newValue.toDoubleOrNull() ?: 0.0
-                                        val newSizes = screenState.sizes!!.toMutableList()
-                                        newSizes[index] = newSizes[index].copy(price = parsed)
-                                        viewModel.updateSizes(newSizes)
-                                    },
-                                    placeholder = "Price",
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                                )
-
-
-                                SecondaryButton(
-                                    onClick = {
-                                        val newSizes = screenState.sizes!!.toMutableList().also { it.removeAt(index) }
-                                        viewModel.updateSizes(newSizes)
-                                    },
-                                    text = "Delete size",
-                                    icon = Resources.Icon.Delete,
-                                    borderColor = Red,
-                                    contentColor = IconPrimary,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 12.dp)
-                                )
-                            }
-                        }
-                        SecondaryButton(
-                            onClick = {
-                                val newSizes = (screenState.sizes ?: emptyList()) + Size(name = "", price = 0.0)
-                                viewModel.updateSizes(newSizes)
-                            },
-                            text = "Add size option",
-                            icon = Resources.Icon.Plus,
-                            borderColor = ButtonPrimary,
-                            contentColor = IconPrimary,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else {
-                        CustomTextField(
-                            value = "${screenState.price}",
-                            onValueChange = { value ->
-                                if (value.isEmpty() || value.toDoubleOrNull() != null) {
-                                    viewModel.updatePrice(value.toDoubleOrNull() ?: 0.0)
-                                }
-                            },
-                            placeholder = "Price",
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
+                    AnimatedVisibility(
+                        visible = screenState.category == ProductCategory.BEVERAGE
+                    ){
+                        Column {
+                            SizeOptionsSection(
+                                sizes = screenState.sizes,
+                                onSizesChanged = viewModel::updateSizes
                             )
-                        )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+                    }
+
+                    AnimatedVisibility(
+                        visible = screenState.category == ProductCategory.FOOD
+                    ) {
+                        Column {
+                            CustomTextField(
+                                value = "${screenState.price}",
+                                onValueChange = { value ->
+                                    if (value.isEmpty() || value.toDoubleOrNull() != null) {
+                                        viewModel.updatePrice(value.toDoubleOrNull() ?: 0.0)
+                                    }
+                                },
+                                placeholder = "Price",
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
                     }
                 }
 

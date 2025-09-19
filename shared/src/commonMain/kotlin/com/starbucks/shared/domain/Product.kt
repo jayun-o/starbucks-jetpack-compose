@@ -1,5 +1,6 @@
 package com.starbucks.shared.domain
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -42,8 +43,10 @@ enum class ProductCategory (
     val id: String,
     val title: String,
 ){
+    @SerialName("beverage")
     BEVERAGE("beverage", "Beverage"),
-    FOOD("food", "Food")
+    @SerialName("food")
+    FOOD("food", "Food");
 }
 
 // Subcategory สำหรับเครื่องดื่ม

@@ -1,7 +1,9 @@
 package com.starbucks.manage_product
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,25 +40,21 @@ class ManageProductViewModel(
     var thumbnailUploaderState: RequestState<Unit> by mutableStateOf(RequestState.Idle)
         private set
 
-    val isFormValid: Boolean
-        get() {
-            val sizes = screenState.sizes
-            val sizesValid = if (screenState.category == ProductCategory.BEVERAGE) {
-
-                // ต้องมี size อย่างน้อย 1 ตัว และแต่ละตัวต้องถูกกรอก
-                !sizes.isNullOrEmpty() && sizes.all { it.name.isNotBlank() && it.price > 0 }
-            } else {
-                screenState.price != 0.0
-            }
-
-            return screenState.title.isNotBlank() &&
-                    screenState.description.isNotBlank() &&
-                    screenState.thumbnail.isNotBlank() &&
-                    screenState.subCategory != null &&
-                    sizesValid
+    // Reactive form validation
+    val isFormValid by derivedStateOf {
+        val sizes = screenState.sizes
+        val sizesValid = if (screenState.category == ProductCategory.BEVERAGE) {
+            !sizes.isNullOrEmpty() && sizes.all { it.name.isNotBlank() && it.price > 0 }
+        } else {
+            screenState.price > 0 // รองรับราคา 0
         }
 
-
+        screenState.title.isNotBlank() &&
+                screenState.description.isNotBlank() &&
+                screenState.thumbnail.isNotBlank() &&
+                screenState.subCategory != null &&
+                sizesValid
+    }
 
     fun updateTitle(value: String) {
         screenState = screenState.copy(title = value)
@@ -78,9 +76,12 @@ class ManageProductViewModel(
         val defaultSubCategory = getSubCategoriesFor(value).firstOrNull()
         screenState = screenState.copy(
             category = value,
-            subCategory = defaultSubCategory
+            subCategory = defaultSubCategory,
+            sizes = null,   // reset size
+            price = 0.0     // reset price
         )
     }
+
 
     fun updateSubCategory(value: SubCategory) {
         screenState = screenState.copy(subCategory = value)
@@ -105,6 +106,7 @@ class ManageProductViewModel(
             price = 0.0,
             sizes = null
         )
+        thumbnailUploaderState = RequestState.Idle // reset thumbnail
     }
 
 
@@ -125,10 +127,6 @@ class ManageProductViewModel(
                     sizes = screenState.sizes
                 ),
                 onSuccess = {
-                    // Reset sizes หลังสร้าง product สำเร็จ
-//                    if (screenState.category == ProductCategory.BEVERAGE) {
-//                        updateSizes(emptyList())
-//                    }
                     resetState()
                     onSuccess()
                 },
