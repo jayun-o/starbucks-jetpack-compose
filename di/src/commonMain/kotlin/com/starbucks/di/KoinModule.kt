@@ -4,6 +4,7 @@ import com.starbucks.auth.AuthViewModel
 import com.starbucks.data.AdminRepositoryImpl
 import com.starbucks.data.CustomerRepositoryImpl
 import com.starbucks.data.domain.AdminRepository
+import com.starbucks.admin_panel.AdminPanelViewModel
 import com.starbucks.data.domain.CustomerRepository
 import com.starbucks.home.HomeGraphViewModel
 import com.starbucks.profile.ProfileViewModel
@@ -24,6 +25,7 @@ val sharedModule = module {
     viewModelOf(::ProfileViewModel)
     viewModelOf(::MapViewModel)
     viewModelOf(::ManageProductViewModel)
+    viewModelOf(::AdminPanelViewModel)
 
 }
 

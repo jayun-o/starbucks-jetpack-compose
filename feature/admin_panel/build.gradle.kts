@@ -41,6 +41,11 @@ kotlin {
 
             implementation(libs.messagebar.kmp)
 
+            implementation(libs.coil3)
+            implementation(libs.coil3.compose)
+            implementation(libs.coil3.compose.core)
+            implementation(libs.coil3.network.ktor)
+
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 

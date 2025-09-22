@@ -1,10 +1,8 @@
 package com.starbucks.shared.component
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,22 +13,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.FontSize
-import com.starbucks.shared.RaleWayFontFamily
 import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.domain.Product
@@ -42,70 +37,94 @@ fun ProductCard(
     product: Product,
     onClick: (String) -> Unit
 ) {
-    Column (
+    Column(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
             .background(SurfaceLighter)
+            .width(240.dp)
             .clickable { onClick(product.id) }
             .padding(12.dp)
-    ){
-        Box(modifier = Modifier.fillMaxWidth()) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(product.thumbnail)
-                    .crossfade(enable = true)
-                    .build(),
-                contentDescription = product.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
-            Text(
-                text = "NEW",
-                color = Color.White,
-                modifier = Modifier
-                    .background(Color(0xFF00704A), RoundedCornerShape(8.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .align(Alignment.TopStart)
-            )
-        }
+    ) {
+        // --- Thumbnail ---
+        AsyncImage(
+            model = ImageRequest.Builder(LocalPlatformContext.current)
+                .data(product.thumbnail)
+                .crossfade(enable = true)
+                .build(),
+            contentDescription = product.title,
+            modifier = Modifier
+                .height(180.dp)
+                .align(CenterHorizontally)
+                .clip(RoundedCornerShape(12.dp))
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // --- Title ---
         Text(
-            text = product.title,
+            text = product.title.split(" ")
+                .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
             fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
+            fontSize = FontSize.EXTRA_REGULAR,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         )
-
         Text(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(Alpha.HALF),
-            text = product.description,
-            fontSize = FontSize.REGULAR,
+            text = product.description.replaceFirstChar { it.uppercase() },
+            fontSize = FontSize.EXTRA_SMALL,
             color = TextPrimary,
-            fontFamily = RaleWayFontFamily(),
             fontWeight = FontWeight.Medium,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        AnimatedContent(targetState = product.category) { category ->
-            if (category == ProductCategory.BEVERAGE) {
-                Spacer(modifier = Modifier.weight(1f))
-            } else {
-                Row {
-                    product.sizes?.forEach { size ->
-                        Text(size.name, fontWeight = FontWeight.SemiBold)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("${size.price.toInt()} Baht")
-                        Spacer(modifier = Modifier.width(16.dp))
+        // --- Size Options (เฉพาะ category ที่ไม่ใช่ FOOD) ---
+        if (product.category != ProductCategory.FOOD && !product.sizes.isNullOrEmpty()) {
+            Text(
+                text = "Size & Price",
+                fontSize = FontSize.SMALL,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Column(modifier = Modifier.fillMaxWidth()) {
+                product.sizes.forEach { size ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = size.name,
+                            fontSize = FontSize.SMALL,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "${size.price} ฿",
+                            fontSize = FontSize.SMALL,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
+                }
+            }
+        } else {
+            Spacer(modifier = Modifier.height(6.dp))
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Price",
+                        fontSize = FontSize.SMALL,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "${product.price} ฿",
+                        fontSize = FontSize.SMALL,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }

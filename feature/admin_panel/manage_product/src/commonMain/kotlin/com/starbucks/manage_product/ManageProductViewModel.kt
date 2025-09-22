@@ -3,8 +3,8 @@ package com.starbucks.manage_product
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starbucks.data.domain.AdminRepository
@@ -32,8 +32,12 @@ data class ManageProductScreenState(
 )
 
 class ManageProductViewModel(
-    private val adminRepository: AdminRepository
+    private val adminRepository: AdminRepository,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel()  {
+
+    private val productId = savedStateHandle.get<String>("id") ?: ""
+
     var screenState by mutableStateOf(ManageProductScreenState())
         private set
 
@@ -56,6 +60,28 @@ class ManageProductViewModel(
                 sizesValid
     }
 
+    init {
+        productId.takeIf { it.isNotEmpty() }?.let { id ->
+            viewModelScope.launch {
+                val selectedProduct = adminRepository.readProductById(id)
+
+                if (selectedProduct.isSuccess()) {
+                    val product = selectedProduct.getSuccessData()
+                    updateTitle(product.title)
+                    updateDescription(product.description)
+                    updateThumbnail(product.thumbnail)
+                    updateThumbnailUploaderState(RequestState.Success(Unit))
+                    updateCategory(product.category, resetFields = false)
+                    updateSubCategory(product.subCategory)   // ✅ รับ nullable ได้แล้ว
+                    updatePrice(product.price)
+                    updateSizes(product.sizes)
+                }
+            }
+        }
+    }
+
+
+
     fun updateTitle(value: String) {
         screenState = screenState.copy(title = value)
     }
@@ -72,41 +98,34 @@ class ManageProductViewModel(
         thumbnailUploaderState = value
     }
 
-    fun updateCategory(value: ProductCategory) {
+    fun updateCategory(value: ProductCategory, resetFields: Boolean = true) {
         val defaultSubCategory = getSubCategoriesFor(value).firstOrNull()
         screenState = screenState.copy(
             category = value,
             subCategory = defaultSubCategory,
-            sizes = null,   // reset size
-            price = 0.0     // reset price
+            sizes = if (resetFields) null else screenState.sizes,
+            price = if (resetFields) 0.0 else screenState.price
         )
     }
 
 
-    fun updateSubCategory(value: SubCategory) {
+
+    fun updateSubCategory(value: SubCategory?) {
         screenState = screenState.copy(subCategory = value)
     }
 
-    fun updatePrice(value: Double) {
-        screenState = screenState.copy(price = value)
+    fun updatePrice(value: Double?) {
+        screenState = screenState.copy(price = value ?: 0.0) // fallback เป็น 0.0
     }
 
-    fun updateSizes(value: List<Size>) {
+    fun updateSizes(value: List<Size>?) {
         screenState = screenState.copy(sizes = value)
     }
 
     @OptIn(ExperimentalUuidApi::class)
     private fun resetState() {
-        screenState = screenState.copy(
-            id = Uuid.random().toHexString(),
-            title = "",
-            description = "",
-            thumbnail = "",
-            subCategory = null,
-            price = 0.0,
-            sizes = null
-        )
-        thumbnailUploaderState = RequestState.Idle // reset thumbnail
+        screenState = ManageProductScreenState() // ใช้ default เลย
+        thumbnailUploaderState = RequestState.Idle
     }
 
 
