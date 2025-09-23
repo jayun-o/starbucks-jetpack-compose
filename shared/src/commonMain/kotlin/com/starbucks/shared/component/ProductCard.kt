@@ -66,16 +66,12 @@ fun ProductCard(
                 .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
             fontWeight = FontWeight.Bold,
             fontSize = FontSize.EXTRA_REGULAR,
-            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(Alpha.HALF),
             text = product.description.replaceFirstChar { it.uppercase() },
             fontSize = FontSize.EXTRA_SMALL,
-            color = TextPrimary,
+            color = TextPrimary.copy(Alpha.HALF),
             fontWeight = FontWeight.Medium,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis

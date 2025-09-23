@@ -1,7 +1,6 @@
 package com.starbucks.manage_product
 
 import ContentWithMessageBar
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,8 +30,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,7 +52,6 @@ import com.starbucks.shared.IconWhite
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
 import com.starbucks.shared.RaleWayFontFamily
-import com.starbucks.shared.Red
 import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
 import com.starbucks.shared.SurfaceLighter
@@ -65,10 +61,8 @@ import com.starbucks.shared.component.CustomTextField
 import com.starbucks.shared.component.ErrorCard
 import com.starbucks.shared.component.LoadingCard
 import com.starbucks.shared.component.PrimaryButton
-import com.starbucks.shared.component.SecondaryButton
 import com.starbucks.shared.component.SizeOptionsSection
 import com.starbucks.shared.domain.ProductCategory
-import com.starbucks.shared.domain.Size
 import com.starbucks.shared.util.DisplayResult
 import com.starbucks.shared.util.RequestState
 import org.jetbrains.compose.resources.painterResource
@@ -310,30 +304,23 @@ fun ManageProductScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-//                // Test button
-//                Button(
-//                    onClick = {
-//                        println("ScreenState: $screenState")
-//                    },
-//                    modifier = Modifier.padding(top = 24.dp)
-//                ) {
-//                    Text("Save Product")
-//                }
-
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = if (id == null) "Add new product" else "Update",
                     icon = if (id == null) Resources.Icon.Plus else Resources.Icon.Checkmark,
                     enabled = isFormValid,
                     onClick = {
-                        viewModel.createNewProduct(
-                            onSuccess = {
-                                messageBarState.addSuccess("Product added successfully!")
-                            },
-                            onError = { message ->
-                                messageBarState.addError(message)
-                            }
-                        )
+                        if (id != null){
+                            viewModel.updateProduct(
+                                onSuccess = { messageBarState.addSuccess("Product updated successfully!") },
+                                onError = { message -> messageBarState.addError(message) }
+                            )
+                        } else {
+                            viewModel.createNewProduct(
+                                onSuccess = { messageBarState.addSuccess("Product added successfully!") },
+                                onError = { message -> messageBarState.addError(message) }
+                            )
+                        }
                     }
                 )
             }

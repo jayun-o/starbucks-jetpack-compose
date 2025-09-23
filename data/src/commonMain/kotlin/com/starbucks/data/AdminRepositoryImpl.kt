@@ -165,4 +165,63 @@ class AdminRepositoryImpl: AdminRepository {
             .replace("%2F", "/")
             .replace("%20", " ")
     }
+
+
+    override suspend fun updateImageThumbnail(
+        productId: String,
+        downloadUrl: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            val userId = getCurrentUserId()
+            if(userId != null){
+                val database = Firebase.firestore
+                val productCollection = database.collection(collectionPath = "product")
+                val existingProduct = productCollection
+                    .document(productId)
+                    .get()
+                if (existingProduct.exists){
+                    productCollection.document(productId)
+                        .update("thumbnail" to downloadUrl)
+                    onSuccess()
+                } else {
+                    onError("Selected product not found.")
+                }
+            } else {
+                onError("User is not available.")
+            }
+        } catch (e: Exception){
+            onError("Error while updating a thumbnail image: ${e.message}")
+        }
+    }
+
+    override suspend fun updateProduct(
+        product: Product,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            val userId = getCurrentUserId()
+            if(userId != null){
+                val database = Firebase.firestore
+                val productCollection = database.collection(collectionPath = "product")
+                val existingProduct = productCollection
+                    .document(product.id)
+                    .get()
+                if (existingProduct.exists){
+                    productCollection.document(product.id)
+                        .update(product)
+                    onSuccess()
+                } else {
+                    onError("Selected product not found.")
+                }
+            } else {
+                onError("User is not available.")
+            }
+        } catch (e: Exception){
+            onError("Error while updating a thumbnail image: ${e.message}")
+        }
+    }
+
 }
