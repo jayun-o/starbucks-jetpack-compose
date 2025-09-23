@@ -224,4 +224,32 @@ class AdminRepositoryImpl: AdminRepository {
         }
     }
 
+    override suspend fun deleteProduct(
+        productId: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            val userId = getCurrentUserId()
+            if(userId != null){
+                val database = Firebase.firestore
+                val productCollection = database.collection(collectionPath = "product")
+                val existingProduct = productCollection
+                    .document(productId)
+                    .get()
+                if (existingProduct.exists){
+                    productCollection.document(productId)
+                        .delete()
+                    onSuccess()
+                } else {
+                    onError("Selected product not found.")
+                }
+            } else {
+                onError("User is not available.")
+            }
+        } catch (e: Exception){
+            onError("Error while updating a thumbnail image: ${e.message}")
+        }
+    }
+
 }
