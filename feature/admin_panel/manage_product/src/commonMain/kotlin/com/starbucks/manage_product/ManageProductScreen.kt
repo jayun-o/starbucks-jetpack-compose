@@ -125,7 +125,7 @@ fun ManageProductScreen(
                     }
                 },
                 actions = {
-                    id.takeIf { it != null }?.let{
+                    id.takeIf { it != null }?.let {
                         Box {
                             IconButton(onClick = { dropdownMenuOpened = true }) {
                                 Icon(
@@ -134,33 +134,38 @@ fun ManageProductScreen(
                                     tint = IconPrimary
                                 )
                             }
-                        }
-                        DropdownMenu(
-                            containerColor = Surface,
-                            expanded = dropdownMenuOpened,
-                            onDismissRequest = { dropdownMenuOpened = false }
-                        ){
-                            DropdownMenuItem(
-                                leadingIcon = {
-                                    Icon(
-                                        modifier = Modifier.size(14.dp),
-                                        painter = painterResource(Resources.Icon.Delete),
-                                        contentDescription = "Delete icon",
-                                        tint = IconPrimary
-                                    )
-                                },
-                                text = { Text(text = "Delete", color = TextPrimary) },
-                                onClick = {
-                                    dropdownMenuOpened = false
-                                    viewModel.deleteProduct(
-                                        onSuccess = navigateBack,
-                                        onError = { message -> messageBarState.addError(message) }
-                                    )
-                                }
-                            )
+                            DropdownMenu(
+                                containerColor = Surface,
+                                expanded = dropdownMenuOpened,
+                                onDismissRequest = { dropdownMenuOpened = false }
+                            ) {
+                                DropdownMenuItem(
+                                    leadingIcon = {
+                                        Icon(
+                                            modifier = Modifier.size(14.dp),
+                                            painter = painterResource(Resources.Icon.Delete),
+                                            contentDescription = "Delete icon",
+                                            tint = IconPrimary
+                                        )
+                                    },
+                                    text = {
+                                        Text(
+                                            text = "Delete",
+                                            color = TextPrimary,
+                                            fontSize = FontSize.REGULAR
+                                        )
+                                    },
+                                    onClick = {
+                                        dropdownMenuOpened = false
+                                        viewModel.deleteProduct(
+                                            onSuccess = navigateBack,
+                                            onError = { message -> messageBarState.addError(message) }
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
-
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Surface,

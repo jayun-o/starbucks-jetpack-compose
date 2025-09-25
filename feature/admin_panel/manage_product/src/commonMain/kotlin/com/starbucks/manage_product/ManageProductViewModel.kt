@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.starbucks.manage_product
 
 import androidx.compose.runtime.derivedStateOf
@@ -63,24 +65,6 @@ class ManageProductViewModel(
                 sizesValid
     }
 
-//    val isFormValid: Boolean
-//        get() {
-//            val sizes = screenState.sizes
-//            val sizesValid = if (screenState.category == ProductCategory.BEVERAGE) {
-//
-//                // ต้องมี size อย่างน้อย 1 ตัว และแต่ละตัวต้องถูกกรอก
-//                !sizes.isNullOrEmpty() && sizes.all { it.name.isNotBlank() && it.price > 0 }
-//            } else {
-//                screenState.price != 0.0
-//            }
-//
-//            return screenState.title.isNotBlank() &&
-//                    screenState.description.isNotBlank() &&
-//                    screenState.thumbnail.isNotBlank() &&
-//                    screenState.subCategory != null &&
-//                    sizesValid
-//        }
-
     init {
         productId.takeIf { it.isNotEmpty() }?.let { id ->
             viewModelScope.launch {
@@ -95,8 +79,8 @@ class ManageProductViewModel(
                     updateDescription(product.description)
                     updateThumbnail(product.thumbnail)
                     updateThumbnailUploaderState(RequestState.Success(Unit))
-                    updateCategory(product.category, resetFields = false)
-                    updateSubCategory(product.subCategory)   // ✅ รับ nullable ได้แล้ว
+                    updateCategory(product.category)
+                    updateSubCategory(product.subCategory)
                     updatePrice(product.price)
                     updateSizes(product.sizes)
                 }
@@ -189,9 +173,7 @@ class ManageProductViewModel(
             updateThumbnailUploaderState(RequestState.Error("File is null. Error while selecting an image."))
             return
         }
-
         updateThumbnailUploaderState(RequestState.Loading)
-
         viewModelScope.launch {
             try {
                 val downloadUrl = adminRepository.uploadImageToStorage(file)
@@ -200,7 +182,7 @@ class ManageProductViewModel(
                 }
 
                 productId.takeIf { it.isNotEmpty() }?.let { id ->
-                    adminRepository.updateImageThumbnail(
+                    adminRepository.updateProductThumbnail(
                         productId = id,
                         downloadUrl = downloadUrl,
                         onSuccess = {
@@ -261,7 +243,7 @@ class ManageProductViewModel(
                 onSuccess = {
                     productId.takeIf { it.isNotEmpty() }?.let { id ->
                         viewModelScope.launch {
-                            adminRepository.updateImageThumbnail(
+                            adminRepository.updateProductThumbnail(
                                 productId = id,
                                 downloadUrl = "",
                                 onSuccess = {

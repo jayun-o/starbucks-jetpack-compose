@@ -7,7 +7,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 @Serializable
-data class Product (
+data class Product(
     val id: String,
     val createdAt: Long = Clock.System.now().toEpochMilliseconds(),
     val title: String,
@@ -41,7 +41,6 @@ data class Size(
     val price: Double,
 )
 
-// หมวดหมู่หลัก
 @Serializable
 enum class ProductCategory (
     val id: String,
@@ -53,7 +52,6 @@ enum class ProductCategory (
     FOOD("food", "Food");
 }
 
-// Subcategory สำหรับเครื่องดื่ม
 enum class BeverageSubCategory (
     val id: String,
     val title: String,

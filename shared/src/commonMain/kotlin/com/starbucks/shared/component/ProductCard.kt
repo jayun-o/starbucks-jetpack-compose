@@ -62,14 +62,13 @@ fun ProductCard(
 
         // --- Title ---
         Text(
-            text = product.title.split(" ")
-                .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
+            text = product.title,
             fontWeight = FontWeight.Bold,
             fontSize = FontSize.EXTRA_REGULAR,
             overflow = TextOverflow.Ellipsis,
         )
         Text(
-            text = product.description.replaceFirstChar { it.uppercase() },
+            text = product.description,
             fontSize = FontSize.EXTRA_SMALL,
             color = TextPrimary.copy(Alpha.HALF),
             fontWeight = FontWeight.Medium,

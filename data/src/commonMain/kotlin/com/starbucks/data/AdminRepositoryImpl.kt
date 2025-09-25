@@ -29,7 +29,9 @@ class AdminRepositoryImpl: AdminRepository {
             if (currentUserId != null){
                 val firestore = Firebase.firestore
                 val productCollection = firestore.collection("product")
-                productCollection.document(product.id).set(product)
+
+                productCollection.document(product.id)
+                    .set(product.copy( title = product.title.lowercase()))
                 onSuccess()
 
             } else {
@@ -87,8 +89,8 @@ class AdminRepositoryImpl: AdminRepository {
                         val products = query.documents.map { document ->
                             Product(
                                 id = document.id,
-                                title = document.get(field = "title"),
                                 createdAt = document.get(field = "createdAt"),
+                                title = document.get(field = "title"),
                                 description = document.get(field = "description"),
                                 thumbnail = document.get(field = "thumbnail"),
                                 category = document.get(field = "category"),
@@ -101,7 +103,7 @@ class AdminRepositoryImpl: AdminRepository {
                                 isPopular = document.get(field = "isPopular")
                             )
                         }
-                        send(RequestState.Success(data = products))
+                        send(RequestState.Success(data = products.map { it.copy(title = it.title.uppercase()) } ))
                     }
             } else {
                 send(RequestState.Error("User is not available."))
@@ -122,8 +124,8 @@ class AdminRepositoryImpl: AdminRepository {
                 if(productDocument.exists){
                     val product = Product(
                         id = productDocument.id,
-                        title = productDocument.get(field = "title"),
                         createdAt = productDocument.get(field = "createdAt"),
+                        title = productDocument.get(field = "title"),
                         description = productDocument.get(field = "description"),
                         thumbnail = productDocument.get(field = "thumbnail"),
                         category = productDocument.get(field = "category"),
@@ -135,7 +137,7 @@ class AdminRepositoryImpl: AdminRepository {
                         isDiscounted = productDocument.get(field = "isDiscounted"),
                         isPopular = productDocument.get(field = "isPopular")
                     )
-                    RequestState.Success(product)
+                    RequestState.Success(product.copy(title = product.title.uppercase()))
                 } else {
                     RequestState.Error("Selected product not found.")
                 }
@@ -167,7 +169,7 @@ class AdminRepositoryImpl: AdminRepository {
     }
 
 
-    override suspend fun updateImageThumbnail(
+    override suspend fun updateProductThumbnail(
         productId: String,
         downloadUrl: String,
         onSuccess: () -> Unit,
@@ -211,7 +213,7 @@ class AdminRepositoryImpl: AdminRepository {
                     .get()
                 if (existingProduct.exists){
                     productCollection.document(product.id)
-                        .update(product)
+                        .update(product.copy(title = product.title.lowercase()))
                     onSuccess()
                 } else {
                     onError("Selected product not found.")
