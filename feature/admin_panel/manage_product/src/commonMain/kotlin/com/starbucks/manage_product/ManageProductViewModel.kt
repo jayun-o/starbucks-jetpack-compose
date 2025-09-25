@@ -34,6 +34,10 @@ data class ManageProductScreenState(
     val subCategory: SubCategory?  = null,
     val price: Double = 0.0,
     val sizes: List<Size>? = null,
+    val isNew: Boolean = false,
+    val isPopular: Boolean = false,
+    val isDiscounted: Boolean = false,
+    val isAvailable: Boolean = true,
 )
 
 class ManageProductViewModel(
@@ -83,6 +87,10 @@ class ManageProductViewModel(
                     updateSubCategory(product.subCategory)
                     updatePrice(product.price)
                     updateSizes(product.sizes)
+                    updateNew(product.isNew)
+                    updatePopular(product.isPopular)
+                    updateDiscounted(product.isDiscounted)
+                    updateAvailable(product.isAvailable)
                 }
             }
         }
@@ -133,6 +141,22 @@ class ManageProductViewModel(
         screenState = screenState.copy(price = value ?: 0.0) // fallback เป็น 0.0
     }
 
+    fun updateNew(value: Boolean) {
+        screenState = screenState.copy(isNew = value)
+    }
+
+    fun updatePopular(value: Boolean) {
+        screenState = screenState.copy(isPopular = value)
+    }
+
+    fun updateDiscounted(value: Boolean) {
+        screenState = screenState.copy(isDiscounted = value)
+    }
+
+    fun updateAvailable(value: Boolean) {
+        screenState = screenState.copy(isAvailable = value)
+    }
+
     fun updateSizes(value: List<Size>?) {
         screenState = screenState.copy(sizes = value)
     }
@@ -157,7 +181,11 @@ class ManageProductViewModel(
                     category = screenState.category,
                     subCategory = screenState.subCategory,
                     price = screenState.price,
-                    sizes = screenState.sizes
+                    sizes = screenState.sizes,
+                    isNew = screenState.isNew,
+                    isPopular = screenState.isPopular,
+                    isDiscounted = screenState.isDiscounted,
+                    isAvailable = screenState.isAvailable
                 ),
                 onSuccess = onSuccess,
                 onError = onError
@@ -223,6 +251,10 @@ class ManageProductViewModel(
                         subCategory = screenState.subCategory,
                         price = screenState.price,
                         sizes = screenState.sizes,
+                        isNew = screenState.isNew,
+                        isPopular = screenState.isPopular,
+                        isDiscounted = screenState.isDiscounted,
+                        isAvailable = screenState.isAvailable
                     ),
                     onSuccess = onSuccess,
                     onError = onError
