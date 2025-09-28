@@ -2,22 +2,16 @@ package com.starbucks.shared.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -46,17 +40,22 @@ fun ProductCard(
             .padding(12.dp)
     ) {
         // --- Thumbnail ---
-        AsyncImage(
-            model = ImageRequest.Builder(LocalPlatformContext.current)
-                .data(product.thumbnail)
-                .crossfade(enable = true)
-                .build(),
-            contentDescription = product.title,
+        Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .height(180.dp)
-                .align(CenterHorizontally)
                 .clip(RoundedCornerShape(12.dp))
-        )
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalPlatformContext.current)
+                    .data(product.thumbnail)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = product.title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -64,30 +63,43 @@ fun ProductCard(
         Text(
             text = product.title,
             fontWeight = FontWeight.Bold,
-            fontSize = FontSize.EXTRA_REGULAR,
+            fontSize = FontSize.REGULAR,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        // --- Description ---
         Text(
             text = product.description,
             fontSize = FontSize.EXTRA_SMALL,
             color = TextPrimary.copy(Alpha.HALF),
             fontWeight = FontWeight.Medium,
             maxLines = 3,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
         )
 
-        // --- Size Options (เฉพาะ category ที่ไม่ใช่ FOOD) ---
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // --- Size & Price Section ---
         if (product.category != ProductCategory.FOOD && !product.sizes.isNullOrEmpty()) {
             Text(
                 text = "Size & Price",
                 fontSize = FontSize.SMALL,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 4.dp)
             )
-            Spacer(modifier = Modifier.height(6.dp))
+
             Column(modifier = Modifier.fillMaxWidth()) {
                 product.sizes.forEach { size ->
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 2.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -104,23 +116,20 @@ fun ProductCard(
                 }
             }
         } else {
-            Spacer(modifier = Modifier.height(6.dp))
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Price",
-                        fontSize = FontSize.SMALL,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "${product.price} ฿",
-                        fontSize = FontSize.SMALL,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Price",
+                    fontSize = FontSize.SMALL,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${product.price} ฿",
+                    fontSize = FontSize.SMALL,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

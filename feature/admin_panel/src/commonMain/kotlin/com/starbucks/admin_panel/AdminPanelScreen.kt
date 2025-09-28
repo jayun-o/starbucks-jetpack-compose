@@ -214,7 +214,6 @@ fun AdminPanelScreen(
                                                 ProductCard(
                                                     product = product,
                                                     onClick = { navigateToManageProduct(product.id) },
-                                                    modifier = Modifier.padding(vertical = 4.dp)
                                                 )
                                             }
                                         }

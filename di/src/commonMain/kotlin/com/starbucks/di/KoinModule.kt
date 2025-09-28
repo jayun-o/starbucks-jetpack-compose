@@ -5,8 +5,11 @@ import com.starbucks.data.AdminRepositoryImpl
 import com.starbucks.data.CustomerRepositoryImpl
 import com.starbucks.data.domain.AdminRepository
 import com.starbucks.admin_panel.AdminPanelViewModel
+import com.starbucks.data.ProductRepositoryImpl
 import com.starbucks.data.domain.CustomerRepository
+import com.starbucks.data.domain.ProductRepository
 import com.starbucks.home.HomeGraphViewModel
+import com.starbucks.products_overview.ProductsOverviewViewModel
 import com.starbucks.profile.ProfileViewModel
 import com.starbucks.manage_product.ManageProductViewModel
 import com.starbucks.map.MapViewModel
@@ -19,6 +22,7 @@ import org.koin.dsl.module
 val sharedModule = module {
     single<CustomerRepository>{ CustomerRepositoryImpl() }
     single<AdminRepository>{ AdminRepositoryImpl() }
+    single<ProductRepository>{ ProductRepositoryImpl() }
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
@@ -26,6 +30,7 @@ val sharedModule = module {
     viewModelOf(::MapViewModel)
     viewModelOf(::ManageProductViewModel)
     viewModelOf(::AdminPanelViewModel)
+    viewModelOf(::ProductsOverviewViewModel)
 
 }
 
