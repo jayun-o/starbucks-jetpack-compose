@@ -100,6 +100,7 @@ class AdminRepositoryImpl: AdminRepository {
                                 isAvailable = document.get(field = "isAvailable"),
                                 isNew = document.get(field = "isNew"),
                                 isDiscounted = document.get(field = "isDiscounted"),
+                                discounted = document.get(field = "discounted"),
                                 isPopular = document.get(field = "isPopular")
                             )
                         }
@@ -135,6 +136,7 @@ class AdminRepositoryImpl: AdminRepository {
                         isAvailable = productDocument.get(field = "isAvailable"),
                         isNew = productDocument.get(field = "isNew"),
                         isDiscounted = productDocument.get(field = "isDiscounted"),
+                        discounted = productDocument.get(field = "discounted"),
                         isPopular = productDocument.get(field = "isPopular")
                     )
                     RequestState.Success(product.copy(title = product.title.uppercase()))

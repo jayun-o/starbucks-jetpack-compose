@@ -20,6 +20,7 @@ data class Product(
     val isAvailable: Boolean = false,
     val isNew: Boolean = false,
     val isDiscounted: Boolean = false,
+    val discounted: Int?,
     val isPopular: Boolean = false,
 )
 

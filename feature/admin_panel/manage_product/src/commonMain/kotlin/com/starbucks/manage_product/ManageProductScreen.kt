@@ -431,6 +431,28 @@ fun ManageProductScreen(
                                 )
                             )
                         }
+
+                        AnimatedVisibility(
+                            visible = screenState.isDiscounted == true
+                        ) {
+                            Column {
+                                CustomTextField(
+                                    value = "${screenState.discounted}",
+                                    onValueChange = { value ->
+                                        if (value.isEmpty() || value.toIntOrNull() != null) {
+                                            viewModel.updateDiscountedPercent(value.toIntOrNull() ?: 0)
+                                        }
+                                    },
+                                    placeholder = "Discounted Percent %",
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                            }
+                        }
+
+
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,

@@ -62,7 +62,6 @@ fun ProductsOverviewScreen() {
                             .fillMaxSize()
                             .padding(bottom = 12.dp)
                     ) {
-                        Spacer(modifier = Modifier.height(12.dp))
                         LazyRow(
                             state = listState,
                             modifier = Modifier.fillMaxWidth(),

@@ -37,6 +37,7 @@ data class ManageProductScreenState(
     val isNew: Boolean = false,
     val isPopular: Boolean = false,
     val isDiscounted: Boolean = false,
+    val discounted: Int? = 0,
     val isAvailable: Boolean = true,
 )
 
@@ -90,6 +91,7 @@ class ManageProductViewModel(
                     updateNew(product.isNew)
                     updatePopular(product.isPopular)
                     updateDiscounted(product.isDiscounted)
+                    updateDiscountedPercent(product.discounted)
                     updateAvailable(product.isAvailable)
                 }
             }
@@ -153,6 +155,10 @@ class ManageProductViewModel(
         screenState = screenState.copy(isDiscounted = value)
     }
 
+    fun updateDiscountedPercent(value: Int?) {
+        screenState = screenState.copy(discounted = value ?: 0)
+    }
+
     fun updateAvailable(value: Boolean) {
         screenState = screenState.copy(isAvailable = value)
     }
@@ -185,7 +191,8 @@ class ManageProductViewModel(
                     isNew = screenState.isNew,
                     isPopular = screenState.isPopular,
                     isDiscounted = screenState.isDiscounted,
-                    isAvailable = screenState.isAvailable
+                    discounted = screenState.discounted,
+                    isAvailable = screenState.isAvailable,
                 ),
                 onSuccess = onSuccess,
                 onError = onError
@@ -254,6 +261,7 @@ class ManageProductViewModel(
                         isNew = screenState.isNew,
                         isPopular = screenState.isPopular,
                         isDiscounted = screenState.isDiscounted,
+                        discounted = screenState.discounted,
                         isAvailable = screenState.isAvailable
                     ),
                     onSuccess = onSuccess,

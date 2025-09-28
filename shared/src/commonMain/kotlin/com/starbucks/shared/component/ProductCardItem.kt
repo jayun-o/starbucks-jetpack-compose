@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +27,9 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.starbucks.shared.FontSize
+import com.starbucks.shared.Red
 import com.starbucks.shared.SurfaceLighter
+import com.starbucks.shared.TextWhite
 import com.starbucks.shared.domain.Product
 
 @Composable
@@ -59,17 +62,17 @@ fun ProductCardItem(
 
             if (product.isDiscounted) {
                 Text(
-                    text = "SALE",
+                    text = "SALE -${product.discounted} %",
                     fontSize = FontSize.SMALL,
                     fontWeight = FontWeight.Bold,
-                    color = androidx.compose.ui.graphics.Color.White,
+                    color = TextWhite,
                     modifier = Modifier
                         .background(
-                            color = androidx.compose.ui.graphics.Color.Red,
+                            color = Red,
                             shape = RoundedCornerShape(6.dp)
                         )
                         .padding(horizontal = 6.dp, vertical = 2.dp)
-                        .align(androidx.compose.ui.Alignment.TopEnd)
+                        .align(Alignment.TopEnd)
                         .padding(6.dp)
                 )
             }

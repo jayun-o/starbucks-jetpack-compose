@@ -3,6 +3,7 @@ package com.starbucks.shared.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,8 +21,10 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.FontSize
+import com.starbucks.shared.Red
 import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextPrimary
+import com.starbucks.shared.TextWhite
 import com.starbucks.shared.domain.Product
 import com.starbucks.shared.domain.ProductCategory
 
@@ -39,22 +42,37 @@ fun ProductCard(
             .clickable { onClick(product.id) }
             .padding(12.dp)
     ) {
-        // --- Thumbnail ---
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(12.dp))
-        ) {
+        // --- Thumbnail and discounted tag---
+
+        Box(modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalPlatformContext.current)
                     .data(product.thumbnail)
-                    .crossfade(true)
+                    .crossfade(enable = true)
                     .build(),
                 contentDescription = product.title,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)   // Square aspect ratio
+                    .clip(CircleShape)
             )
+
+            if (product.isDiscounted) {
+                Text(
+                    text = "SALE -${product.discounted} %",
+                    fontSize = FontSize.SMALL,
+                    fontWeight = FontWeight.Bold,
+                    color = TextWhite,
+                    modifier = Modifier
+                        .background(
+                            color = Red,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(6.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))

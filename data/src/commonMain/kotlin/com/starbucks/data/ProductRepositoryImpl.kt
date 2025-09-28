@@ -36,6 +36,7 @@ class ProductRepositoryImpl: ProductRepository {
                                 isAvailable = document.get(field = "isAvailable"),
                                 isNew = document.get(field = "isNew"),
                                 isDiscounted = document.get(field = "isDiscounted"),
+                                discounted = document.get(field = "discounted"),
                                 isPopular = document.get(field = "isPopular")
                             )
                         }
@@ -72,6 +73,7 @@ class ProductRepositoryImpl: ProductRepository {
                                 isAvailable = document.get(field = "isAvailable"),
                                 isNew = document.get(field = "isNew"),
                                 isDiscounted = document.get(field = "isDiscounted"),
+                                discounted = document.get(field = "discounted"),
                                 isPopular = document.get(field = "isPopular")
                             )
                         }
