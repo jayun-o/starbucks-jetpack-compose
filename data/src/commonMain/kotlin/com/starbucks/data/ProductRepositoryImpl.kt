@@ -37,7 +37,16 @@ class ProductRepositoryImpl: ProductRepository {
                                 isNew = document.get(field = "isNew"),
                                 isDiscounted = document.get(field = "isDiscounted"),
                                 discounted = document.get(field = "discounted"),
-                                isPopular = document.get(field = "isPopular")
+                                isPopular = document.get(field = "isPopular"),
+
+                                isCoffeeShot = document.get(field = "isCoffeeShot"),
+                                isMilk = document.get(field = "isMilk"),
+                                isSweetness = document.get(field = "isSweetness"),
+                                isFlavorAndSyrup = document.get(field = "isFlavorAndSyrup"),
+                                isCondiment = document.get(field = "isCondiment"),
+                                isToppings = document.get(field = "isToppings"),
+                                isCutlery = document.get(field = "isCutlery"),
+                                isWarmUp = document.get(field = "isWarmUp")
                             )
                         }
                         send(RequestState.Success(data = products.map { it.copy(title = it.title.uppercase()) }))
@@ -74,7 +83,16 @@ class ProductRepositoryImpl: ProductRepository {
                                 isNew = document.get(field = "isNew"),
                                 isDiscounted = document.get(field = "isDiscounted"),
                                 discounted = document.get(field = "discounted"),
-                                isPopular = document.get(field = "isPopular")
+                                isPopular = document.get(field = "isPopular"),
+
+                                isCoffeeShot = document.get(field = "isCoffeeShot"),
+                                isMilk = document.get(field = "isMilk"),
+                                isSweetness = document.get(field = "isSweetness"),
+                                isFlavorAndSyrup = document.get(field = "isFlavorAndSyrup"),
+                                isCondiment = document.get(field = "isCondiment"),
+                                isToppings = document.get(field = "isToppings"),
+                                isCutlery = document.get(field = "isCutlery"),
+
                             )
                         }
                         send(RequestState.Success(data = products.map { it.copy(title = it.title.uppercase()) }))

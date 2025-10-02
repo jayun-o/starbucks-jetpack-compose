@@ -101,7 +101,16 @@ class AdminRepositoryImpl: AdminRepository {
                                 isNew = document.get(field = "isNew"),
                                 isDiscounted = document.get(field = "isDiscounted"),
                                 discounted = document.get(field = "discounted"),
-                                isPopular = document.get(field = "isPopular")
+                                isPopular = document.get(field = "isPopular"),
+
+                                isCoffeeShot = document.get(field = "isCoffeeShot"),
+                                isMilk = document.get(field = "isMilk"),
+                                isSweetness = document.get(field = "isSweetness"),
+                                isFlavorAndSyrup = document.get(field = "isFlavorAndSyrup"),
+                                isCondiment = document.get(field = "isCondiment"),
+                                isToppings = document.get(field = "isToppings"),
+                                isCutlery = document.get(field = "isCutlery"),
+                                isWarmUp = document.get(field = "isWarmUp")
                             )
                         }
                         send(RequestState.Success(data = products.map { it.copy(title = it.title.uppercase()) } ))
@@ -137,7 +146,16 @@ class AdminRepositoryImpl: AdminRepository {
                         isNew = productDocument.get(field = "isNew"),
                         isDiscounted = productDocument.get(field = "isDiscounted"),
                         discounted = productDocument.get(field = "discounted"),
-                        isPopular = productDocument.get(field = "isPopular")
+                        isPopular = productDocument.get(field = "isPopular"),
+
+                        isCoffeeShot = productDocument.get(field = "isCoffeeShot"),
+                        isMilk = productDocument.get(field = "isMilk"),
+                        isSweetness = productDocument.get(field = "isSweetness"),
+                        isFlavorAndSyrup = productDocument.get(field = "isFlavorAndSyrup"),
+                        isCondiment = productDocument.get(field = "isCondiment"),
+                        isToppings = productDocument.get(field = "isToppings"),
+                        isCutlery = productDocument.get(field = "isCutlery"),
+                        isWarmUp = productDocument.get(field = "isWarmUp")
                     )
                     RequestState.Success(product.copy(title = product.title.uppercase()))
                 } else {

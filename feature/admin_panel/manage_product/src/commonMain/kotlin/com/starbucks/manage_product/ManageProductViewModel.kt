@@ -31,14 +31,25 @@ data class ManageProductScreenState(
     val description: String = "",
     val thumbnail: String = "",
     val category: ProductCategory = ProductCategory.BEVERAGE,
-    val subCategory: SubCategory?  = null,
+    val subCategory: SubCategory = getSubCategoriesFor(ProductCategory.BEVERAGE).first(),
     val price: Double = 0.0,
     val sizes: List<Size>? = null,
     val isNew: Boolean = false,
     val isPopular: Boolean = false,
     val isDiscounted: Boolean = false,
     val discounted: Int? = 0,
-    val isAvailable: Boolean = true,
+    val isAvailable: Boolean = false,
+
+    val isCoffeeShot: Boolean = false,
+    val isMilk: Boolean = false,
+    val isSweetness: Boolean = false,
+    val isFlavorAndSyrup: Boolean = false,
+    val isCondiment: Boolean = false,
+    val isToppings: Boolean = false,
+    val isCutlery: Boolean = false,
+    val isWarmUp: Boolean = false
+
+
 )
 
 class ManageProductViewModel(
@@ -66,7 +77,6 @@ class ManageProductViewModel(
         screenState.title.isNotBlank() &&
                 screenState.description.isNotBlank() &&
                 screenState.thumbnail.isNotBlank() &&
-                screenState.subCategory != null &&
                 sizesValid
     }
 
@@ -93,6 +103,15 @@ class ManageProductViewModel(
                     updateDiscounted(product.isDiscounted)
                     updateDiscountedPercent(product.discounted)
                     updateAvailable(product.isAvailable)
+
+                    updateCoffeeShot(product.isCoffeeShot)
+                    updateMilk(product.isMilk)
+                    updateSweetness(product.isSweetness)
+                    updateFlavorAndSyrup(product.isFlavorAndSyrup)
+                    updateCondiment(product.isCondiment)
+                    updateToppings(product.isToppings)
+                    updateCutlery(product.isCutlery)
+                    updateWarmUp(product.isWarmUp)
                 }
             }
         }
@@ -124,7 +143,7 @@ class ManageProductViewModel(
     }
 
     fun updateCategory(value: ProductCategory, resetFields: Boolean = true) {
-        val defaultSubCategory = getSubCategoriesFor(value).firstOrNull()
+        val defaultSubCategory = getSubCategoriesFor(value).first()
         screenState = screenState.copy(
             category = value,
             subCategory = defaultSubCategory,
@@ -133,14 +152,12 @@ class ManageProductViewModel(
         )
     }
 
-
-
-    fun updateSubCategory(value: SubCategory?) {
+    fun updateSubCategory(value: SubCategory) {
         screenState = screenState.copy(subCategory = value)
     }
 
     fun updatePrice(value: Double?) {
-        screenState = screenState.copy(price = value ?: 0.0) // fallback เป็น 0.0
+        screenState = screenState.copy(price = value ?: 0.0)
     }
 
     fun updateNew(value: Boolean) {
@@ -152,7 +169,10 @@ class ManageProductViewModel(
     }
 
     fun updateDiscounted(value: Boolean) {
-        screenState = screenState.copy(isDiscounted = value)
+        screenState = screenState.copy(
+            isDiscounted = value,
+            discounted = if (!value) 0 else screenState.discounted
+        )
     }
 
     fun updateDiscountedPercent(value: Int?) {
@@ -165,6 +185,33 @@ class ManageProductViewModel(
 
     fun updateSizes(value: List<Size>?) {
         screenState = screenState.copy(sizes = value)
+    }
+
+    //Customization
+    fun updateCoffeeShot(value: Boolean) {
+        screenState = screenState.copy(isCoffeeShot = value)
+    }
+    fun updateMilk(value: Boolean) {
+        screenState = screenState.copy(isMilk = value)
+    }
+
+    fun updateSweetness(value: Boolean) {
+        screenState = screenState.copy(isSweetness = value)
+    }
+    fun updateFlavorAndSyrup(value: Boolean) {
+        screenState = screenState.copy(isFlavorAndSyrup = value)
+    }
+    fun updateCondiment(value: Boolean) {
+        screenState = screenState.copy(isCondiment = value)
+    }
+    fun updateToppings(value: Boolean) {
+        screenState = screenState.copy(isToppings = value)
+    }
+    fun updateCutlery(value: Boolean) {
+        screenState = screenState.copy(isCutlery = value)
+    }
+    fun updateWarmUp(value: Boolean) {
+        screenState = screenState.copy(isWarmUp = value)
     }
 
     private fun resetState() {
@@ -193,6 +240,15 @@ class ManageProductViewModel(
                     isDiscounted = screenState.isDiscounted,
                     discounted = screenState.discounted,
                     isAvailable = screenState.isAvailable,
+
+                    isCoffeeShot = screenState.isCoffeeShot,
+                    isMilk = screenState.isMilk,
+                    isSweetness = screenState.isSweetness,
+                    isFlavorAndSyrup = screenState.isFlavorAndSyrup,
+                    isCondiment = screenState.isCondiment,
+                    isToppings = screenState.isToppings,
+                    isCutlery = screenState.isCutlery,
+                    isWarmUp = screenState.isWarmUp
                 ),
                 onSuccess = onSuccess,
                 onError = onError
@@ -262,7 +318,16 @@ class ManageProductViewModel(
                         isPopular = screenState.isPopular,
                         isDiscounted = screenState.isDiscounted,
                         discounted = screenState.discounted,
-                        isAvailable = screenState.isAvailable
+                        isAvailable = screenState.isAvailable,
+
+                        isCoffeeShot = screenState.isCoffeeShot,
+                        isMilk = screenState.isMilk,
+                        isSweetness = screenState.isSweetness,
+                        isFlavorAndSyrup = screenState.isFlavorAndSyrup,
+                        isCondiment = screenState.isCondiment,
+                        isToppings = screenState.isToppings,
+                        isCutlery = screenState.isCutlery,
+                        isWarmUp = screenState.isWarmUp
                     ),
                     onSuccess = onSuccess,
                     onError = onError

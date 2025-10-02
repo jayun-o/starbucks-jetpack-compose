@@ -14,7 +14,7 @@ data class Product(
     val description: String,
     val thumbnail: String,
     val category: ProductCategory,
-    val subCategory: SubCategory?  = null,
+    val subCategory: SubCategory,
     val price: Double? = null,
     val sizes: List<Size>? = null,
     val isAvailable: Boolean = false,
@@ -22,6 +22,16 @@ data class Product(
     val isDiscounted: Boolean = false,
     val discounted: Int?,
     val isPopular: Boolean = false,
+
+    //CUSTOMIZATION
+    val isCoffeeShot: Boolean = false,
+    val isMilk: Boolean = false,
+    val isSweetness: Boolean = false,
+    val isFlavorAndSyrup: Boolean = false,
+    val isCondiment: Boolean = false,
+    val isToppings: Boolean = false,
+    val isCutlery: Boolean = false,
+    val isWarmUp: Boolean = false
 )
 
 @Serializable

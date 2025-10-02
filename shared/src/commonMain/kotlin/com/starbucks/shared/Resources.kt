@@ -11,6 +11,8 @@ import starbucks.shared.generated.resources.delete
 import starbucks.shared.generated.resources.dollar
 import starbucks.shared.generated.resources.edit
 import starbucks.shared.generated.resources.google_logo
+import starbucks.shared.generated.resources.grande
+import starbucks.shared.generated.resources.grandeselected
 import starbucks.shared.generated.resources.grid
 import starbucks.shared.generated.resources.home
 import starbucks.shared.generated.resources.log_in
@@ -31,6 +33,10 @@ import starbucks.shared.generated.resources.user
 import starbucks.shared.generated.resources.vertical_menu
 import starbucks.shared.generated.resources.warning
 import starbucks.shared.generated.resources.weight
+import starbucks.shared.generated.resources.tall
+import starbucks.shared.generated.resources.tallselected
+import starbucks.shared.generated.resources.venti
+import starbucks.shared.generated.resources.ventiselected
 
 object Resources {
     object Icon{
@@ -58,6 +64,14 @@ object Resources {
         val Warning = Res.drawable.warning
         val Weight = Res.drawable.weight
         val myLocation = Res.drawable.mylocation
+
+        //Size
+        val TallSize = Res.drawable.tall
+        val TallSizeSelected = Res.drawable.tallselected
+        val GrandeSize = Res.drawable.grande
+        val GrandeSizeSelected = Res.drawable.grandeselected
+        val VentiSize = Res.drawable.venti
+        val VentiSizeSelected = Res.drawable.ventiselected
     }
     object Image {
         val ShoppingCart = Res.drawable.shopping_cart_image

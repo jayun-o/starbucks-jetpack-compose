@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -52,6 +54,7 @@ import coil3.request.crossfade
 import com.starbucks.manage_product.component.CategoriesDropdown
 import com.starbucks.manage_product.component.SubCategoriesDropdown
 import com.starbucks.manage_product.util.PhotoPicker
+import com.starbucks.shared.Alpha
 import com.starbucks.shared.BorderIdle
 import com.starbucks.shared.ButtonPrimary
 import com.starbucks.shared.FontSize
@@ -59,6 +62,7 @@ import com.starbucks.shared.IconPrimary
 import com.starbucks.shared.IconWhite
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
+import com.starbucks.shared.MontserratFontFamily
 import com.starbucks.shared.RaleWayFontFamily
 import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
@@ -359,11 +363,24 @@ fun ManageProductScreen(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ){
+                        Divider(
+                            color = Color.Gray,
+                            thickness = 1.dp,
+                        )
+                        Text(
+                            text = "ATTRIBUTES",
+                            fontSize = FontSize.REGULAR,
+                            color = TextPrimary.copy(alpha = Alpha.HALF),
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = MontserratFontFamily()
+                        )
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
+
                             Text(
                                 modifier = Modifier.padding(start = 12.dp),
                                 text = "New",
@@ -451,8 +468,6 @@ fun ManageProductScreen(
                             }
                         }
 
-
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -467,6 +482,225 @@ fun ManageProductScreen(
                             Switch(
                                 checked = screenState.isAvailable,
                                 onCheckedChange = viewModel::updateAvailable,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceBrand,
+                                    uncheckedTrackColor = SurfaceLighter,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceBrand,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+                    }
+
+
+                    Column (
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                    ){
+                        Divider(
+                            color = Color.Gray,
+                            thickness = 1.dp,
+                        )
+                        Text(
+                            text = "CUSTOMIZATION",
+                            fontSize = FontSize.REGULAR,
+                            color = TextPrimary.copy(alpha = Alpha.HALF),
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = MontserratFontFamily()
+                        )
+
+                        //Customization
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Coffee Shot",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isCoffeeShot,
+                                onCheckedChange = viewModel::updateCoffeeShot,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceBrand,
+                                    uncheckedTrackColor = SurfaceLighter,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceBrand,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Milk",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isMilk,
+                                onCheckedChange = viewModel::updateMilk,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceBrand,
+                                    uncheckedTrackColor = SurfaceLighter,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceBrand,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Sweetness",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isSweetness,
+                                onCheckedChange = viewModel::updateSweetness,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceBrand,
+                                    uncheckedTrackColor = SurfaceLighter,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceBrand,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Flavor/Syrup",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isFlavorAndSyrup,
+                                onCheckedChange = viewModel::updateFlavorAndSyrup,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceBrand,
+                                    uncheckedTrackColor = SurfaceLighter,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceBrand,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Condiment",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isCondiment,
+                                onCheckedChange = viewModel::updateCondiment,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceBrand,
+                                    uncheckedTrackColor = SurfaceLighter,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceBrand,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Topping",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isToppings,
+                                onCheckedChange = viewModel::updateToppings,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceBrand,
+                                    uncheckedTrackColor = SurfaceLighter,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceBrand,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Cutlery",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isCutlery,
+                                onCheckedChange = viewModel::updateCutlery,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceBrand,
+                                    uncheckedTrackColor = SurfaceLighter,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceBrand,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Warm up",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isWarmUp,
+                                onCheckedChange = viewModel::updateWarmUp,
                                 colors = SwitchDefaults.colors(
                                     checkedTrackColor = SurfaceBrand,
                                     uncheckedTrackColor = SurfaceLighter,
