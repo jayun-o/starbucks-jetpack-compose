@@ -9,6 +9,17 @@ import kotlin.uuid.Uuid
 data class CartItem(
     val id: String = Uuid.random().toHexString(),
     val productId: String,
-    val Size: String? = null,
+    val size: String? = null,
+    val shotCountEspresso: Int = 0,
+    val shotCountHalfDecaf: Int = 0,
+    val shotCountDecaf: Int = 0,
+    val milk: List<Pair<String, Double?>> = emptyList(),
+    val sweetness: List<Pair<String, Double?>> = emptyList(),
+    val topping: List<Pair<String, Double>> = emptyList(),
+    val flavor: List<Pair<String, Double>> = emptyList(),
+    val condiment: List<Pair<String, Double>> = emptyList(),
     val quantity: Int
 )
+
+
+

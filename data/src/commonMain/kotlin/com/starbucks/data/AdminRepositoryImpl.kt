@@ -113,7 +113,10 @@ class AdminRepositoryImpl: AdminRepository {
                                 isWarmUp = document.get(field = "isWarmUp")
                             )
                         }
-                        send(RequestState.Success(data = products.map { it.copy(title = it.title.uppercase()) } ))
+                        send(RequestState.Success(data = products.map { it.copy(title = it.title.split(" ")
+                            .joinToString(" ") { word ->
+                                word.replaceFirstChar { it.uppercase() }
+                            }) } ))
                     }
             } else {
                 send(RequestState.Error("User is not available."))
@@ -157,7 +160,10 @@ class AdminRepositoryImpl: AdminRepository {
                         isCutlery = productDocument.get(field = "isCutlery"),
                         isWarmUp = productDocument.get(field = "isWarmUp")
                     )
-                    RequestState.Success(product.copy(title = product.title.uppercase()))
+                    RequestState.Success(product.copy(title = product.title.split(" ")
+                        .joinToString(" ") { word ->
+                            word.replaceFirstChar { it.uppercase() }
+                        }))
                 } else {
                     RequestState.Error("Selected product not found.")
                 }

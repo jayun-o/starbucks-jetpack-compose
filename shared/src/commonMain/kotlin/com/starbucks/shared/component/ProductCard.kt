@@ -7,6 +7,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +38,8 @@ fun ProductCard(
     product: Product,
     onClick: (String) -> Unit
 ) {
+    var titleMaxLines by remember { mutableStateOf(1) }
+
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -42,8 +48,6 @@ fun ProductCard(
             .clickable { onClick(product.id) }
             .padding(12.dp)
     ) {
-        // --- Thumbnail and discounted tag---
-
         Box(modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalPlatformContext.current)
@@ -53,7 +57,7 @@ fun ProductCard(
                 contentDescription = product.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)   // Square aspect ratio
+                    .aspectRatio(1f)
                     .clip(CircleShape)
             )
 
@@ -77,33 +81,37 @@ fun ProductCard(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // --- Title ---
-        Text(
-            text = product.title,
-            fontWeight = FontWeight.Bold,
-            fontSize = FontSize.REGULAR,
-            textAlign = TextAlign.Center,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                text = product.title,
+                fontWeight = FontWeight.Bold,
+                fontSize = FontSize.REGULAR,
+                textAlign = TextAlign.Center,
+                maxLines = titleMaxLines,
+                overflow = TextOverflow.Visible, // ไม่ตัดข้อความ
+                onTextLayout = { layoutResult ->
+                    titleMaxLines = if (layoutResult.lineCount > 1) 2 else 1
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // --- Description ---
-        Text(
-            text = product.description,
-            fontSize = FontSize.EXTRA_SMALL,
-            color = TextPrimary.copy(Alpha.HALF),
-            fontWeight = FontWeight.Medium,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth()
-        )
+            Text(
+                text = product.description,
+                fontSize = FontSize.EXTRA_SMALL,
+                color = TextPrimary.copy(Alpha.HALF),
+                fontWeight = FontWeight.Medium,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // --- Size & Price Section ---
         if (product.category != ProductCategory.FOOD && !product.sizes.isNullOrEmpty()) {
             Text(
                 text = "Size & Price",
@@ -111,7 +119,6 @@ fun ProductCard(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
-
             Column(modifier = Modifier.fillMaxWidth()) {
                 product.sizes.forEach { size ->
                     Row(

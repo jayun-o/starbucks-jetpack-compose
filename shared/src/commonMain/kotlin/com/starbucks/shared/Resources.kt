@@ -33,6 +33,8 @@ import starbucks.shared.generated.resources.user
 import starbucks.shared.generated.resources.vertical_menu
 import starbucks.shared.generated.resources.warning
 import starbucks.shared.generated.resources.weight
+import starbucks.shared.generated.resources.shortSize
+import starbucks.shared.generated.resources.shortselected
 import starbucks.shared.generated.resources.tall
 import starbucks.shared.generated.resources.tallselected
 import starbucks.shared.generated.resources.venti
@@ -66,6 +68,8 @@ object Resources {
         val myLocation = Res.drawable.mylocation
 
         //Size
+        val ShortSize = Res.drawable.shortSize
+        val ShortSizeSelected = Res.drawable.shortselected
         val TallSize = Res.drawable.tall
         val TallSizeSelected = Res.drawable.tallselected
         val GrandeSize = Res.drawable.grande

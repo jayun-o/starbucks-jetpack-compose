@@ -44,10 +44,14 @@ fun ProductCardItem(
             .background(SurfaceLighter)
             .fillMaxWidth()
             .clickable { onClick(product.id) }
-            .padding(12.dp)
+            .padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         // --- Thumbnail + Discount Tag ---
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalPlatformContext.current)
                     .data(product.thumbnail)
@@ -84,7 +88,8 @@ fun ProductCardItem(
             text = product.title,
             fontWeight = FontWeight.Medium,
             fontSize = FontSize.REGULAR,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

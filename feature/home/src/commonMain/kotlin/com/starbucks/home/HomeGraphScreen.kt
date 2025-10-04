@@ -64,12 +64,12 @@ import rememberMessageBarState
 fun HomeGraphScreen(
     navigateToAuth : () -> Unit,
     navigateToProfile: () -> Unit,
-    navigateToAdminPanel: () -> Unit
+    navigateToAdminPanel: () -> Unit,
+    navigateToDetails: (String) -> Unit
 ){
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
 
-    // แปลง route เป็น BottomBarDestination
     val selectedDestination by remember {
         derivedStateOf {
             when (currentRoute.value?.destination?.route) {
@@ -224,14 +224,15 @@ fun HomeGraphScreen(
                     errorMaxLines = 2,
                     contentBackgroundColor = Surface
                 ){
-                    // 👉 NavHost ย่อย
                     NavHost(
                         navController = navController,
                         startDestination = Screen.ProductsOverview,
                         modifier = Modifier.fillMaxSize()
                     ){
                         composable<Screen.ProductsOverview> {
-                            ProductsOverviewScreen()
+                            ProductsOverviewScreen(
+                                navigateToDetails = navigateToDetails
+                            )
                         }
                         composable<Screen.Cart> {
                             Text("Cart screen")

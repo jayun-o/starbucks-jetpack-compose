@@ -49,7 +49,10 @@ class ProductRepositoryImpl: ProductRepository {
                                 isWarmUp = document.get(field = "isWarmUp")
                             )
                         }
-                        send(RequestState.Success(data = products.map { it.copy(title = it.title.uppercase()) }))
+                        send(RequestState.Success(data = products.map { it.copy(title = it.title.split(" ")
+                            .joinToString(" ") { word ->
+                                word.replaceFirstChar { it.uppercase() }
+                            }) }))
                     }
             } else {
                 send(RequestState.Error("User is not available."))
@@ -92,10 +95,68 @@ class ProductRepositoryImpl: ProductRepository {
                                 isCondiment = document.get(field = "isCondiment"),
                                 isToppings = document.get(field = "isToppings"),
                                 isCutlery = document.get(field = "isCutlery"),
-
+                                isWarmUp = document.get(field = "isWarmUp")
                             )
                         }
-                        send(RequestState.Success(data = products.map { it.copy(title = it.title.uppercase()) }))
+                        send(RequestState.Success(data = products.map { it.copy(title = it.title
+                            .split(" ")
+                            .joinToString(" ") { word ->
+                                word.replaceFirstChar { it.uppercase() }
+                            }) }))
+                    }
+            } else {
+                send(RequestState.Error("User is not available."))
+            }
+        } catch (e: Exception) {
+            send(RequestState.Error("Error while reading the last 10 times from the database: ${e.message}"))
+        }
+    }
+
+    override fun readProductByIdFlow(id: String): Flow<RequestState<Product>> = channelFlow{
+        try {
+            val userId = getCurrentUserId()
+            if (userId != null) {
+                val database = Firebase.firestore
+                database.collection(collectionPath = "product")
+                    .document(id)
+                    .snapshots
+                    .collectLatest { document ->
+                        if(document.exists){
+                            val product = Product(
+                                id = document.id,
+                                createdAt = document.get(field = "createdAt"),
+                                title = document.get(field = "title"),
+                                description = document.get(field = "description"),
+                                thumbnail = document.get(field = "thumbnail"),
+                                category = document.get(field = "category"),
+                                subCategory = document.get(field = "subCategory"),
+                                price = document.get(field = "price"),
+                                sizes = document.get(field = "sizes"),
+                                isAvailable = document.get(field = "isAvailable"),
+                                isNew = document.get(field = "isNew"),
+                                isDiscounted = document.get(field = "isDiscounted"),
+                                discounted = document.get(field = "discounted"),
+                                isPopular = document.get(field = "isPopular"),
+
+                                isCoffeeShot = document.get(field = "isCoffeeShot"),
+                                isMilk = document.get(field = "isMilk"),
+                                isSweetness = document.get(field = "isSweetness"),
+                                isFlavorAndSyrup = document.get(field = "isFlavorAndSyrup"),
+                                isCondiment = document.get(field = "isCondiment"),
+                                isToppings = document.get(field = "isToppings"),
+                                isCutlery = document.get(field = "isCutlery"),
+                                isWarmUp = document.get(field = "isWarmUp")
+                            )
+                            send(RequestState.Success(product.copy(
+                                title = product.title
+                                .split(" ")
+                                .joinToString(" ") { word ->
+                                    word.replaceFirstChar { it.uppercase() }
+                                })
+                            ))
+                        } else {
+                            send(RequestState.Error("Selected product does not exist."))
+                        }
                     }
             } else {
                 send(RequestState.Error("User is not available."))

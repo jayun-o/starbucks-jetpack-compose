@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.starbucks.admin_panel.AdminPanelScreen
 import com.starbucks.auth.AuthScreen
+import com.starbucks.details.DetailsScreen
 import com.starbucks.home.HomeGraphScreen
 import com.starbucks.manage_product.ManageProductScreen
 import com.starbucks.map.MapScreen
@@ -45,6 +46,9 @@ fun SetupNavGraph(
                 },
                 navigateToAdminPanel = {
                     navController.navigate(Screen.AdminPanel)
+                },
+                navigateToDetails = { productId ->
+                    navController.navigate(Screen.Details(productId))
                 }
             )
         }
@@ -71,19 +75,22 @@ fun SetupNavGraph(
             )
         }
 
-
-
         composable<Screen.Maps> {
             MapScreen(
                 navigateBack = { navController.navigateUp() },
             )
         }
 
-
         composable<Screen.ManageProduct> {
             val id = it.toRoute<Screen.ManageProduct>().id
             ManageProductScreen(
                 id = id,
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable<Screen.Details> {
+            DetailsScreen(
                 navigateBack = { navController.navigateUp() }
             )
         }

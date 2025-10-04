@@ -25,6 +25,7 @@ val TextBrand = GreenDarker
 //Border
 val BorderIdle = GrayDarker
 val BorderError = Red
+val BorderSecondary = GreenDarker
 
 val Surface = White
 val SurfaceLighter = GrayLighter
