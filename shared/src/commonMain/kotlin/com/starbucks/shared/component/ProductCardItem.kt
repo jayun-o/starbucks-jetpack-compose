@@ -60,7 +60,7 @@ fun ProductCardItem(
                 contentDescription = product.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)   // Square aspect ratio
+                    .aspectRatio(1f)
                     .clip(CircleShape)
             )
 

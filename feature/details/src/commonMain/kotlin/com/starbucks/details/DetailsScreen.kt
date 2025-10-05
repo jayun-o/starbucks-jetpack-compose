@@ -672,19 +672,14 @@ fun DetailsScreen(
 
                             QuantityCounter(
                                 size = QuatityCounterSize.Large,
-                                value = quantity.toString(),
-                                onMinusClick = {
-                                    if (quantity > 1) viewModel.updateQuantity(quantity - 1)
-                                },
-                                onPlusClick = {
-                                    //<10 == stocks have 10
-                                    if (quantity < 10) viewModel.updateQuantity(quantity + 1)
-                                }
+                                value = quantity,
+                                onMinusClick = viewModel::updateQuantity,
+                                onPlusClick = viewModel::updateQuantity
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             PrimaryButton(
                                 icon = Resources.Icon.ShoppingCart,
-                                text = "Add to Order",
+                                text = "Add to cart",
                                 enabled = totalPrice > 0.0,
                                 onClick = {
                                     viewModel.addItemToCart(

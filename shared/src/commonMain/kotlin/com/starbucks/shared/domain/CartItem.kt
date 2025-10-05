@@ -10,6 +10,7 @@ data class CartItem(
     val id: String = Uuid.random().toHexString(),
     val productId: String,
     val size: String? = null,
+    val productCartItemDetail: List<String>? = emptyList(),
     val shotCountEspresso: Int? = 0,
     val shotCountHalfDecaf: Int? = 0,
     val shotCountDecaf: Int? = 0,

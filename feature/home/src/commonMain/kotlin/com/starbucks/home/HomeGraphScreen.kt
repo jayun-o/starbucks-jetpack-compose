@@ -36,6 +36,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.starbucks.cart.CartScreen
 import com.starbucks.home.component.BottomBar
 import com.starbucks.home.component.CustomDrawer
 import com.starbucks.home.domain.BottomBarDestination
@@ -235,7 +236,7 @@ fun HomeGraphScreen(
                             )
                         }
                         composable<Screen.Cart> {
-                            Text("Cart screen")
+                            CartScreen()
                         }
                         composable<Screen.Categories> {
                             Text("Categories screen")

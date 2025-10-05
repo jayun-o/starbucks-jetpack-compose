@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.starbucks.shared.Constants.MAX_QUANTITY
+import com.starbucks.shared.Constants.MIN_QUANTITY
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.Resources
 import com.starbucks.shared.SurfaceBrand
@@ -29,9 +31,9 @@ import org.jetbrains.compose.resources.painterResource
 fun QuantityCounter(
     modifier: Modifier = Modifier,
     size: QuatityCounterSize,
-    value: String,
-    onMinusClick: () -> Unit,
-    onPlusClick: () -> Unit,
+    value: Int,
+    onMinusClick: (Int) -> Unit,
+    onPlusClick: (Int) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -43,7 +45,7 @@ fun QuantityCounter(
             modifier = Modifier
                 .clip(CircleShape)
                 .background(SurfaceBrand)
-                .clickable { onMinusClick() }
+                .clickable { if (value > MIN_QUANTITY) onMinusClick(value-1) }
                 .padding(size.padding),
             contentAlignment = Alignment.Center
         ) {
@@ -63,10 +65,10 @@ fun QuantityCounter(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = value,
+                text = "$value",
                 fontSize = FontSize.MEDIUM,
                 fontWeight = FontWeight.Medium,
-                color = SurfaceBrand // สีเขียว
+                color = SurfaceBrand
             )
         }
 
@@ -75,7 +77,7 @@ fun QuantityCounter(
             modifier = Modifier
                 .clip(CircleShape)
                 .background(SurfaceBrand)
-                .clickable { onPlusClick() }
+                .clickable {  if (value < MAX_QUANTITY) onPlusClick(value + 1) }
                 .padding(size.padding),
             contentAlignment = Alignment.Center
         ) {

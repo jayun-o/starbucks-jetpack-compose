@@ -193,6 +193,26 @@ class DetailsViewModel(
         viewModelScope.launch {
             val productId = savedStateHandle.get<String>("id")
             if (productId != null) {
+
+                val detailList = buildList {
+                    selectedSize?.name?.let { add("Size: $it") }
+
+                    if (shotCountEspresso > 0) add("Espresso shots: $shotCountEspresso")
+                    if (shotCountHalfDecaf > 0) add("Half Decaf shots: $shotCountHalfDecaf")
+                    if (shotCountDecaf > 0) add("Decaf shots: $shotCountDecaf")
+
+                    selectedMilk?.let { add("Milk: $it") }
+                    selectedSweetness?.let { add("Sweetness: $it") }
+
+                    if (selectedToppings.isNotEmpty()) add("Toppings: ${selectedToppings.joinToString(", ")}")
+                    if (selectedFlavors.isNotEmpty()) add("Flavors: ${selectedFlavors.joinToString(", ")}")
+                    if (selectedCondiments.isNotEmpty()) add("Condiments: ${selectedCondiments.joinToString(", ")}")
+
+                    if (cutlery) add("Cutlery: Yes")
+                    if (warmUp) add("Warm Up: Yes")
+                }
+
+
                 customerRepository.addItemToCart(
                     cartItem = CartItem(
                         productId = productId,
@@ -208,7 +228,59 @@ class DetailsViewModel(
                         condiments = selectedCondiments.toList(),
                         totalPrice = totalPrice,
                         cutlery = cutlery,
-                        warmUp = warmUp
+                        warmUp = warmUp,
+                        productCartItemDetail = detailList
+                    ),
+                    onSuccess = onSuccess,
+                    onError = onError
+                )
+            }
+        }
+    }
+
+    fun updateItemToCart(
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            val productId = savedStateHandle.get<String>("id")
+            if (productId != null) {
+
+                val detailList = buildList {
+                    selectedSize?.name?.let { add("Size: $it") }
+
+                    if (shotCountEspresso > 0) add("Espresso shots: $shotCountEspresso")
+                    if (shotCountHalfDecaf > 0) add("Half Decaf shots: $shotCountHalfDecaf")
+                    if (shotCountDecaf > 0) add("Decaf shots: $shotCountDecaf")
+
+                    selectedMilk?.let { add("Milk: $it") }
+                    selectedSweetness?.let { add("Sweetness: $it") }
+
+                    if (selectedToppings.isNotEmpty()) add("Toppings: ${selectedToppings.joinToString(", ")}")
+                    if (selectedFlavors.isNotEmpty()) add("Flavors: ${selectedFlavors.joinToString(", ")}")
+                    if (selectedCondiments.isNotEmpty()) add("Condiments: ${selectedCondiments.joinToString(", ")}")
+
+                    if (cutlery) add("Cutlery: Yes")
+                    if (warmUp) add("Warm Up: Yes")
+                }
+
+                customerRepository.addItemToCart(
+                    cartItem = CartItem(
+                        productId = productId,
+                        quantity = quantity,
+                        size = selectedSize?.name,
+                        shotCountEspresso = shotCountEspresso,
+                        shotCountHalfDecaf = shotCountHalfDecaf,
+                        shotCountDecaf = shotCountDecaf,
+                        milk = selectedMilk,
+                        sweetness = selectedSweetness,
+                        toppings = selectedToppings.toList(),
+                        flavors = selectedFlavors.toList(),
+                        condiments = selectedCondiments.toList(),
+                        totalPrice = totalPrice,
+                        cutlery = cutlery,
+                        warmUp = warmUp,
+                        productCartItemDetail = detailList
                     ),
                     onSuccess = onSuccess,
                     onError = onError
