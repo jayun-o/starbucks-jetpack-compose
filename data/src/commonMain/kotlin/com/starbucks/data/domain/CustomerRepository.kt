@@ -1,5 +1,6 @@
 package com.starbucks.data.domain
 
+import com.starbucks.shared.domain.CartItem
 import com.starbucks.shared.domain.Customer
 import com.starbucks.shared.util.RequestState
 import dev.gitlive.firebase.auth.FirebaseUser
@@ -16,6 +17,11 @@ interface CustomerRepository {
     fun readCustomerFlow(): Flow<RequestState<Customer>>
     suspend fun updateCustomer(
         customer: Customer,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    )
+    suspend fun addItemToCart(
+        cartItem: CartItem,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     )

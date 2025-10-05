@@ -1,6 +1,7 @@
 package com.starbucks.data
 
 import com.starbucks.data.domain.CustomerRepository
+import com.starbucks.shared.domain.CartItem
 import com.starbucks.shared.domain.Customer
 import com.starbucks.shared.util.RequestState
 import dev.gitlive.firebase.Firebase
@@ -129,6 +130,42 @@ class CustomerRepositoryImpl: CustomerRepository{
             }
         } catch (e : Exception){
             onError("Error while updating customer information: ${e.message}")
+        }
+    }
+
+    override suspend fun addItemToCart(
+        cartItem: CartItem,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            val currentUserId = getCurrentUserId()
+            if (currentUserId != null){
+                val database = Firebase.firestore
+                val customerCollection = database.collection(collectionPath = "customer")
+
+                val existingCustomer = customerCollection
+                    .document(currentUserId)
+                    .get()
+                if (existingCustomer.exists){
+                    val existingCart = existingCustomer.get<List<CartItem>>("cart")
+                    val updatedCart = existingCart + cartItem
+                    customerCollection
+                        .document(currentUserId)
+                        .set(
+                            data = mapOf("cart" to updatedCart),
+                            merge = true
+                        )
+                    onSuccess()
+                } else {
+                    onError("Select customer does not exist.")
+                }
+            } else {
+                onError("User is not available")
+            }
+
+        } catch (e: Exception){
+            onError("Error while adding a product yo cart: ${e.message}")
         }
     }
 

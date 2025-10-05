@@ -45,6 +45,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.starbucks.details.component.BottomSheet
+import com.starbucks.details.component.ResetButton
 import com.starbucks.details.component.SingleSelectBottomSheet
 import com.starbucks.details.component.SizeSelector
 import com.starbucks.details.component.Stepper
@@ -64,7 +65,6 @@ import com.starbucks.shared.component.PrimaryButton
 import com.starbucks.shared.component.QuantityCounter
 import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.domain.QuatityCounterSize
-import com.starbucks.shared.domain.Size
 import com.starbucks.shared.util.DisplayResult
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -82,33 +82,20 @@ fun DetailsScreen(
 
     val sizeOrder = listOf("Short", "Tall", "Grande", "Venti")
 
-    var selectedSize by remember { mutableStateOf<Size?>(null) }
-    var selectedPrice by remember { mutableStateOf(0.0) }
+    val selectedSize = viewModel.selectedSize
+    val totalPrice = viewModel.totalPrice
 
-    var shotCountEspresso by remember { mutableStateOf(0) }
-    var espressoPrice by remember { mutableStateOf(0.0) }
+    val selectedMilk = viewModel.selectedMilk
+    val selectedSweetness = viewModel.selectedSweetness
+    val selectedToppings = viewModel.selectedToppings
+    val selectedFlavors = viewModel.selectedFlavors
+    val selectedCondiment = viewModel.selectedCondiments
 
-    var shotCountHalfDecaf by remember { mutableStateOf(0) }
-    var halfDecafPrice by remember { mutableStateOf(0.0) }
-
-    var shotCountDecaf by remember { mutableStateOf(0) }
-    var decafPrice by remember { mutableStateOf(0.0) }
-
-
-    var sweetness by remember { mutableStateOf<String?>(null) }
-    var showSweetnessSheet by remember { mutableStateOf(false) }
-
-    var milk by remember { mutableStateOf<String?>(null) }
     var showMilkSheet by remember { mutableStateOf(false) }
-
+    var showSweetnessSheet by remember { mutableStateOf(false) }
     var showToppingSheet by remember { mutableStateOf(false) }
-    var selectedToppings by remember { mutableStateOf(setOf<String>()) }
-
     var showFlavorSheet by remember { mutableStateOf(false) }
-    var selectedFlavors by remember { mutableStateOf(setOf<String>()) }
-
     var showCondimentSheet by remember { mutableStateOf(false) }
-    var selectedCondiment by remember { mutableStateOf(setOf<String>()) }
 
     val milkOptions = listOf(
         "Default" to 0.0,
@@ -154,11 +141,7 @@ fun DetailsScreen(
             options = toppingOptions,
             selected = selectedToppings,
             onSelectedChange = { name ->
-                selectedToppings = if (selectedToppings.contains(name)) {
-                    selectedToppings - name
-                } else {
-                    selectedToppings + name
-                }
+                viewModel.toggleTopping(name)
             },
             onDismiss = { showToppingSheet = false }
         )
@@ -170,11 +153,7 @@ fun DetailsScreen(
             options = flavorOptions,
             selected = selectedFlavors,
             onSelectedChange = { name ->
-                selectedFlavors = if (selectedFlavors.contains(name)) {
-                    selectedFlavors - name
-                } else {
-                    selectedFlavors + name
-                }
+                viewModel.toggleFlavor(name)
             },
             onDismiss = { showFlavorSheet = false }
         )
@@ -186,11 +165,7 @@ fun DetailsScreen(
             options = condimentOptions,
             selected = selectedCondiment,
             onSelectedChange = { name ->
-                selectedCondiment = if (selectedCondiment.contains(name)) {
-                    selectedCondiment - name
-                } else {
-                    selectedCondiment + name
-                }
+                viewModel.toggleCondiment(name)
             },
             onDismiss = { showCondimentSheet = false }
         )
@@ -344,10 +319,8 @@ fun DetailsScreen(
                                                 SizeSelector(
                                                     size = size,
                                                     isSelected = selectedSize?.name == size.name,
-                                                    onSelect = {
-                                                        selectedSize = it
-                                                        selectedPrice = it.price
-                                                    }
+                                                    onSelect = { viewModel.updateSize(it) }
+
                                                 )
                                             }
                                     }
@@ -370,31 +343,28 @@ fun DetailsScreen(
                                 if(selectedProduct.isCoffeeShot){
                                     Stepper(
                                         placeholder = "Add Espresso",
-                                        value = shotCountEspresso,
-                                        pricePerUnit = 20.0, // ราคาต่อ shot
-                                        onValueChange = { newValue, newPrice ->
-                                            shotCountEspresso = newValue
-                                            espressoPrice = newPrice
+                                        value = viewModel.shotCountEspresso,
+                                        pricePerUnit = 20.0,
+                                        onValueChange = { newValue, _ ->
+                                            viewModel.updateEspressoShot(newValue)
                                         }
                                     )
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Stepper(
                                         placeholder = "Add Half Decaf",
-                                        value = shotCountHalfDecaf,
-                                        pricePerUnit = 20.0, // ราคาต่อ shot
-                                        onValueChange = { newValue, newPrice ->
-                                            shotCountHalfDecaf = newValue
-                                            halfDecafPrice = newPrice
+                                        value = viewModel.shotCountHalfDecaf,
+                                        pricePerUnit = 20.0,
+                                        onValueChange = { newValue, _ ->
+                                            viewModel.updateHalfDecaf(newValue)
                                         }
                                     )
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Stepper(
                                         placeholder = "Add Decaf",
-                                        value = shotCountDecaf,
+                                        value = viewModel.shotCountDecaf,
                                         pricePerUnit = 20.0,
-                                        onValueChange = { newValue, newPrice ->
-                                            shotCountDecaf = newValue
-                                            decafPrice = newPrice
+                                        onValueChange = { newValue, _ ->
+                                            viewModel.updateDecaf(newValue)
                                         }
                                     )
                                 }
@@ -419,7 +389,7 @@ fun DetailsScreen(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            val selectedText = milkOptions.find { it.first == milk }?.let { (name, price) ->
+                                            val selectedText = milkOptions.find { it.first == selectedMilk }?.let { (name, price) ->
                                                 if (price > 0.0) "$name (฿ $price)" else name
                                             } ?: "Select"
 
@@ -441,9 +411,9 @@ fun DetailsScreen(
                                     SingleSelectBottomSheet(
                                         options = milkOptions,
                                         label = "Milk",
-                                        selectedOption = milk,
+                                        selectedOption = selectedMilk,
                                         onOptionSelected = { selected ->
-                                            milk = selected.first
+                                            viewModel.updateMilk(selected.first)
                                         },
                                         onDismiss = { showMilkSheet = false }
                                     )
@@ -471,7 +441,7 @@ fun DetailsScreen(
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
                                             Text(
-                                                text = sweetness ?: "Select",
+                                                text = selectedSweetness ?: "Select",
                                                 color = TextPrimary
                                             )
                                             Icon(
@@ -487,9 +457,9 @@ fun DetailsScreen(
                                     SingleSelectBottomSheet(
                                         options = sweetnessOptions,
                                         label = "Sweetness",
-                                        selectedOption = sweetness,
+                                        selectedOption = selectedSweetness,
                                         onOptionSelected = { selected ->
-                                            sweetness = selected.first
+                                            viewModel.updateSweetness(selected.first)
                                         },
                                         onDismiss = { showSweetnessSheet = false }
                                     )
@@ -537,6 +507,7 @@ fun DetailsScreen(
                                         }
                                     }
                                 }
+
                                 if (selectedProduct.isCondiment) {
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -636,8 +607,8 @@ fun DetailsScreen(
                                             color = TextPrimary
                                         )
                                         Switch(
-                                            checked = true,
-                                            onCheckedChange = {},
+                                            checked = viewModel.cutlery,
+                                            onCheckedChange = { viewModel.updateCutlery(it) },
                                             colors = SwitchDefaults.colors(
                                                 checkedTrackColor = SurfaceBrand,
                                                 uncheckedTrackColor = SurfaceLighter,
@@ -662,8 +633,8 @@ fun DetailsScreen(
                                             color = TextPrimary
                                         )
                                         Switch(
-                                            checked = true,
-                                            onCheckedChange = {},
+                                            checked = viewModel.warmUp,
+                                            onCheckedChange = { viewModel.updateWarmUp(it) },
                                             colors = SwitchDefaults.colors(
                                                 checkedTrackColor = SurfaceBrand,
                                                 uncheckedTrackColor = SurfaceLighter,
@@ -676,7 +647,11 @@ fun DetailsScreen(
                                     }
                                 }
                             }
+
+
                             Spacer(modifier = Modifier.height(24.dp))
+                            ResetButton(viewModel = viewModel)
+
                         }
                         Column(
                             modifier = Modifier
@@ -688,6 +663,13 @@ fun DetailsScreen(
                             ),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Text(
+                                text = "Total: ฿ ${viewModel.totalPrice}",
+                                fontSize = FontSize.MEDIUM,
+                                fontWeight = FontWeight.SemiBold,
+                                color = TextPrimary
+                            )
+
                             QuantityCounter(
                                 size = QuatityCounterSize.Large,
                                 value = quantity.toString(),
@@ -703,7 +685,13 @@ fun DetailsScreen(
                             PrimaryButton(
                                 icon = Resources.Icon.ShoppingCart,
                                 text = "Add to Order",
-                                onClick = {}
+                                enabled = totalPrice > 0.0,
+                                onClick = {
+                                    viewModel.addItemToCart(
+                                        onSuccess = { messageBarState.addSuccess("Product added to cart") },
+                                        onError = { message -> messageBarState.addError(message) }
+                                    )
+                                }
                             )
                         }
                     }
