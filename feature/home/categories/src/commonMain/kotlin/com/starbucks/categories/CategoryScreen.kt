@@ -35,7 +35,7 @@ import com.starbucks.shared.domain.*
 import kotlinx.coroutines.launch
 
 @Composable
-fun CategoriesScreen(
+fun CategoryScreen(
     onNavigateToSection: (String) -> Unit,
 ) {
     val tabs = listOf("Featured", "Beverages", "Food")
