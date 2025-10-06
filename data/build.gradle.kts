@@ -64,7 +64,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.typhoon.data"
+    namespace = "com.starbucks.data"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

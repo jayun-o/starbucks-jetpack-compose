@@ -7,7 +7,6 @@ val Gray = Color(0xFFF1F1F1)
 val GrayDarker = Color(0xFFEBEBEB)
 
 val GreenDarker = Color(0xFF00623B)
-val Orange = Color(0xFFF24C00)
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 val Red = Color(0xFFDD0000)

@@ -66,7 +66,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.typhoon.manage_product"
+    namespace = "com.starbucks.manage_product"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

@@ -50,13 +50,14 @@ kotlin {
             implementation(project(path = ":data"))
             implementation(project(path = ":feature:home:products_overview"))
             implementation(project(path = ":feature:home:cart"))
+            implementation(project(path = ":feature:home:categories"))
 
         }
     }
 }
 
 android {
-    namespace = "com.typhoon.home"
+    namespace = "com.starbucks.home"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

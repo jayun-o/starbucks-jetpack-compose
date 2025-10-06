@@ -15,6 +15,11 @@ sealed class Screen {
     @Serializable
     data object Categories: Screen()
     @Serializable
+    data class ProductList(
+        val categoryId: String
+    ) : Screen()
+
+    @Serializable
     data object Profile: Screen()
     @Serializable
     data object Maps: Screen()

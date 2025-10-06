@@ -23,7 +23,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "details"
+            baseName = "categories"
             isStatic = true
         }
     }
@@ -49,8 +49,6 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
-            implementation(libs.messagebar.kmp)
-
             implementation(libs.coil3)
             implementation(libs.coil3.compose)
             implementation(libs.coil3.compose.core)
@@ -64,7 +62,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.starbucks.details"
+    namespace = "com.starbucks.categories"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

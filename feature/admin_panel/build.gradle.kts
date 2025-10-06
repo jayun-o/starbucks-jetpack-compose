@@ -57,7 +57,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.typhoon.admin_panel"
+    namespace = "com.starbucks.admin_panel"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

@@ -55,7 +55,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.typhoon.auth"
+    namespace = "com.starbucks.auth"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

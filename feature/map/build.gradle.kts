@@ -97,7 +97,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.typhoon.map"
+    namespace = "com.starbucks.map"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

@@ -43,6 +43,7 @@ import com.starbucks.home.domain.BottomBarDestination
 import com.starbucks.home.domain.CustomDrawerState
 import com.starbucks.home.domain.isOpened
 import com.starbucks.home.domain.opposite
+import com.starbucks.categories.CategoriesScreen
 import com.starbucks.products_overview.ProductsOverviewScreen
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.FontSize
@@ -206,6 +207,7 @@ fun HomeGraphScreen(
                 },
                 bottomBar = {
                     BottomBar(
+                        customer = customer,
                         selected = selectedDestination,
                         onSelect = { destination ->
                             navController.navigate(destination.screen){
@@ -239,7 +241,11 @@ fun HomeGraphScreen(
                             CartScreen()
                         }
                         composable<Screen.Categories> {
-                            Text("Categories screen")
+                            CategoriesScreen(
+                                onNavigateToSection = { section ->
+                                    navController.navigate(section)
+                                }
+                            )
                         }
                     }
                 }

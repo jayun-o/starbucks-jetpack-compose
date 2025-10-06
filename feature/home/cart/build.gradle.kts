@@ -63,7 +63,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.typhoon.cart"
+    namespace = "com.starbucks.cart"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

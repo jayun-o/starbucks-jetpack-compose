@@ -53,7 +53,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.typhoon.profile"
+    namespace = "com.starbucks.profile"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
