@@ -19,7 +19,10 @@ sealed class Screen {
         val category: String,
         val subCategory: String
     ) : Screen()
-
+    @Serializable
+    data class AllProducts(
+        val category: String
+    ) : Screen()
     @Serializable
     data object Profile: Screen()
     @Serializable

@@ -9,6 +9,7 @@ import com.starbucks.data.ProductRepositoryImpl
 import com.starbucks.data.domain.CustomerRepository
 import com.starbucks.data.domain.ProductRepository
 import com.starbucks.home.HomeGraphViewModel
+import com.starbucks.all_products.AllProductsViewModel
 import com.starbucks.details.DetailsViewModel
 import com.starbucks.cart.CartViewModel
 import com.starbucks.products_overview.ProductsOverviewViewModel
@@ -37,6 +38,7 @@ val sharedModule = module {
     viewModelOf(::DetailsViewModel)
     viewModelOf(::CartViewModel)
     viewModelOf(::CategorySearchViewModel)
+    viewModelOf(::AllProductsViewModel)
 
 }
 

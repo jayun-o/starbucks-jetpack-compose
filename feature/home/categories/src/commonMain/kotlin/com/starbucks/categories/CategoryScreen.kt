@@ -1,5 +1,6 @@
 package com.starbucks.categories
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,10 +42,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.rememberAsyncImagePainter
 import com.starbucks.categories.component.CardCategoryItem
 import com.starbucks.shared.BorderIdle
 import com.starbucks.shared.SurfaceBrand
@@ -60,7 +63,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CategoryScreen(
-    onNavigateToSection: (String) -> Unit,
+    onNavigateToAllProducts: (ProductCategory) -> Unit,
     navigateToCategoriesSearch: (String, String) -> Unit
 ) {
     val tabs = listOf("Featured", "Beverages", "Food")
@@ -129,7 +132,7 @@ fun CategoryScreen(
         ) {
             // Featured
             item {
-                SectionHeader("Featured") { onNavigateToSection("featured") }
+                SectionHeader("Featured") { /* TODO: Featured products */ }
             }
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -140,20 +143,22 @@ fun CategoryScreen(
 
             // All Beverages
             item {
-                SectionHeader("Beverages")
-                { onNavigateToSection("all_beverages") }
+                SectionHeader("Beverages") {
+                    onNavigateToAllProducts(ProductCategory.BEVERAGE)
+                }
             }
             item {
-                BeverageGrid( navigateToCategoriesSearch )
+                BeverageGrid(navigateToCategoriesSearch)
             }
 
             // All Food
             item {
-                SectionHeader("Food")
-                { onNavigateToSection("all_food") }
+                SectionHeader("Food") {
+                    onNavigateToAllProducts(ProductCategory.FOOD)
+                }
             }
             item {
-                FoodGrid( navigateToCategoriesSearch )
+                FoodGrid(navigateToCategoriesSearch)
             }
         }
     }
@@ -207,7 +212,27 @@ fun FeatureCard(
                 shape = CircleShape,
                 color = SurfaceDarker
             ) {
-
+                if(title == "Featured Beverage"){
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            "https://firebasestorage.googleapis.com/v0/b/starbucks-465316.firebasestorage.app/o/BeverageImage%2FEXCLUSIVE.jpg?alt=media&token=9ab1b1bd-db5b-4153-b06b-09f3dc98108b"
+                        ),
+                        contentDescription = "Featured Beverage",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                    )
+                } else {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            "https://firebasestorage.googleapis.com/v0/b/starbucks-465316.firebasestorage.app/o/FoodImage%2FEXCLUSIVE_FOOD.jpg?alt=media&token=08501637-814c-4960-bae8-8b71085178cd"
+                        ),
+                        contentDescription = "Featured Food",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                    )
+                }
             }
             Spacer(Modifier.height(12.dp))
             Text(
@@ -234,7 +259,6 @@ fun BeverageGrid(navigateToCategoriesSearch: (String, String) -> Unit) {
         contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
     ) {
         items(beverageSubs) { sub ->
-            println("sub name ${sub.name}")
             CardCategoryItem(
                 sub.title,
                 sub.imageUrl,
@@ -250,7 +274,7 @@ fun BeverageGrid(navigateToCategoriesSearch: (String, String) -> Unit) {
 }
 
 @Composable
-fun FoodGrid(navigateToCategoriesSearch: (String,String) -> Unit ) {
+fun FoodGrid(navigateToCategoriesSearch: (String, String) -> Unit) {
     val foodSubs = FoodSubCategory.entries
     val gridState = rememberLazyGridState()
 
@@ -265,7 +289,6 @@ fun FoodGrid(navigateToCategoriesSearch: (String,String) -> Unit ) {
         contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
     ) {
         items(foodSubs) { sub ->
-            println("sub name ${sub.name}")
             CardCategoryItem(
                 sub.title,
                 sub.imageUrl,
@@ -279,5 +302,3 @@ fun FoodGrid(navigateToCategoriesSearch: (String,String) -> Unit ) {
         }
     }
 }
-
-

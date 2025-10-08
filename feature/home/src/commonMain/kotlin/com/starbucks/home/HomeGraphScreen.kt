@@ -46,6 +46,7 @@ import com.starbucks.home.domain.isOpened
 import com.starbucks.home.domain.opposite
 import com.starbucks.categories.CategoryScreen
 import com.starbucks.category_search.CategorySearchScreen
+import com.starbucks.all_products.AllProductsScreen
 import com.starbucks.products_overview.ProductsOverviewScreen
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.FontSize
@@ -247,8 +248,8 @@ fun HomeGraphScreen(
                         }
                         composable<Screen.Categories> {
                             CategoryScreen(
-                                onNavigateToSection = { section ->
-                                    navController.navigate(section)
+                                onNavigateToAllProducts = { category ->
+                                    navController.navigate(Screen.AllProducts(category.name))
                                 },
                                 navigateToCategoriesSearch = { category, subCategory ->
                                     navController.navigate(Screen.CategorySearch(category, subCategory))
@@ -264,7 +265,19 @@ fun HomeGraphScreen(
                             CategorySearchScreen(
                                 category = category,
                                 subCategory = subCategoryName,
-                                navigateBack = { navController.navigateUp() }
+                                navigateBack = { navController.navigateUp() },
+                                navigateToDetails = navigateToDetails
+                            )
+                        }
+
+                        composable<Screen.AllProducts> {
+                            val route = it.toRoute<Screen.AllProducts>()
+                            val category = ProductCategory.valueOf(route.category)
+
+                            AllProductsScreen(
+                                category = category,
+                                navigateBack = { navController.navigateUp() },
+                                navigateToDetails = navigateToDetails
                             )
                         }
                     }

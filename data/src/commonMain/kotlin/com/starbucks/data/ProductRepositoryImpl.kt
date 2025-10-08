@@ -238,7 +238,7 @@ class ProductRepositoryImpl: ProductRepository {
             if (userId != null) {
                 val database = Firebase.firestore
                 var query = database.collection(collectionPath = "product")
-                    .where { "category" equalTo category.name }
+                    .where { "category" equalTo category.id }
 
                 // Only add subCategory filter if it's provided
                 if (subCategory != null) {

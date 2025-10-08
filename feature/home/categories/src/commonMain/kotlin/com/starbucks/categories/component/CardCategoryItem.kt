@@ -34,7 +34,7 @@ fun CardCategoryItem(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .height(75.dp)
             .clickable { onClick() },
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 1.dp,
