@@ -15,8 +15,9 @@ sealed class Screen {
     @Serializable
     data object Categories: Screen()
     @Serializable
-    data class ProductList(
-        val categoryId: String
+    data class CategorySearch(
+        val category: String,
+        val subCategory: String
     ) : Screen()
 
     @Serializable

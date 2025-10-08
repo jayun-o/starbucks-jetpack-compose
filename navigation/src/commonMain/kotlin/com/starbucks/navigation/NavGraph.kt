@@ -17,7 +17,6 @@ import com.starbucks.shared.navigation.Screen
 @Composable
 fun SetupNavGraph(
     startDestination: Screen = Screen.Auth
-
 ){
     val navController = rememberNavController()
 
@@ -34,6 +33,7 @@ fun SetupNavGraph(
                 }
             )
         }
+
         composable<Screen.HomeGraph> {
             HomeGraphScreen(
                 navigateToAuth = {
@@ -94,5 +94,6 @@ fun SetupNavGraph(
                 navigateBack = { navController.navigateUp() }
             )
         }
+
     }
 }

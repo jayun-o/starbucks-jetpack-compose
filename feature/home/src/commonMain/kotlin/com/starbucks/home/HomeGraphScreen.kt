@@ -36,6 +36,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.starbucks.cart.CartScreen
 import com.starbucks.home.component.BottomBar
 import com.starbucks.home.component.CustomDrawer
@@ -44,6 +45,7 @@ import com.starbucks.home.domain.CustomDrawerState
 import com.starbucks.home.domain.isOpened
 import com.starbucks.home.domain.opposite
 import com.starbucks.categories.CategoryScreen
+import com.starbucks.category_search.CategorySearchScreen
 import com.starbucks.products_overview.ProductsOverviewScreen
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.FontSize
@@ -55,6 +57,9 @@ import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
 import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextPrimary
+import com.starbucks.shared.domain.ProductCategory
+import com.starbucks.shared.domain.BeverageSubCategory
+import com.starbucks.shared.domain.FoodSubCategory
 import com.starbucks.shared.navigation.Screen
 import com.starbucks.shared.util.getScreenWidth
 import org.jetbrains.compose.resources.painterResource
@@ -244,7 +249,22 @@ fun HomeGraphScreen(
                             CategoryScreen(
                                 onNavigateToSection = { section ->
                                     navController.navigate(section)
+                                },
+                                navigateToCategoriesSearch = { category, subCategory ->
+                                    navController.navigate(Screen.CategorySearch(category, subCategory))
                                 }
+                            )
+                        }
+
+                        composable<Screen.CategorySearch> {
+                            val route = it.toRoute<Screen.CategorySearch>()
+                            val category = ProductCategory.valueOf(route.category)
+                            val subCategoryName = route.subCategory
+
+                            CategorySearchScreen(
+                                category = category,
+                                subCategory = subCategoryName,
+                                navigateBack = { navController.navigateUp() }
                             )
                         }
                     }

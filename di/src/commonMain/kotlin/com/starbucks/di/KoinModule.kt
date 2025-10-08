@@ -15,6 +15,7 @@ import com.starbucks.products_overview.ProductsOverviewViewModel
 import com.starbucks.profile.ProfileViewModel
 import com.starbucks.manage_product.ManageProductViewModel
 import com.starbucks.map.MapViewModel
+import com.starbucks.category_search.CategorySearchViewModel
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -35,6 +36,7 @@ val sharedModule = module {
     viewModelOf(::ProductsOverviewViewModel)
     viewModelOf(::DetailsViewModel)
     viewModelOf(::CartViewModel)
+    viewModelOf(::CategorySearchViewModel)
 
 }
 
