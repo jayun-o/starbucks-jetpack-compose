@@ -94,6 +94,5 @@ fun SetupNavGraph(
                 navigateBack = { navController.navigateUp() }
             )
         }
-
     }
 }

@@ -10,7 +10,6 @@ import com.starbucks.shared.domain.Product
 import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.domain.SubCategory
 import com.starbucks.shared.domain.toSubCategory
-import com.starbucks.shared.navigation.Screen
 import com.starbucks.shared.util.RequestState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +23,11 @@ class CategorySearchViewModel(
 
     private val _products = MutableStateFlow<RequestState<List<Product>>>(RequestState.Idle)
     val products: StateFlow<RequestState<List<Product>>> = _products.asStateFlow()
+
+    private val _allProducts = mutableListOf<Product>()
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     // Get navigation arguments from SavedStateHandle
     private val categoryName: String = savedStateHandle.get<String>("category") ?: ""
@@ -48,16 +52,21 @@ class CategorySearchViewModel(
             _products.value = RequestState.Loading
 
             try {
-                // Convert enum name to SubCategory object
                 val subCategory = getSubCategory(category, subCategoryName)
 
                 if (subCategory != null) {
-                    // Use your repository's readProductsByCategoryFlow
                     repository.readProductsByCategoryFlow(
                         category = category,
                         subCategory = subCategory
                     ).collect { result ->
-                        _products.value = result
+                        when (result) {
+                            is RequestState.Success -> {
+                                _allProducts.clear()
+                                _allProducts.addAll(result.data)
+                                applySearch()
+                            }
+                            else -> _products.value = result
+                        }
                     }
                 } else {
                     _products.value = RequestState.Error("Invalid subcategory")
@@ -66,6 +75,29 @@ class CategorySearchViewModel(
                 _products.value = RequestState.Error(e.message ?: "Unknown error occurred")
             }
         }
+    }
+
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+        applySearch()
+    }
+
+    fun clearSearch() {
+        _searchQuery.value = ""
+        applySearch()
+    }
+
+    private fun applySearch() {
+        val query = _searchQuery.value.trim()
+        val filtered = if (query.isEmpty()) {
+            _allProducts
+        } else {
+            _allProducts.filter { product ->
+                product.title.contains(query, ignoreCase = true) ||
+                        product.description.contains(query, ignoreCase = true)
+            }
+        }
+        _products.value = RequestState.Success(filtered)
     }
 
     private fun getSubCategory(category: ProductCategory, subCategoryName: String): SubCategory? {

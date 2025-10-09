@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
 import com.starbucks.categories.component.CardCategoryItem
+import com.starbucks.categories.component.FeatureCard
 import com.starbucks.shared.BorderIdle
 import com.starbucks.shared.SurfaceBrand
 import com.starbucks.shared.SurfaceDarker
@@ -64,7 +65,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CategoryScreen(
     onNavigateToAllProducts: (ProductCategory) -> Unit,
-    navigateToCategoriesSearch: (String, String) -> Unit
+    navigateToCategorySearch: (String, String) -> Unit,
 ) {
     val tabs = listOf("Featured", "Beverages", "Food")
     val listState = rememberLazyListState()
@@ -132,14 +133,30 @@ fun CategoryScreen(
         ) {
             // Featured
             item {
-                SectionHeader("Featured") { /* TODO: Featured products */ }
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Featured",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    FeatureCard(title = "Featured Beverage", modifier = Modifier.weight(1f))
-                    FeatureCard(title = "Featured Food", modifier = Modifier.weight(1f))
+                    FeatureCard(
+                        title = "Featured Beverage",
+                        modifier = Modifier.weight(1f),
+                    )
+                    FeatureCard(
+                        title = "Featured Food",
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
+
 
             // All Beverages
             item {
@@ -148,7 +165,7 @@ fun CategoryScreen(
                 }
             }
             item {
-                BeverageGrid(navigateToCategoriesSearch)
+                BeverageGrid(navigateToCategorySearch)
             }
 
             // All Food
@@ -158,7 +175,7 @@ fun CategoryScreen(
                 }
             }
             item {
-                FoodGrid(navigateToCategoriesSearch)
+                FoodGrid(navigateToCategorySearch)
             }
         }
     }
@@ -185,66 +202,7 @@ fun SectionHeader(title: String, onSeeAll: () -> Unit) {
 }
 
 @Composable
-fun FeatureCard(
-    title: String,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.height(140.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SurfaceLighter)
-                .border(
-                    width = 1.dp,
-                    color = BorderIdle,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Surface(
-                modifier = Modifier.size(64.dp),
-                shape = CircleShape,
-                color = SurfaceDarker
-            ) {
-                if(title == "Featured Beverage"){
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            "https://firebasestorage.googleapis.com/v0/b/starbucks-465316.firebasestorage.app/o/BeverageImage%2FEXCLUSIVE.jpg?alt=media&token=9ab1b1bd-db5b-4153-b06b-09f3dc98108b"
-                        ),
-                        contentDescription = "Featured Beverage",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(CircleShape)
-                    )
-                } else {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            "https://firebasestorage.googleapis.com/v0/b/starbucks-465316.firebasestorage.app/o/FoodImage%2FEXCLUSIVE_FOOD.jpg?alt=media&token=08501637-814c-4960-bae8-8b71085178cd"
-                        ),
-                        contentDescription = "Featured Food",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(CircleShape)
-                    )
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-            Text(
-                title,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-fun BeverageGrid(navigateToCategoriesSearch: (String, String) -> Unit) {
+fun BeverageGrid(navigateToCategorySearch: (String, String) -> Unit) {
     val beverageSubs = BeverageSubCategory.entries
     val gridState = rememberLazyGridState()
 
@@ -263,7 +221,7 @@ fun BeverageGrid(navigateToCategoriesSearch: (String, String) -> Unit) {
                 sub.title,
                 sub.imageUrl,
                 onClick = {
-                    navigateToCategoriesSearch(
+                    navigateToCategorySearch(
                         ProductCategory.BEVERAGE.name,
                         sub.name
                     )
@@ -274,7 +232,7 @@ fun BeverageGrid(navigateToCategoriesSearch: (String, String) -> Unit) {
 }
 
 @Composable
-fun FoodGrid(navigateToCategoriesSearch: (String, String) -> Unit) {
+fun FoodGrid(navigateToCategorySearch: (String, String) -> Unit) {
     val foodSubs = FoodSubCategory.entries
     val gridState = rememberLazyGridState()
 
@@ -293,7 +251,7 @@ fun FoodGrid(navigateToCategoriesSearch: (String, String) -> Unit) {
                 sub.title,
                 sub.imageUrl,
                 onClick = {
-                    navigateToCategoriesSearch(
+                    navigateToCategorySearch(
                         ProductCategory.FOOD.name,
                         sub.name
                     )

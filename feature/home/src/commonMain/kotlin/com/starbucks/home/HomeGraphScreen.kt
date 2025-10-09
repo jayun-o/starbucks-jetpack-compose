@@ -59,8 +59,6 @@ import com.starbucks.shared.Surface
 import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.domain.ProductCategory
-import com.starbucks.shared.domain.BeverageSubCategory
-import com.starbucks.shared.domain.FoodSubCategory
 import com.starbucks.shared.navigation.Screen
 import com.starbucks.shared.util.getScreenWidth
 import org.jetbrains.compose.resources.painterResource
@@ -251,7 +249,7 @@ fun HomeGraphScreen(
                                 onNavigateToAllProducts = { category ->
                                     navController.navigate(Screen.AllProducts(category.name))
                                 },
-                                navigateToCategoriesSearch = { category, subCategory ->
+                                navigateToCategorySearch = { category, subCategory ->
                                     navController.navigate(Screen.CategorySearch(category, subCategory))
                                 }
                             )
