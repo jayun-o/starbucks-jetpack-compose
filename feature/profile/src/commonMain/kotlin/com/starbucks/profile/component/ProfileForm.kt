@@ -16,14 +16,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.starbucks.map.MapViewModel
-import com.starbucks.map.component.MapTextField
 import com.starbucks.shared.BorderError
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
 import com.starbucks.shared.component.CustomTextField
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProfileForm(
@@ -45,9 +42,6 @@ fun ProfileForm(
 
 ){
     val currentLanguage by LanguageManager.language.collectAsState()
-//    val viewModel = koinViewModel<MapViewModel>()
-//    val screenState = viewModel.screenState
-//    val location = screenState.selectedAddress
     val phoneError = phoneNumber?.let {
         when {
             it.isEmpty() -> null

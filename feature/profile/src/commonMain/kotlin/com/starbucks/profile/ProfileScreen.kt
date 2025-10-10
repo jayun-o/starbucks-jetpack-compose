@@ -15,10 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import com.starbucks.profile.component.ProfileForm
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.IconPrimary
@@ -41,13 +43,21 @@ import rememberMessageBarState
 fun ProfileScreen(
     navigateBack: () -> Unit,
     navigateToMap: () -> Unit,
-    ) {
+    selectedLocation: String? = null  // Add this parameter
+
+) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val screenState = viewModel.screenState
     val screenReady = viewModel.screenReady
     val currentLanguage by LanguageManager.language.collectAsState()
     val messageBarState = rememberMessageBarState()
     val isFormValid = viewModel.isFormValid
+
+    LaunchedEffect(selectedLocation) {
+        selectedLocation?.let { location ->
+            viewModel.updateLocation(location)
+        }
+    }
 
     Scaffold (
         containerColor = Surface,

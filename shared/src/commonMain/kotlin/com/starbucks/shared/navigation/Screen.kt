@@ -26,7 +26,9 @@ sealed class Screen {
     @Serializable
     data object Profile: Screen()
     @Serializable
-    data object Maps: Screen()
+    data class Maps(
+        val location: String? = null
+    ): Screen()
     @Serializable
     data object AdminPanel: Screen()
     @Serializable

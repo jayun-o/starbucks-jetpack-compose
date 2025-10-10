@@ -1,6 +1,6 @@
 package com.starbucks.map
 
-import com.starbucks.map.model.Coordinates
+import com.starbucks.shared.domain.Coordinates
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.mobile

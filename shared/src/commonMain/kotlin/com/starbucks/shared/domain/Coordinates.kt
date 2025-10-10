@@ -1,4 +1,4 @@
-package com.starbucks.map.model
+package com.starbucks.shared.domain
 
 import kotlinx.serialization.Serializable
 

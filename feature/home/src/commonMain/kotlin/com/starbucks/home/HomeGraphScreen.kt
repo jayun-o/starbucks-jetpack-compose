@@ -278,6 +278,7 @@ fun HomeGraphScreen(
                                 navigateToDetails = navigateToDetails
                             )
                         }
+
                     }
                 }
             }

@@ -31,12 +31,12 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun MapScreen(
     navigateBack: () -> Unit,
+    onLocationSelected: (String) -> Unit
 ) {
     val viewModel = koinViewModel<MapViewModel>()
     val screenState = viewModel.screenState
     val currentLanguage by LanguageManager.language.collectAsState()
 
-    // ถ้า permission ถูกปฏิเสธ → กลับ
     if(screenState.permissionDenied){
         LaunchedEffect(Unit){ navigateBack() }
         return
@@ -83,7 +83,7 @@ fun MapScreen(
                     userLocation = userCoords,
                     onLocationPicked = { coords, address ->
                         viewModel.selectLocation(coords, address)
-                        navigateBack()
+                        onLocationSelected(address)
                     }
                 )
             }

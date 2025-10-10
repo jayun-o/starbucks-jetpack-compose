@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.starbucks.data.domain.CustomerRepository
-import com.starbucks.map.model.Coordinates
+import com.starbucks.shared.domain.Coordinates
 import com.starbucks.shared.util.RequestState
 import kotlinx.coroutines.launch
 
@@ -28,6 +28,7 @@ class MapViewModel(
     init {
         fetchCurrentLocation()
     }
+
 
     private fun fetchCurrentLocation() {
         viewModelScope.launch {
@@ -63,3 +64,5 @@ class MapViewModel(
 
 // Exceptions
 class LocationPermissionException : Exception("Permission denied")
+
+

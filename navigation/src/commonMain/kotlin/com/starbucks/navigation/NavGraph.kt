@@ -1,6 +1,8 @@
 package com.starbucks.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -54,15 +56,33 @@ fun SetupNavGraph(
         }
 
         composable<Screen.Profile> {
+            val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+            val selectedLocation = savedStateHandle?.getStateFlow<String?>("selected_location", null)
+                ?.collectAsState()
+
             ProfileScreen(
                 navigateBack = {
                     navController.navigateUp()
                 },
                 navigateToMap = {
-                    navController.navigate(Screen.Maps)
+                    navController.navigate(Screen.Maps())
+                },
+                selectedLocation = selectedLocation?.value
+            )
+        }
+
+        composable<Screen.Maps> {
+            MapScreen(
+                navigateBack = { navController.navigateUp() },
+                onLocationSelected = { address ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("selected_location", address)
+                    navController.navigateUp()
                 }
             )
         }
+
 
         composable<Screen.AdminPanel> {
             AdminPanelScreen (
@@ -75,11 +95,7 @@ fun SetupNavGraph(
             )
         }
 
-        composable<Screen.Maps> {
-            MapScreen(
-                navigateBack = { navController.navigateUp() },
-            )
-        }
+
 
         composable<Screen.ManageProduct> {
             val id = it.toRoute<Screen.ManageProduct>().id
