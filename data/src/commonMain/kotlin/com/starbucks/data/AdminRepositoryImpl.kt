@@ -279,5 +279,4 @@ class AdminRepositoryImpl: AdminRepository {
             onError("Error while updating a thumbnail image: ${e.message}")
         }
     }
-
 }

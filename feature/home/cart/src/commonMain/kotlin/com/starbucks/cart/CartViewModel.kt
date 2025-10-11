@@ -9,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class CartViewModel(
@@ -49,6 +50,17 @@ class CartViewModel(
             productsState.isError() -> RequestState.Error(productsState.getErrorMessage())
 
             else -> RequestState.Loading
+        }
+    }
+
+    val cartTotal = cartItemsWithProducts.map { state ->
+        if (state.isSuccess()) {
+            val items = state.getSuccessData()
+            items.sumOf { (cartItem, _) ->
+                cartItem.totalPrice
+            }
+        } else {
+            0.0
         }
     }
 

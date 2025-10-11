@@ -2,6 +2,7 @@ package com.starbucks.home
 
 import ContentWithMessageBar
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -20,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -60,6 +62,7 @@ import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.navigation.Screen
+import com.starbucks.shared.util.RequestState
 import com.starbucks.shared.util.getScreenWidth
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -71,7 +74,7 @@ fun HomeGraphScreen(
     navigateToAuth : () -> Unit,
     navigateToProfile: () -> Unit,
     navigateToAdminPanel: () -> Unit,
-    navigateToDetails: (String) -> Unit
+    navigateToDetails: (String) -> Unit,
 ){
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -104,6 +107,7 @@ fun HomeGraphScreen(
 
     val viewModel = koinViewModel<HomeGraphViewModel>()
     val customer by viewModel.customer.collectAsState()
+
     val messageBarState = rememberMessageBarState()
 
     val currentLanguage by LanguageManager.language.collectAsState()

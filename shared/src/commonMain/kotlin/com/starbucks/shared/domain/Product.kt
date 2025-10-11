@@ -41,12 +41,6 @@ data class SubCategory(
 )
 
 @Serializable
-data class Category(
-    val id: String = "",
-    val title: String = "",
-)
-
-@Serializable
 data class Size(
     val name: String,
     val price: Double,
@@ -120,7 +114,6 @@ enum class BeverageSubCategory (
     )
 }
 
-// Subcategory สำหรับอาหาร
 enum class FoodSubCategory (
     val id: String,
     val title: String,
@@ -173,7 +166,6 @@ enum class FoodSubCategory (
     )
 }
 
-// --- Extension functions ---
 fun BeverageSubCategory.toSubCategory() = SubCategory(
     id = this.id,
     title = this.title
@@ -186,7 +178,6 @@ fun FoodSubCategory.toSubCategory() = SubCategory(
 
 fun ProductCategory.displayName(): String = this.title
 
-// ดึง SubCategory ทั้งหมดจาก Category
 fun getSubCategoriesFor(category: ProductCategory): List<SubCategory> {
     return when (category) {
         ProductCategory.BEVERAGE -> BeverageSubCategory.entries.map { it.toSubCategory() }
@@ -194,10 +185,3 @@ fun getSubCategoriesFor(category: ProductCategory): List<SubCategory> {
     }
 }
 
-// ดึง imageUrl ของ SubCategory ตาม category + id
-fun getSubCategoryImage(subCategoryId: String, category: ProductCategory): String? {
-    return when (category) {
-        ProductCategory.BEVERAGE -> BeverageSubCategory.entries.find { it.id == subCategoryId }?.imageUrl
-        ProductCategory.FOOD -> FoodSubCategory.entries.find { it.id == subCategoryId }?.imageUrl
-    }
-}

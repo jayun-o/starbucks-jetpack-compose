@@ -188,7 +188,17 @@ class CustomerRepositoryImpl: CustomerRepository{
                     val existingCart = existingCustomer.get<List<CartItem>>("cart")
                     val updatedCart = existingCart.map { cartItem ->
                         if (cartItem.id == id){
-                            cartItem.copy(quantity = quantity)
+                            // Calculate unit price from existing totalPrice
+                            val unitPrice = if (cartItem.quantity > 0) {
+                                cartItem.totalPrice / cartItem.quantity
+                            } else {
+                                cartItem.totalPrice
+                            }
+                            // Update with new quantity and recalculated total
+                            cartItem.copy(
+                                quantity = quantity,
+                                totalPrice = unitPrice * quantity
+                            )
                         } else cartItem
                     }
                     customerCollection
@@ -203,10 +213,9 @@ class CustomerRepositoryImpl: CustomerRepository{
             }
 
         } catch (e: Exception){
-            onError("Error while adding a product yo cart: ${e.message}")
+            onError("Error while updating cart item quantity: ${e.message}")
         }
     }
-
 
     override suspend fun deleteCartItem(
         id: String,
