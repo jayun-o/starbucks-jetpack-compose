@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.ButtonDisabled
 import com.starbucks.shared.ButtonPrimary
+import com.starbucks.shared.ButtonSecondary
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.TextWhite
@@ -30,6 +31,7 @@ fun PrimaryButton(
     text: String,
     icon: DrawableResource? = null,
     enabled: Boolean = true,
+    secondary: Boolean = false,
     onClick: () -> Unit,
 ){
     Button(
@@ -38,7 +40,7 @@ fun PrimaryButton(
         enabled = enabled,
         shape = RoundedCornerShape(size = 6.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = ButtonPrimary,
+            containerColor = if(secondary) ButtonSecondary else ButtonPrimary,
             contentColor = TextWhite,
             disabledContainerColor = ButtonDisabled,
             disabledContentColor = TextPrimary.copy(alpha = Alpha.DISABLED)

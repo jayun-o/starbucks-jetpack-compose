@@ -1,4 +1,4 @@
-package com.starbucks.profile.component
+package com.starbucks.shared.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,6 @@ import com.starbucks.shared.BorderError
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.LanguageManager
 import com.starbucks.shared.LocalizedStrings
-import com.starbucks.shared.component.CustomTextField
 
 @Composable
 fun ProfileForm(

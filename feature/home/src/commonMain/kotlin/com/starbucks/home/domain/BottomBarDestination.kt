@@ -23,5 +23,5 @@ enum class BottomBarDestination(
         icon = Resources.Icon.Categories,
         titleKey = "bottom_bar_categories",
         screen = Screen.Categories
-    ),
+    )
 }

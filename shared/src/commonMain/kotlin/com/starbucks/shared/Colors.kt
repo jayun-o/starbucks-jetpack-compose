@@ -33,7 +33,7 @@ val SurfaceBrand = GreenDarker
 val SurfaceError = Red
 
 val ButtonPrimary = GreenDarker
-val ButtonSecondary = Red
+val ButtonSecondary = GrayDarker
 val ButtonDisabled = GrayDarker
 
 val IconPrimary = Black

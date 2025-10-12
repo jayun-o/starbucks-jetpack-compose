@@ -20,8 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
-import com.starbucks.profile.component.ProfileForm
+import com.starbucks.shared.component.ProfileForm
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.IconPrimary
 import com.starbucks.shared.LanguageManager
@@ -43,7 +42,7 @@ import rememberMessageBarState
 fun ProfileScreen(
     navigateBack: () -> Unit,
     navigateToMap: () -> Unit,
-    selectedLocation: String? = null  // Add this parameter
+    selectedLocation: String? = null
 
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()

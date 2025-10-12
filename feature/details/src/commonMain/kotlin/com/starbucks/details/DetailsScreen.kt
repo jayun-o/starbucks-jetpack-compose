@@ -664,6 +664,7 @@ fun DetailsScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
+                                modifier = Modifier.align(Alignment.Start),
                                 text = "Total: ฿ ${viewModel.totalPrice}",
                                 fontSize = FontSize.MEDIUM,
                                 fontWeight = FontWeight.SemiBold,

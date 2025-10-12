@@ -33,7 +33,9 @@ import org.koin.compose.viewmodel.koinViewModel
 import rememberMessageBarState
 
 @Composable
-fun CartScreen() {
+fun CartScreen(
+    navigateToCheckout: (Double) -> Unit
+) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<CartViewModel>()
     val cartItemsWithProducts by viewModel.cartItemsWithProducts.collectAsState(RequestState.Loading)
@@ -105,8 +107,10 @@ fun CartScreen() {
                             PrimaryButton(
                                 icon = Resources.Icon.Checkmark,
                                 text = "Checkout",
-                                enabled = true,
-                                onClick = { /* Logic สำหรับ Checkout */ }
+                                enabled = cartTotal > 0,
+                                onClick = {
+                                    navigateToCheckout(cartTotal)
+                                }
                             )
                         }
                     }

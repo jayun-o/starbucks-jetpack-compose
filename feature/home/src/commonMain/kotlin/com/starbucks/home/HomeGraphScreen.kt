@@ -2,7 +2,6 @@ package com.starbucks.home
 
 import ContentWithMessageBar
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -21,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -39,16 +37,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.starbucks.all_products.AllProductsScreen
 import com.starbucks.cart.CartScreen
+import com.starbucks.categories.CategoryScreen
+import com.starbucks.category_search.CategorySearchScreen
+import com.starbucks.checkout.CheckoutScreen
 import com.starbucks.home.component.BottomBar
 import com.starbucks.home.component.CustomDrawer
 import com.starbucks.home.domain.BottomBarDestination
 import com.starbucks.home.domain.CustomDrawerState
 import com.starbucks.home.domain.isOpened
 import com.starbucks.home.domain.opposite
-import com.starbucks.categories.CategoryScreen
-import com.starbucks.category_search.CategorySearchScreen
-import com.starbucks.all_products.AllProductsScreen
 import com.starbucks.products_overview.ProductsOverviewScreen
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.FontSize
@@ -62,12 +61,10 @@ import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.domain.ProductCategory
 import com.starbucks.shared.navigation.Screen
-import com.starbucks.shared.util.RequestState
 import com.starbucks.shared.util.getScreenWidth
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import rememberMessageBarState
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeGraphScreen(
@@ -75,17 +72,27 @@ fun HomeGraphScreen(
     navigateToProfile: () -> Unit,
     navigateToAdminPanel: () -> Unit,
     navigateToDetails: (String) -> Unit,
+    navigateToMap: () -> Unit,
+    checkoutSelectedLocation: String? = null
 ){
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
 
     val selectedDestination by remember {
         derivedStateOf {
-            when (currentRoute.value?.destination?.route) {
-                Screen.Cart::class.qualifiedName -> BottomBarDestination.Cart
-                Screen.Categories::class.qualifiedName -> BottomBarDestination.Categories
+            when {
+                currentRoute.value?.destination?.route == Screen.Cart::class.qualifiedName -> BottomBarDestination.Cart
+                currentRoute.value?.destination?.route == Screen.Categories::class.qualifiedName -> BottomBarDestination.Categories
+                currentRoute.value?.destination?.route?.contains("Checkout") == true -> BottomBarDestination.Cart
                 else -> BottomBarDestination.ProductsOverview
             }
+        }
+    }
+
+    // Check if current screen is Checkout
+    val isCheckoutScreen by remember {
+        derivedStateOf {
+            currentRoute.value?.destination?.route?.contains("Checkout") == true
         }
     }
 
@@ -118,7 +125,6 @@ fun HomeGraphScreen(
             .background(animatedBackground)
             .systemBarsPadding()
     ){
-        // Drawer ซ้าย
         CustomDrawer(
             customer = customer,
             onProfileClick = navigateToProfile,
@@ -132,7 +138,6 @@ fun HomeGraphScreen(
             onAdminPanelClick = navigateToAdminPanel
         )
 
-        // Main content
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -153,13 +158,17 @@ fun HomeGraphScreen(
                         title = {
                             val currentLang by LanguageManager.language.collectAsState()
                             AnimatedContent(
-                                targetState = Pair(selectedDestination, currentLang),
-                            ) { (destination, _) ->
+                                targetState = Triple(selectedDestination, currentLang, isCheckoutScreen),
+                            ) { (destination, _, isCheckout) ->
                                 Text(
-                                    text = LocalizedStrings.get(
-                                        destination.titleKey,
-                                        currentLanguage
-                                    ),
+                                    text = if (isCheckout) {
+                                        "Checkout"
+                                    } else {
+                                        LocalizedStrings.get(
+                                            destination.titleKey,
+                                            currentLanguage
+                                        )
+                                    },
                                     fontFamily = RaleWayFontFamily(),
                                     fontSize = FontSize.EXTRA_MEDIUM,
                                     color = TextPrimary
@@ -168,9 +177,17 @@ fun HomeGraphScreen(
                         },
                         navigationIcon = {
                             AnimatedContent(
-                                targetState = drawerState
-                            ){ drawer ->
-                                if (drawer.isOpened()){
+                                targetState = Pair(drawerState, isCheckoutScreen)
+                            ){ (drawer, isCheckout) ->
+                                if (isCheckout) {
+                                    IconButton(onClick = { navController.navigateUp() }){
+                                        Icon(
+                                            painter = painterResource(Resources.Icon.BackArrow),
+                                            contentDescription = "Back icon",
+                                            tint = IconPrimary
+                                        )
+                                    }
+                                } else if (drawer.isOpened()){
                                     IconButton(onClick = { drawerState = drawerState.opposite() }){
                                         Icon(
                                             painter = painterResource(Resources.Icon.Close),
@@ -246,7 +263,11 @@ fun HomeGraphScreen(
                             )
                         }
                         composable<Screen.Cart> {
-                            CartScreen()
+                            CartScreen(
+                                navigateToCheckout = { totalAmount ->
+                                    navController.navigate(Screen.Checkout(totalAmount.toString()))
+                                }
+                            )
                         }
                         composable<Screen.Categories> {
                             CategoryScreen(
@@ -280,6 +301,17 @@ fun HomeGraphScreen(
                                 category = category,
                                 navigateBack = { navController.navigateUp() },
                                 navigateToDetails = navigateToDetails
+                            )
+                        }
+
+                        composable<Screen.Checkout> {
+                            val route = it.toRoute<Screen.Checkout>()
+                            val totalAmount = route.totalAmount.toDoubleOrNull() ?: 0.0
+
+                            CheckoutScreen(
+                                totalAmount = totalAmount,
+                                navigateToMap = navigateToMap,
+                                selectedLocation = checkoutSelectedLocation
                             )
                         }
 

@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.starbucks.admin_panel.AdminPanelScreen
 import com.starbucks.auth.AuthScreen
+import com.starbucks.checkout.CheckoutScreen
 import com.starbucks.details.DetailsScreen
 import com.starbucks.home.HomeGraphScreen
 import com.starbucks.manage_product.ManageProductScreen
@@ -36,6 +37,10 @@ fun SetupNavGraph(
         }
 
         composable<Screen.HomeGraph> {
+            val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+            val checkoutSelectedLocation = savedStateHandle?.getStateFlow<String?>("checkout_location", null)
+                ?.collectAsState()
+
             HomeGraphScreen(
                 navigateToAuth = {
                     navController.navigate(Screen.Auth){
@@ -50,7 +55,11 @@ fun SetupNavGraph(
                 },
                 navigateToDetails = { productId ->
                     navController.navigate(Screen.Details(productId))
-                }
+                },
+                navigateToMap = {
+                    navController.navigate(Screen.Maps(location = "checkout"))
+                },
+                checkoutSelectedLocation = checkoutSelectedLocation?.value
             )
         }
 
@@ -93,8 +102,6 @@ fun SetupNavGraph(
                 }
             )
         }
-
-
 
         composable<Screen.ManageProduct> {
             val id = it.toRoute<Screen.ManageProduct>().id

@@ -8,6 +8,7 @@ import com.starbucks.admin_panel.AdminPanelViewModel
 import com.starbucks.data.ProductRepositoryImpl
 import com.starbucks.data.domain.CustomerRepository
 import com.starbucks.data.domain.ProductRepository
+import com.starbucks.checkout.CheckoutViewModel
 import com.starbucks.home.HomeGraphViewModel
 import com.starbucks.all_products.AllProductsViewModel
 import com.starbucks.details.DetailsViewModel
@@ -17,10 +18,11 @@ import com.starbucks.profile.ProfileViewModel
 import com.starbucks.manage_product.ManageProductViewModel
 import com.starbucks.map.MapViewModel
 import com.starbucks.category_search.CategorySearchViewModel
+import com.starbucks.data.OrderRepositoryImpl
+import com.starbucks.data.domain.OrderRepository
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -28,6 +30,7 @@ val sharedModule = module {
     single<CustomerRepository>{ CustomerRepositoryImpl() }
     single<AdminRepository>{ AdminRepositoryImpl() }
     single<ProductRepository>{ ProductRepositoryImpl() }
+    single<OrderRepository>{ OrderRepositoryImpl(get()) }
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
@@ -40,6 +43,7 @@ val sharedModule = module {
     viewModelOf(::CartViewModel)
     viewModelOf(::CategorySearchViewModel)
     viewModelOf(::AllProductsViewModel)
+    viewModelOf(::CheckoutViewModel)
 }
 
 expect val targetModule: Module
