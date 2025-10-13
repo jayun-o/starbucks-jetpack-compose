@@ -73,7 +73,8 @@ fun HomeGraphScreen(
     navigateToAdminPanel: () -> Unit,
     navigateToDetails: (String) -> Unit,
     navigateToMap: () -> Unit,
-    checkoutSelectedLocation: String? = null
+    checkoutSelectedLocation: String? = null,
+    navigateToPaymentCompleted: (Boolean?, String?) -> Unit
 ){
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -311,10 +312,10 @@ fun HomeGraphScreen(
                             CheckoutScreen(
                                 totalAmount = totalAmount,
                                 navigateToMap = navigateToMap,
-                                selectedLocation = checkoutSelectedLocation
+                                selectedLocation = checkoutSelectedLocation,
+                                navigateToPaymentCompleted = navigateToPaymentCompleted
                             )
                         }
-
                     }
                 }
             }

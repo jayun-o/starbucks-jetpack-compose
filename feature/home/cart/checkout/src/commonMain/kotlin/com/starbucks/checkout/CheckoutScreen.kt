@@ -31,7 +31,8 @@ import rememberMessageBarState
 fun CheckoutScreen(
     totalAmount: Double,
     navigateToMap: () -> Unit,
-    selectedLocation: String? = null
+    selectedLocation: String? = null,
+    navigateToPaymentCompleted: (Boolean?,String?) -> Unit
 ){
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<CheckoutViewModel>()
@@ -85,7 +86,6 @@ fun CheckoutScreen(
                     onPhoneNumberChange = viewModel::updatePhoneNumber,
                 )
 
-                // Fixed bottom section
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -107,9 +107,11 @@ fun CheckoutScreen(
                         enabled = isFormValid,
                         onClick = {
                             viewModel.payOnDelivery(
-                                onSuccess = {},
+                                onSuccess = {
+                                    navigateToPaymentCompleted(true,null)
+                                },
                                 onError = { message ->
-                                    messageBarState.addError(message)
+                                    navigateToPaymentCompleted(null,message)
                                 }
                             )
                         }

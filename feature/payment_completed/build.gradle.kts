@@ -23,7 +23,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "home"
+            baseName = "payment_completed"
             isStatic = true
         }
     }
@@ -41,27 +41,17 @@ kotlin {
 
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-
-            implementation(libs.compose.navigation)
-
             implementation(libs.messagebar.kmp)
 
             implementation(project(path = ":shared"))
             implementation(project(path = ":data"))
-            implementation(project(path = ":feature:home:products_overview"))
-            implementation(project(path = ":feature:home:cart"))
-            implementation(project(path = ":feature:home:cart:checkout"))
-            implementation(project(path = ":feature:payment_completed"))
-            implementation(project(path = ":feature:home:categories"))
-            implementation(project(path = ":feature:home:categories:category_search"))
-            implementation(project(path = ":feature:home:categories:all_products"))
 
         }
     }
 }
 
 android {
-    namespace = "com.starbucks.home"
+    namespace = "com.starbucks.payment_completed"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

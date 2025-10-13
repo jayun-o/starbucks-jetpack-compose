@@ -30,12 +30,14 @@ data class CheckoutScreenState(
 class CheckoutViewModel(
     private val customerRepository: CustomerRepository,
     private val orderRepository: OrderRepository,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ):ViewModel() {
     var screenReady: RequestState<Unit> by mutableStateOf(RequestState.Loading)
     var screenState: CheckoutScreenState by mutableStateOf(CheckoutScreenState())
         private set
 
+    // Get totalAmount from SavedStateHandle and convert from String to Double
+    private val totalAmount: Double = savedStateHandle.get<String>("totalAmount")?.toDoubleOrNull() ?: 0.0
 
     val isFormValid: Boolean
         get() = with(screenState) {
@@ -139,12 +141,11 @@ class CheckoutViewModel(
                 order = Order(
                     customerId = screenState.id,
                     items = screenState.cart,
-                    totalAmount = savedStateHandle.get<Double>("totalAmount") ?: 0.0,
+                    totalAmount = totalAmount,
                 ),
                 onSuccess = onSuccess,
                 onError = onError
             )
         }
     }
-
 }

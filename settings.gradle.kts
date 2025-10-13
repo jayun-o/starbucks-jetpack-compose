@@ -41,6 +41,7 @@ include(":feature:home:categories:featured")
 include(":feature:home:products_overview")
 
 include(":feature:map")
+include(":feature:payment_completed")
 include(":feature:home")
 include(":feature:profile")
 include(":feature:auth")

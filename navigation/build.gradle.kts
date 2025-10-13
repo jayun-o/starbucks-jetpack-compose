@@ -71,7 +71,7 @@ kotlin {
             implementation(project(path = ":feature:map"))
             implementation(project(path = ":feature:admin_panel"))
             implementation(project(path = ":feature:admin_panel:manage_product"))
-            implementation(project(path = ":di"))
+            implementation(project(path = ":feature:payment_completed"))
         }
     }
 }

@@ -8,11 +8,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.starbucks.admin_panel.AdminPanelScreen
 import com.starbucks.auth.AuthScreen
-import com.starbucks.checkout.CheckoutScreen
 import com.starbucks.details.DetailsScreen
 import com.starbucks.home.HomeGraphScreen
 import com.starbucks.manage_product.ManageProductScreen
 import com.starbucks.map.MapScreen
+import com.starbucks.payment_completed.PaymentCompletedScreen
 import com.starbucks.profile.ProfileScreen
 import com.starbucks.shared.navigation.Screen
 
@@ -59,7 +59,10 @@ fun SetupNavGraph(
                 navigateToMap = {
                     navController.navigate(Screen.Maps(location = "checkout"))
                 },
-                checkoutSelectedLocation = checkoutSelectedLocation?.value
+                checkoutSelectedLocation = checkoutSelectedLocation?.value,
+                navigateToPaymentCompleted = { isSuccess, error ->
+                    navController.navigate(Screen.PaymentCompleted(isSuccess, error))
+                }
             )
         }
 
@@ -80,17 +83,19 @@ fun SetupNavGraph(
         }
 
         composable<Screen.Maps> {
+            val route = it.toRoute<Screen.Maps>()
+            val locationKey = if (route.location == "checkout") "checkout_location" else "selected_location"
+
             MapScreen(
                 navigateBack = { navController.navigateUp() },
                 onLocationSelected = { address ->
                     navController.previousBackStackEntry
                         ?.savedStateHandle
-                        ?.set("selected_location", address)
+                        ?.set(locationKey, address)
                     navController.navigateUp()
                 }
             )
         }
-
 
         composable<Screen.AdminPanel> {
             AdminPanelScreen (
@@ -114,6 +119,19 @@ fun SetupNavGraph(
         composable<Screen.Details> {
             DetailsScreen(
                 navigateBack = { navController.navigateUp() }
+            )
+        }
+
+        composable<Screen.PaymentCompleted> {
+            val route = it.toRoute<Screen.PaymentCompleted>()
+            PaymentCompletedScreen(
+                isSuccess = route.isSuccess,
+                error = route.error,
+                navigateBack = {
+                    navController.navigate(Screen.HomeGraph) {
+                        popUpTo(Screen.HomeGraph) { inclusive = true }
+                    }
+                }
             )
         }
     }
