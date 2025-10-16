@@ -57,7 +57,7 @@ class CartViewModel(
         if (state.isSuccess()) {
             val items = state.getSuccessData()
             items.sumOf { (cartItem, _) ->
-                cartItem.totalPrice
+                cartItem.price * cartItem.quantity
             }
         } else {
             0.0

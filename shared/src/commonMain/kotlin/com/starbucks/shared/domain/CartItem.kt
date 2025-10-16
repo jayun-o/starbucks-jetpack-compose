@@ -20,6 +20,7 @@ data class CartItem(
     val flavors: List<String>? = emptyList(),
     val condiments: List<String>? = emptyList(),
     val quantity: Int,
+    val price: Double,
     val totalPrice: Double,
     val cutlery: Boolean? = false,
     val warmUp: Boolean? = false

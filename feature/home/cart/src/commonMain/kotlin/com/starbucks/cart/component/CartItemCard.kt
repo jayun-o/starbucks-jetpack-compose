@@ -167,7 +167,7 @@ fun CartItemCard(
                                 .padding(top = 4.dp),
                         ) {
                             Text(
-                                text = "฿${cartItem.totalPrice}",
+                                text = "฿${cartItem.price}",
                                 fontFamily = MontserratFontFamily(),
                                 fontSize = FontSize.MEDIUM,
                                 color = TextPrimary,

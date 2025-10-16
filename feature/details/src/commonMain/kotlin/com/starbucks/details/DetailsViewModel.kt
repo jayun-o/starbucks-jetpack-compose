@@ -68,6 +68,10 @@ class DetailsViewModel(
     var totalPrice by mutableStateOf(0.0)
         private set
 
+    // price
+    var price by mutableStateOf(0.0)
+        private set
+
     init {
         viewModelScope.launch {
             product.collect { state ->
@@ -169,18 +173,22 @@ class DetailsViewModel(
         val flavorPrice = selectedFlavors.size * 15.0
         val condimentPrice = selectedCondiments.size * 25.0
 
-        totalPrice = if (productPrice > 0.0) {
-            productPrice * quantity
+        // Calculate the unit price (price per single item)
+        price = if (productPrice > 0.0) {
+            productPrice
         } else {
-            (sizePrice +
+            sizePrice +
                     espressoPrice +
                     halfDecafPrice +
                     decafPrice +
                     milkPrice +
                     toppingPrice +
                     flavorPrice +
-                    condimentPrice) * quantity
+                    condimentPrice
         }
+
+        // Total price is unit price multiplied by quantity
+        totalPrice = price * quantity
     }
 
     // -------------------------
@@ -229,6 +237,7 @@ class DetailsViewModel(
                         totalPrice = totalPrice,
                         cutlery = cutlery,
                         warmUp = warmUp,
+                        price = price,
                         productCartItemDetail = detailList
                     ),
                     onSuccess = onSuccess,
@@ -258,6 +267,7 @@ class DetailsViewModel(
         // Only reset totalPrice if it's NOT a food item
         if (!isFood) {
             totalPrice = 0.0
+            price = 0.0
         } else {
             // Recalculate to restore the food's base price
             recalculateTotal()

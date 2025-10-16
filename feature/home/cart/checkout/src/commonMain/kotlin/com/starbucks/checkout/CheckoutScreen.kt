@@ -4,8 +4,10 @@ import ContentWithMessageBar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +49,50 @@ fun CheckoutScreen(
 
     Scaffold (
         containerColor = Surface,
+        bottomBar = {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(24.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Start),
+                    text = "Total: ฿$totalAmount",
+                    fontFamily = MontserratFontFamily(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = FontSize.MEDIUM
+                )
+                PrimaryButton(
+                    text = "Pay with QR Payment",
+                    enabled = isFormValid,
+                    onClick = {
+//                        viewModel.QRPayment(
+//                            onSuccess = { },
+//                            onError = { message ->
+//                                messageBarState.addError(message)
+//                            }
+//                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                PrimaryButton(
+                    text = "Pay on Delivery",
+                    icon = Resources.Icon.ShoppingCart,
+                    secondary = true,
+                    enabled = isFormValid,
+                    onClick = {
+                        viewModel.payOnDelivery(
+                            onSuccess = {
+                                navigateToPaymentCompleted(true,null)
+                            },
+                            onError = { message ->
+                                navigateToPaymentCompleted(null,message)
+                            }
+                        )
+                    }
+                )
+            }
+        }
     ){ padding ->
         ContentWithMessageBar(
             contentBackgroundColor = Surface,
@@ -58,14 +104,13 @@ fun CheckoutScreen(
             messageBarState = messageBarState,
             errorMaxLines = 2
         ){
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
                     .padding(top = 12.dp,bottom = 24.dp)
                     .imePadding()
             ) {
-                // Scrollable form content
                 ProfileForm(
                     modifier = Modifier.fillMaxSize(),
                     firstName = screenState.firstName,
@@ -85,38 +130,6 @@ fun CheckoutScreen(
                     phoneNumber = screenState.phoneNumber,
                     onPhoneNumberChange = viewModel::updatePhoneNumber,
                 )
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.Start),
-                        text = "Total: ฿$totalAmount",
-                        fontFamily = MontserratFontFamily(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = FontSize.MEDIUM
-                    )
-                    PrimaryButton(
-                        text = "Pay on Delivery",
-                        icon = Resources.Icon.ShoppingCart,
-                        secondary = true,
-                        enabled = isFormValid,
-                        onClick = {
-                            viewModel.payOnDelivery(
-                                onSuccess = {
-                                    navigateToPaymentCompleted(true,null)
-                                },
-                                onError = { message ->
-                                    navigateToPaymentCompleted(null,message)
-                                }
-                            )
-                        }
-                    )
-                }
             }
         }
     }

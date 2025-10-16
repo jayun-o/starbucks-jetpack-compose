@@ -34,12 +34,12 @@ fun SecondaryButton(
     icon: DrawableResource? = null,
     enabled: Boolean = true,
     onClick: () -> Unit,
-    containerColor: Color = Color.Transparent, // Outlined จะไม่มี background
-    contentColor: Color = ButtonSecondary,     // สีข้อความ & ไอคอน
-    borderColor: Color = ButtonSecondary,      // ✅ เพิ่มสี border
+    containerColor: Color = Color.Transparent,
+    contentColor: Color = ButtonSecondary,
+    borderColor: Color = ButtonSecondary,
     disabledContainerColor: Color = Color.Transparent,
     disabledContentColor: Color = TextPrimary.copy(alpha = Alpha.DISABLED),
-    disabledBorderColor: Color = ButtonDisabled, // ✅ border ตอน disable
+    disabledBorderColor: Color = ButtonDisabled,
 ) {
     OutlinedButton(
         modifier = modifier.fillMaxWidth(),
@@ -49,7 +49,7 @@ fun SecondaryButton(
         border = BorderStroke(
             1.dp,
             if (enabled) borderColor else disabledBorderColor
-        ), // ✅ border เปลี่ยนตามสถานะ
+        ),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = containerColor,
             contentColor = if (enabled) contentColor else disabledContentColor,

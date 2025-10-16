@@ -78,7 +78,7 @@ exports.createEmailDocument = onDocumentCreated("order/{orderId}", async (event)
         return `<li style="margin-bottom: 10px;">
           <strong>${product ? product.title : "Unknown Product"}</strong>
           ${customizationHtml}
-          <br>${item.totalPrice.toFixed(2)} x ${item.quantity}
+          <br>${item.price.toFixed(2)} x ${item.quantity}
         </li>`;
       })
       .join("");
@@ -100,7 +100,7 @@ exports.createEmailDocument = onDocumentCreated("order/{orderId}", async (event)
             </ul>
             
             <h2>💰 Order Total:</h2>
-            <p><strong style="font-size: 18px; color: #00704A;">${order.totalAmount.toFixed(2)}</strong></p>
+            <p><strong style="font-size: 18px; color: #00704A;">${order.totalAmount.toFixed(2) + " THB"} </strong></p>
             
 	    	    <h2>💳 Payment Method:</h2>
             <p><strong>${paymentMethod}</strong></p>
