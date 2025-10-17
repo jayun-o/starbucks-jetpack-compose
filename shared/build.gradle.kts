@@ -56,6 +56,9 @@ kotlin {
 
             implementation(libs.kotlinx.serialization)
 
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+
             implementation(libs.coil3)
             implementation(libs.coil3.compose)
             implementation(libs.coil3.compose.core)

@@ -49,6 +49,7 @@ kotlin {
 
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+
             implementation(libs.messagebar.kmp)
 
             implementation(libs.ktor.client.core)

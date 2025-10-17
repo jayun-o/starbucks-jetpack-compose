@@ -1,6 +1,7 @@
 package com.starbucks.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,12 +16,38 @@ import com.starbucks.map.MapScreen
 import com.starbucks.payment_completed.PaymentCompletedScreen
 import com.starbucks.profile.ProfileScreen
 import com.starbucks.shared.navigation.Screen
+import androidx.compose.runtime.getValue
+import com.starbucks.shared.util.IntentHandler
+import com.starbucks.shared.util.PreferencesRepository
+import org.koin.compose.koinInject
 
 @Composable
 fun SetupNavGraph(
     startDestination: Screen = Screen.Auth
 ){
     val navController = rememberNavController()
+//    val intentHandler = koinInject<IntentHandler>()
+//    val navigateTo by intentHandler.navigateTo.collectAsState()
+//
+//    LaunchedEffect(navigateTo){
+//        println("NAVIGATING TO PAYMENT COMPLETED!")
+//        navigateTo?.let { paymentCompleted ->
+//            navController.navigate(paymentCompleted)
+//            intentHandler.resetNavigation()
+//        }
+//    }
+
+    val preferencesData by PreferencesRepository.readPayPalDataFlow()
+        .collectAsState(initial = null)
+
+    LaunchedEffect(preferencesData) {
+        preferencesData?.let { paymentCompleted ->
+            if(paymentCompleted.token != null) {
+                navController.navigate(paymentCompleted)
+                PreferencesRepository.reset()
+            }
+        }
+    }
 
     NavHost(
         navController = navController,
@@ -125,8 +152,6 @@ fun SetupNavGraph(
         composable<Screen.PaymentCompleted> {
             val route = it.toRoute<Screen.PaymentCompleted>()
             PaymentCompletedScreen(
-                isSuccess = route.isSuccess,
-                error = route.error,
                 navigateBack = {
                     navController.navigate(Screen.HomeGraph) {
                         popUpTo(Screen.HomeGraph) { inclusive = true }

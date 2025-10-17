@@ -2,7 +2,6 @@ package com.starbucks.checkout
 
 import ContentWithMessageBar
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -63,15 +62,18 @@ fun CheckoutScreen(
                     fontSize = FontSize.MEDIUM
                 )
                 PrimaryButton(
-                    text = "Pay with QR Payment",
+                    text = "Pay with PayPal",
+                    icon = Resources.Image.PaypalLogo,
                     enabled = isFormValid,
                     onClick = {
-//                        viewModel.QRPayment(
-//                            onSuccess = { },
-//                            onError = { message ->
-//                                messageBarState.addError(message)
-//                            }
-//                        )
+                        viewModel.payWithPayPal(
+                            onSuccess = {
+
+                            },
+                            onError = { message ->
+                                messageBarState.addError(message)
+                            }
+                        )
                     }
                 )
                 Spacer(modifier = Modifier.height(12.dp))

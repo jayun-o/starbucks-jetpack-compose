@@ -43,6 +43,8 @@ kotlin {
             implementation(libs.kotlinx.serialization)
             implementation(libs.compose.navigation)
 
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
 
             // Geolocation
             implementation(libs.compass.geolocation)

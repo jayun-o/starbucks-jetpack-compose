@@ -37,7 +37,6 @@ fun SecondaryButton(
     containerColor: Color = Color.Transparent,
     contentColor: Color = ButtonSecondary,
     borderColor: Color = ButtonSecondary,
-    disabledContainerColor: Color = Color.Transparent,
     disabledContentColor: Color = TextPrimary.copy(alpha = Alpha.DISABLED),
     disabledBorderColor: Color = ButtonDisabled,
 ) {

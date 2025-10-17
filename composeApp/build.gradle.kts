@@ -26,6 +26,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            export(libs.kmp.notifier)
         }
     }
     
@@ -61,6 +62,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
 
+            api(libs.kmp.notifier)
 
             implementation(project(path = ":navigation"))
             implementation(project(path = ":shared"))

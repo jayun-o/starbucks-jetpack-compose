@@ -13,13 +13,16 @@ import com.starbucks.home.HomeGraphViewModel
 import com.starbucks.all_products.AllProductsViewModel
 import com.starbucks.details.DetailsViewModel
 import com.starbucks.cart.CartViewModel
+import com.starbucks.payment_completed.PaymentViewModel
 import com.starbucks.products_overview.ProductsOverviewViewModel
 import com.starbucks.profile.ProfileViewModel
 import com.starbucks.manage_product.ManageProductViewModel
 import com.starbucks.map.MapViewModel
 import com.starbucks.category_search.CategorySearchViewModel
+import com.starbucks.checkout.domain.PaypalApi
 import com.starbucks.data.OrderRepositoryImpl
 import com.starbucks.data.domain.OrderRepository
+import com.starbucks.shared.util.IntentHandler
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -31,6 +34,8 @@ val sharedModule = module {
     single<AdminRepository>{ AdminRepositoryImpl() }
     single<ProductRepository>{ ProductRepositoryImpl() }
     single<OrderRepository>{ OrderRepositoryImpl(get()) }
+    single<IntentHandler> { IntentHandler() }
+    single<PaypalApi> { PaypalApi() }
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
@@ -44,6 +49,8 @@ val sharedModule = module {
     viewModelOf(::CategorySearchViewModel)
     viewModelOf(::AllProductsViewModel)
     viewModelOf(::CheckoutViewModel)
+    viewModelOf(::PaymentViewModel)
+
 }
 
 expect val targetModule: Module

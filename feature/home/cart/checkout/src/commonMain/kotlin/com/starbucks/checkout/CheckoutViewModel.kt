@@ -6,6 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.starbucks.checkout.domain.Amount
+import com.starbucks.checkout.domain.PaypalApi
+import com.starbucks.checkout.domain.ShippingAddress
 import com.starbucks.data.domain.CustomerRepository
 import com.starbucks.data.domain.OrderRepository
 import com.starbucks.shared.domain.CartItem
@@ -31,7 +34,7 @@ class CheckoutViewModel(
     private val customerRepository: CustomerRepository,
     private val orderRepository: OrderRepository,
     private val savedStateHandle: SavedStateHandle,
-//    savedStateHandle: SavedStateHandle
+    private val paypalApi: PaypalApi
 ):ViewModel() {
     var screenReady: RequestState<Unit> by mutableStateOf(RequestState.Loading)
     var screenState: CheckoutScreenState by mutableStateOf(CheckoutScreenState())
@@ -49,6 +52,16 @@ class CheckoutViewModel(
         }
 
     init {
+        viewModelScope.launch {
+            paypalApi.fetchAccessToken(
+                onSuccess = { token ->
+                    println("TOKEN RECEIVED: $token")
+                },
+                onError = { message ->
+                    println(message)
+                }
+            )
+        }
         viewModelScope.launch {
             customerRepository.readCustomerFlow().collectLatest { data ->
                 if (data.isSuccess()){
@@ -147,6 +160,49 @@ class CheckoutViewModel(
                 onSuccess = onSuccess,
                 onError = onError
             )
+        }
+    }
+
+    fun payWithPayPal(
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ){
+        val totalAmount = totalAmount
+        val location = screenState.location ?: return onError("Not Found")
+
+        val parts = location.split(",").map { it.trim() }
+
+        val addressLine1 = parts.getOrNull(0) ?: "Unknown address"
+        val subDistrict = parts.getOrNull(1) ?: ""
+        val district = parts.getOrNull(2) ?: ""
+        val provincePostal = parts.getOrNull(3) ?: ""
+
+        val provinceParts = provincePostal.split(" ")
+        val postalCode = provinceParts.lastOrNull()?.takeIf { it.all { ch -> ch.isDigit() } } ?: (screenState.postalCode ?: "")
+        val province = provinceParts.dropLast(1).joinToString(" ")
+
+        if (totalAmount != null) {
+            viewModelScope.launch {
+                paypalApi.beginCheckout(
+                    amount = Amount(
+                        currencyCode = "THB",
+                        value = totalAmount.toString()
+                    ),
+                    fullName = "${screenState.firstName} ${screenState.lastName}",
+                    shippingAddress = ShippingAddress(
+                        addressLine1 = addressLine1,
+                        addressLine2 = subDistrict,
+                        city = district,
+                        state = province,
+                        postalCode = postalCode,
+                        countryCode = "TH"
+                    ),
+                    onSuccess = onSuccess,
+                    onError = onError
+                )
+            }
+        } else {
+            onError("Total amount couldn't be calculated.")
         }
     }
 }

@@ -20,6 +20,9 @@ import com.starbucks.shared.ButtonDisabled
 import com.starbucks.shared.ButtonPrimary
 import com.starbucks.shared.ButtonSecondary
 import com.starbucks.shared.FontSize
+import com.starbucks.shared.IconPrimary
+import com.starbucks.shared.IconWhite
+import com.starbucks.shared.Resources
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.TextWhite
 import org.jetbrains.compose.resources.DrawableResource
@@ -41,7 +44,7 @@ fun PrimaryButton(
         shape = RoundedCornerShape(size = 6.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if(secondary) ButtonSecondary else ButtonPrimary,
-            contentColor = TextWhite,
+            contentColor = if(enabled)TextWhite else TextPrimary.copy(alpha = Alpha.DISABLED),
             disabledContainerColor = ButtonDisabled,
             disabledContentColor = TextPrimary.copy(alpha = Alpha.DISABLED)
         ),
@@ -52,7 +55,8 @@ fun PrimaryButton(
                 modifier = Modifier.size(14.dp),
                 painter = painterResource(icon),
                 contentDescription = "Button icon",
-                tint = Color.Unspecified
+                tint = if(icon == Resources.Image.PaypalLogo) Color.Unspecified
+                else if (enabled) IconWhite else IconPrimary.copy(alpha = Alpha.DISABLED)
             )
         }
         Spacer(modifier = Modifier.width(12.dp))
