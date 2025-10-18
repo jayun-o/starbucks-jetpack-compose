@@ -17,6 +17,8 @@ import com.starbucks.shared.domain.Order
 import com.starbucks.shared.util.RequestState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 data class CheckoutScreenState(
     val id: String = "",
@@ -40,7 +42,6 @@ class CheckoutViewModel(
     var screenState: CheckoutScreenState by mutableStateOf(CheckoutScreenState())
         private set
 
-    // Get totalAmount from SavedStateHandle and convert from String to Double
     private val totalAmount: Double = savedStateHandle.get<String>("totalAmount")?.toDoubleOrNull() ?: 0.0
 
     val isFormValid: Boolean
@@ -109,6 +110,7 @@ class CheckoutViewModel(
         screenState = screenState.copy(phoneNumber = value)
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     fun payOnDelivery(
         onSuccess: () -> Unit,
         onError: (String) -> Unit
@@ -116,6 +118,7 @@ class CheckoutViewModel(
         updateCustomer(
             onSuccess = {
                 createTheOrder(
+                    token = Uuid.random().toHexString(),
                     onSuccess = onSuccess,
                     onError = onError
                 )
@@ -147,6 +150,7 @@ class CheckoutViewModel(
     }
 
     private fun createTheOrder(
+        token: String? = null,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ){
@@ -156,6 +160,7 @@ class CheckoutViewModel(
                     customerId = screenState.id,
                     items = screenState.cart,
                     totalAmount = totalAmount,
+                    token = token
                 ),
                 onSuccess = onSuccess,
                 onError = onError

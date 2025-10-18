@@ -28,9 +28,9 @@ class PaymentViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val customerRepository: CustomerRepository,
     private val orderRepository: OrderRepository,
-    private val productRepository: ProductRepository
-): ViewModel() {
-    var screenState : RequestState<Unit> by mutableStateOf(RequestState.Loading)
+    private val productRepository: ProductRepository,
+) : ViewModel() {
+    var screenState: RequestState<Unit> by mutableStateOf(RequestState.Loading)
 
     private val customer = customerRepository.readCustomerFlow()
         .stateIn(
@@ -39,39 +39,47 @@ class PaymentViewModel(
             initialValue = RequestState.Loading
         )
 
-
     @OptIn(ExperimentalCoroutinesApi::class)
     private val totalAmount = customer.flatMapLatest { customerState ->
-        if (customerState.isSuccess()) {
-            val cartItem = customerState.getSuccessData().cart
-            val productIds = cartItem.map { it.productId }
+        when {
+            customerState.isSuccess() -> {
+                val cartItems = customerState.getSuccessData().cart
+                val productIds = cartItems.map { it.productId }
 
-            productRepository.readProductByIdsFlow(productIds)
-                .map { products ->
-                    if (products.isSuccess()){
-                        RequestState.Success(
-                            calculateTotalPrice(
-                                cartItems = cartItem,
-                                products = products.getSuccessData()
-                            )
-                        )
-                    } else RequestState.Success(0.0)
+                if (productIds.isEmpty()) {
+                    flowOf(RequestState.Success(0.0))
+                } else {
+                    productRepository.readProductByIdsFlow(productIds)
+                        .map { products ->
+                            if (products.isSuccess()) {
+                                RequestState.Success(
+                                    calculateTotalPrice(
+                                        cartItems = cartItems,
+                                        products = products.getSuccessData()
+                                    )
+                                )
+                            } else {
+                                RequestState.Error(products.getErrorMessage())
+                            }
+                        }
                 }
-        } else if (customerState.isError()) flowOf(RequestState.Error(customerState.getErrorMessage()))
-        else flowOf(RequestState.Loading)
+            }
+            customerState.isError() -> flowOf(RequestState.Error(customerState.getErrorMessage()))
+            else -> flowOf(RequestState.Loading)
+        }
     }
 
     init {
         viewModelScope.launch {
             totalAmount.collectLatest { amount ->
-                if (amount.isSuccess()){
+                if (amount.isSuccess()) {
                     val isSuccess = savedStateHandle.get<Boolean>("isSuccess")
                     val error = savedStateHandle.get<String>("error")
                     val token = savedStateHandle.get<String>("token")
 
-                    if(isSuccess != null){
+                    if (isSuccess != null) {
                         screenState = RequestState.Success(Unit)
-                        if (token != null){
+                        if (token != null) {
                             createTheOrder(
                                 totalAmount = amount.getSuccessData(),
                                 token = token,
@@ -80,12 +88,13 @@ class PaymentViewModel(
                                 }
                             )
                         }
-                    } else if(error != null){
+                    } else if (error != null) {
                         screenState = RequestState.Error(error)
                     } else {
-                        screenState = RequestState.Error("Unknown error. Contact us at: example@gmail.com")
+                        screenState =
+                            RequestState.Error("Unknown error. Contact us at: example@gmail.com")
                     }
-                } else if(amount.isError()) {
+                } else if (amount.isError()) {
                     screenState = RequestState.Error(amount.getErrorMessage())
                 }
             }

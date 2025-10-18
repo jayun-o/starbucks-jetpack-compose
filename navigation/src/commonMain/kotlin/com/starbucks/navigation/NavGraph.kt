@@ -26,16 +26,16 @@ fun SetupNavGraph(
     startDestination: Screen = Screen.Auth
 ){
     val navController = rememberNavController()
-//    val intentHandler = koinInject<IntentHandler>()
-//    val navigateTo by intentHandler.navigateTo.collectAsState()
-//
-//    LaunchedEffect(navigateTo){
-//        println("NAVIGATING TO PAYMENT COMPLETED!")
-//        navigateTo?.let { paymentCompleted ->
-//            navController.navigate(paymentCompleted)
-//            intentHandler.resetNavigation()
-//        }
-//    }
+    val intentHandler = koinInject<IntentHandler>()
+    val navigateTo by intentHandler.navigateTo.collectAsState()
+
+    LaunchedEffect(navigateTo){
+        println("NAVIGATING TO PAYMENT COMPLETED!")
+        navigateTo?.let { paymentCompleted ->
+            navController.navigate(paymentCompleted)
+            intentHandler.resetNavigation()
+        }
+    }
 
     val preferencesData by PreferencesRepository.readPayPalDataFlow()
         .collectAsState(initial = null)

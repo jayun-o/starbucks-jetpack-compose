@@ -76,7 +76,7 @@ exports.createEmailDocument = onDocumentCreated("order/{orderId}", async (event)
           : "";
 
         return `<li style="margin-bottom: 10px;">
-          <strong>${product ? product.title.toUppercase() : "Unknown Product"}</strong>
+          <strong>${product ? product.title.toUpperCase() : "Unknown Product"}</strong>
           ${customizationHtml}
           <br>${item.price.toFixed(2)} x ${item.quantity}
         </li>`;
