@@ -110,7 +110,6 @@ class CheckoutViewModel(
         screenState = screenState.copy(phoneNumber = value)
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     fun payOnDelivery(
         onSuccess: () -> Unit,
         onError: (String) -> Unit
@@ -118,7 +117,6 @@ class CheckoutViewModel(
         updateCustomer(
             onSuccess = {
                 createTheOrder(
-                    token = Uuid.random().toHexString(),
                     onSuccess = onSuccess,
                     onError = onError
                 )
