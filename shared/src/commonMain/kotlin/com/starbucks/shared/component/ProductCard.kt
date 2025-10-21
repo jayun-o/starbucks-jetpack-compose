@@ -6,11 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,15 +19,9 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.starbucks.shared.Alpha
-import com.starbucks.shared.FontSize
-import com.starbucks.shared.Red
-import com.starbucks.shared.SurfaceLighter
-import com.starbucks.shared.TextPrimary
-import com.starbucks.shared.TextWhite
+import com.starbucks.shared.*
 import com.starbucks.shared.domain.Product
 import com.starbucks.shared.domain.ProductCategory
-
 @Composable
 fun ProductCard(
     modifier: Modifier = Modifier,
@@ -39,22 +29,34 @@ fun ProductCard(
     onClick: (String) -> Unit
 ) {
     var titleMaxLines by remember { mutableStateOf(1) }
+    var selectedSize by remember { mutableStateOf(product.sizes?.firstOrNull()) }
+
+    val sizeOrder = listOf("Short", "Tall", "Grande", "Venti", "Trenta")
+
+    val sortedSizes = remember(product.sizes) {
+        product.sizes?.sortedWith(compareBy { size ->
+            sizeOrder.indexOf(size.name).takeIf { it >= 0 } ?: Int.MAX_VALUE
+        })
+    }
 
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(SurfaceLighter)
-            .width(240.dp)
+            .width(250.dp)
+            .height(470.dp)
             .clickable { onClick(product.id) }
             .padding(12.dp)
     ) {
+
         Box(modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalPlatformContext.current)
                     .data(product.thumbnail)
-                    .crossfade(enable = true)
+                    .crossfade(true)
                     .build(),
                 contentDescription = product.title,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
@@ -63,15 +65,12 @@ fun ProductCard(
 
             if (product.isDiscounted) {
                 Text(
-                    text = "SALE -${product.discounted} %",
+                    text = "SALE -${product.discounted}%",
                     fontSize = FontSize.SMALL,
                     fontWeight = FontWeight.Bold,
                     color = TextWhite,
                     modifier = Modifier
-                        .background(
-                            color = Red,
-                            shape = RoundedCornerShape(6.dp)
-                        )
+                        .background(Red, RoundedCornerShape(6.dp))
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                         .align(Alignment.TopEnd)
                         .padding(6.dp)
@@ -92,9 +91,9 @@ fun ProductCard(
                 fontSize = FontSize.REGULAR,
                 textAlign = TextAlign.Center,
                 maxLines = titleMaxLines,
-                overflow = TextOverflow.Visible, // ไม่ตัดข้อความ
-                onTextLayout = { layoutResult ->
-                    titleMaxLines = if (layoutResult.lineCount > 1) 2 else 1
+                overflow = TextOverflow.Visible,
+                onTextLayout = { layout ->
+                    titleMaxLines = if (layout.lineCount > 1) 2 else 1
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -110,35 +109,55 @@ fun ProductCard(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        if (product.category != ProductCategory.FOOD && !product.sizes.isNullOrEmpty()) {
+        if (product.category != ProductCategory.FOOD && !sortedSizes.isNullOrEmpty()) {
             Text(
-                text = "Size & Price",
+                text = "Size Option",
                 fontSize = FontSize.SMALL,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
-            Column(modifier = Modifier.fillMaxWidth()) {
-                product.sizes.forEach { size ->
-                    Row(
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                sortedSizes.forEach { size ->
+                    val isSelected = size == selectedSize
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 2.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (isSelected) ButtonPrimary else Surface)
+                            .clickable { selectedSize = size }
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(
                             text = size.name,
+                            color = if (isSelected) TextWhite else TextPrimary,
                             fontSize = FontSize.SMALL,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Text(
-                            text = "${size.price} ฿",
-                            fontSize = FontSize.SMALL,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                         )
                     }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Price",
+                    fontSize = FontSize.SMALL,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${selectedSize?.price ?: product.price} ฿",
+                    fontSize = FontSize.SMALL,
+                    fontWeight = FontWeight.Bold
+                )
             }
         } else {
             Row(

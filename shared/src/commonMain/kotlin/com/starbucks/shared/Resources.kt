@@ -39,6 +39,7 @@ import starbucks.shared.generated.resources.tall
 import starbucks.shared.generated.resources.tallselected
 import starbucks.shared.generated.resources.venti
 import starbucks.shared.generated.resources.ventiselected
+import starbucks.shared.generated.resources.notify
 
 object Resources {
     object Icon{
@@ -66,6 +67,7 @@ object Resources {
         val Warning = Res.drawable.warning
         val Weight = Res.drawable.weight
         val myLocation = Res.drawable.mylocation
+        val Notify = Res.drawable.notify
 
         //Size
         val ShortSize = Res.drawable.shortSize

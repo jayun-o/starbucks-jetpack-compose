@@ -44,6 +44,7 @@ kotlin {
             implementation(libs.play.services.maps)
         }
 
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -67,6 +68,8 @@ kotlin {
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.multiplatform.settings.make.observable)
+
+            implementation(libs.kmp.notifier)
         }
     }
 }

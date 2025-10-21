@@ -8,12 +8,15 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.mmk.kmpnotifier.notification.NotificationImage
+import com.mmk.kmpnotifier.notification.Notifier
 import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import com.mmk.kmpnotifier.permission.permissionUtil
 import com.starbucks.shared.util.IntentHandler
 import com.starbucks.shared.util.PreferencesRepository
 import org.koin.android.ext.android.inject
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
 
@@ -35,9 +38,22 @@ class MainActivity : ComponentActivity() {
         NotifierManager.initialize(
             configuration = NotificationPlatformConfiguration.Android(
                 notificationIconResId = R.drawable.ic_launcher_foreground,
-                showPushNotification = true,
+                showPushNotification = false,
             )
         )
+
+//        val notifier = NotifierManager.getLocalNotifier()
+//        notifier.notify {
+//            id= Random.nextInt(0, Int.MAX_VALUE)
+//            title = "Test notification"
+//            body = "Body message"
+//            payloadData = mapOf(
+//                Notifier.KEY_URL to "https://github.com/mirzemehdi/KMPNotifier/",
+//                "extraKey" to "randomValue"
+//            )
+//            image = NotificationImage.Url("https://github.com/user-attachments/assets/a0f38159-b31d-4a47-97a7-cc230e15d30b")
+//        }
+
         val permissionUtil by permissionUtil()
         permissionUtil.askNotificationPermission()
         setContent {

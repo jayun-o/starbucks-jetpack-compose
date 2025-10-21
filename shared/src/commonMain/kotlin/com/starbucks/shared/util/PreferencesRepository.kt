@@ -38,7 +38,7 @@ object PreferencesRepository {
 
         while (true) {
             this.send(getCurrentPaymentProcessed())
-            delay(1000) // Check for updates every second
+            delay(1000)
         }
     }
 
