@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -14,6 +16,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarColors
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -31,12 +36,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.starbucks.shared.BorderIdle
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.IconPrimary
 import com.starbucks.shared.RaleWayFontFamily
 import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
 import com.starbucks.shared.SurfaceBrand
+import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextBrand
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.White
@@ -60,6 +67,8 @@ fun AllProductsScreen(
 ) {
     val viewModel = koinViewModel<AllProductsViewModel>()
     val products by viewModel.products.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    var searchBarVisible by remember { mutableStateOf(false) }
 
     // Get subcategories based on category
     val subCategories = when (category) {
@@ -84,43 +93,90 @@ fun AllProductsScreen(
     Scaffold(
         containerColor = Surface,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = category.title,
-                        fontFamily = RaleWayFontFamily(),
-                        fontSize = FontSize.EXTRA_MEDIUM,
-                        color = TextPrimary
+            AnimatedContent(targetState = searchBarVisible) { visible ->
+                if (visible) {
+                    SearchBar(
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp)
+                            .fillMaxWidth(),
+                        inputField = {
+                            SearchBarDefaults.InputField(
+                                modifier = Modifier.fillMaxWidth(),
+                                query = searchQuery,
+                                onQueryChange = { viewModel.updateSearchQuery(it) },
+                                expanded = false,
+                                onExpandedChange = {},
+                                onSearch = {},
+                                placeholder = {
+                                    Text(
+                                        text = "Search here",
+                                        fontSize = FontSize.REGULAR,
+                                        color = TextPrimary
+                                    )
+                                },
+                                trailingIcon = {
+                                    IconButton(
+                                        modifier = Modifier.size(24.dp),
+                                        onClick = {
+                                            viewModel.clearSearch()
+                                            searchBarVisible = false
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(Resources.Icon.Close),
+                                            contentDescription = "Close search",
+                                            tint = IconPrimary
+                                        )
+                                    }
+                                }
+                            )
+                        },
+                        colors = SearchBarColors(
+                            containerColor = SurfaceLighter,
+                            dividerColor = BorderIdle,
+                        ),
+                        expanded = false,
+                        onExpandedChange = {},
+                        content = {}
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            painter = painterResource(Resources.Icon.BackArrow),
-                            contentDescription = "Back Arrow icon",
-                            tint = IconPrimary
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        // TODO: Implement search functionality
-                    }) {
-                        Icon(
-                            painter = painterResource(Resources.Icon.Search),
-                            contentDescription = "Search icon",
-                            tint = IconPrimary
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Surface,
-                    scrolledContainerColor = Surface,
-                    navigationIconContentColor = IconPrimary,
-                    titleContentColor = TextPrimary,
-                    actionIconContentColor = IconPrimary
-                ),
-            )
+                } else {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = category.title,
+                                fontFamily = RaleWayFontFamily(),
+                                fontSize = FontSize.EXTRA_MEDIUM,
+                                color = TextPrimary
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = navigateBack) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.BackArrow),
+                                    contentDescription = "Back Arrow icon",
+                                    tint = IconPrimary
+                                )
+                            }
+                        },
+                        actions = {
+                            IconButton(onClick = { searchBarVisible = true }) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.Search),
+                                    contentDescription = "Search icon",
+                                    tint = IconPrimary
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = Surface,
+                            scrolledContainerColor = Surface,
+                            navigationIconContentColor = IconPrimary,
+                            titleContentColor = TextPrimary,
+                            actionIconContentColor = IconPrimary
+                        ),
+                    )
+                }
+            }
         }
     ) { padding ->
         Column(
@@ -191,8 +247,11 @@ fun AllProductsScreen(
                         } else {
                             InfoCard(
                                 image = Resources.Image.Cat,
-                                title = "Nothing here",
-                                subtitle = "We couldn't find any products in this category."
+                                title = if (searchQuery.isNotEmpty()) "No results" else "Nothing here",
+                                subtitle = if (searchQuery.isNotEmpty())
+                                    "We couldn't find any products matching \"$searchQuery\"."
+                                else
+                                    "We couldn't find any products in this category."
                             )
                         }
                     }

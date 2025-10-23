@@ -40,6 +40,7 @@ import starbucks.shared.generated.resources.tallselected
 import starbucks.shared.generated.resources.venti
 import starbucks.shared.generated.resources.ventiselected
 import starbucks.shared.generated.resources.notify
+import starbucks.shared.generated.resources.baseline_remove_red_eye_24
 
 object Resources {
     object Icon{
@@ -68,6 +69,7 @@ object Resources {
         val Weight = Res.drawable.weight
         val myLocation = Res.drawable.mylocation
         val Notify = Res.drawable.notify
+        val Eye = Res.drawable.baseline_remove_red_eye_24
 
         //Size
         val ShortSize = Res.drawable.shortSize

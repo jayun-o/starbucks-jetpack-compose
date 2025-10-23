@@ -24,4 +24,40 @@ class AuthViewModel (
             )
         }
     }
+
+    fun signUpWithEmail(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            customerRepository.signUpWithEmail(
+                email = email,
+                password = password,
+                firstName = firstName,
+                lastName = lastName,
+                onSuccess = onSuccess,
+                onError = onError
+            )
+        }
+    }
+
+    fun signInWithEmail(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            customerRepository.signInWithEmail(
+                email = email,
+                password = password,
+                onSuccess = onSuccess,
+                onError = onError
+            )
+        }
+    }
 }

@@ -38,7 +38,6 @@ class CustomerRepositoryImpl: CustomerRepository{
                     onSuccess()
                 } else {
                     customerCollection.document(user.uid).set(customer)
-                    //Admin Permission
                     customerCollection.document(user.uid)
                         .collection("privateData")
                         .document("role")
@@ -50,6 +49,96 @@ class CustomerRepositoryImpl: CustomerRepository{
             }
         } catch (e: Exception) {
             onError("Error while creating a new Customer: ${e.message}")
+        }
+    }
+
+    override suspend fun signUpWithEmail(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            // Validate inputs
+            if (email.isBlank() || password.isBlank() || firstName.isBlank() || lastName.isBlank()) {
+                onError("All fields are required")
+                return
+            }
+
+            if (password.length < 6) {
+                onError("Password must be at least 6 characters")
+                return
+            }
+
+            // Create user with Firebase Auth
+            val authResult = Firebase.auth.createUserWithEmailAndPassword(email, password)
+            val user = authResult.user
+
+            if (user != null) {
+                // Create customer document in Firestore
+                val customerCollection = Firebase.firestore.collection(collectionPath = "customer")
+                val customer = Customer(
+                    id = user.uid,
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                )
+
+                customerCollection.document(user.uid).set(customer)
+                customerCollection.document(user.uid)
+                    .collection("privateData")
+                    .document("role")
+                    .set(mapOf("isAdmin" to false))
+
+                onSuccess()
+            } else {
+                onError("Failed to create user")
+            }
+        } catch (e: Exception) {
+            val errorMessage = when {
+                e.message?.contains("email address is already in use") == true ->
+                    "Email address is already registered"
+                e.message?.contains("email address is badly formatted") == true ->
+                    "Invalid email address"
+                e.message?.contains("network error") == true ->
+                    "Network error. Please check your connection"
+                else -> "Sign up failed: ${e.message}"
+            }
+            onError(errorMessage)
+        }
+    }
+
+    override suspend fun signInWithEmail(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            // Validate inputs
+            if (email.isBlank() || password.isBlank()) {
+                onError("Email and password are required")
+                return
+            }
+
+            // Sign in with Firebase Auth
+            Firebase.auth.signInWithEmailAndPassword(email, password)
+            onSuccess()
+        } catch (e: Exception) {
+            val errorMessage = when {
+                e.message?.contains("no user record") == true ||
+                        e.message?.contains("invalid-credential") == true ||
+                        e.message?.contains("wrong-password") == true ->
+                    "Invalid email or password"
+                e.message?.contains("user-disabled") == true ->
+                    "This account has been disabled"
+                e.message?.contains("network error") == true ->
+                    "Network error. Please check your connection"
+                else -> "Sign in failed: ${e.message}"
+            }
+            onError(errorMessage)
         }
     }
 
@@ -188,13 +277,11 @@ class CustomerRepositoryImpl: CustomerRepository{
                     val existingCart = existingCustomer.get<List<CartItem>>("cart")
                     val updatedCart = existingCart.map { cartItem ->
                         if (cartItem.id == id){
-                            // Calculate unit price from existing totalPrice
                             val unitPrice = if (cartItem.quantity > 0) {
                                 cartItem.totalPrice / cartItem.quantity
                             } else {
                                 cartItem.totalPrice
                             }
-                            // Update with new quantity and recalculated total
                             cartItem.copy(
                                 quantity = quantity,
                                 totalPrice = unitPrice * quantity
