@@ -38,6 +38,8 @@ kotlin {
     sourceSets {
 
         androidMain.dependencies {
+            implementation(libs.kotlinx.coroutines.play.services)
+
             //googlemapsdk for android
             implementation(libs.maps.compose)
             implementation(libs.maps.compose.utils)
