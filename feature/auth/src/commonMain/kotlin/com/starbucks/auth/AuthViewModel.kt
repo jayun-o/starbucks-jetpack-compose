@@ -60,4 +60,18 @@ class AuthViewModel (
             )
         }
     }
+
+    fun sendPasswordResetEmail(
+        email: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            customerRepository.sendPasswordResetEmail(
+                email = email,
+                onSuccess = onSuccess,
+                onError = onError
+            )
+        }
+    }
 }

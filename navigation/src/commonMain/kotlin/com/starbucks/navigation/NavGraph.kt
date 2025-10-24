@@ -59,11 +59,7 @@ fun SetupNavGraph(
                     navController.navigate(Screen.HomeGraph){
                         popUpTo(Screen.Auth){ inclusive = true }
                     }
-                },
-                email = "",
-                password = "",
-                onEmailChange = {},
-                onPasswordChange = {}
+                }
             )
         }
 

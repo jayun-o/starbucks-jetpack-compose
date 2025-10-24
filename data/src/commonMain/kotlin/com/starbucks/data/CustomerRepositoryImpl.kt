@@ -142,6 +142,36 @@ class CustomerRepositoryImpl: CustomerRepository{
         }
     }
 
+    override suspend fun sendPasswordResetEmail(
+        email: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            // Validate email
+            if (email.isBlank()) {
+                onError("Email is required")
+                return
+            }
+
+            // Send password reset email
+            Firebase.auth.sendPasswordResetEmail(email)
+            onSuccess()
+        } catch (e: Exception) {
+            val errorMessage = when {
+                e.message?.contains("no user record") == true ||
+                        e.message?.contains("user-not-found") == true ->
+                    "No account found with this email"
+                e.message?.contains("invalid-email") == true ->
+                    "Invalid email address"
+                e.message?.contains("network error") == true ->
+                    "Network error. Please check your connection"
+                else -> "Failed to send reset email: ${e.message}"
+            }
+            onError(errorMessage)
+        }
+    }
+
     override fun readCustomerFlow(): Flow<RequestState<Customer>> = channelFlow{
         try {
             val userId = getCurrentUserId()

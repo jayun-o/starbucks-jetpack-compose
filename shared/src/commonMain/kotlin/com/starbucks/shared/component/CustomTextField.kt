@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -16,9 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.BorderError
@@ -26,9 +29,11 @@ import com.starbucks.shared.BorderIdle
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.IconSecondary
 import com.starbucks.shared.MontserratFontFamily
+import com.starbucks.shared.Resources
 import com.starbucks.shared.SurfaceDarker
 import com.starbucks.shared.SurfaceLighter
 import com.starbucks.shared.TextPrimary
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CustomTextField(
@@ -39,6 +44,9 @@ fun CustomTextField(
     enabled: Boolean = true,
     error: Boolean = false,
     expanded: Boolean = false,
+    isPassword: Boolean = false,
+    passwordVisible: Boolean = false,
+    onPasswordVisibilityChange: (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text
     )
@@ -79,6 +87,23 @@ fun CustomTextField(
             singleLine = !expanded,
             shape = RoundedCornerShape(size = 6.dp),
             keyboardOptions = keyboardOptions,
+            visualTransformation = if (isPassword && !passwordVisible)
+                PasswordVisualTransformation()
+            else
+                VisualTransformation.None,
+            trailingIcon = if (isPassword && onPasswordVisibilityChange != null) {
+                {
+                    IconButton(onClick = onPasswordVisibilityChange) {
+                        Icon(
+                            painter = painterResource(
+                                if (passwordVisible) Resources.Icon.show else Resources.Icon.hide
+                            ),
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                            tint = IconSecondary
+                        )
+                    }
+                }
+            } else null,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = SurfaceLighter,
                 focusedContainerColor = SurfaceLighter,

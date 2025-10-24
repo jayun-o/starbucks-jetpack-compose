@@ -15,8 +15,6 @@ interface CustomerRepository {
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     )
-
-    // New email/password authentication methods
     suspend fun signUpWithEmail(
         email: String,
         password: String,
@@ -29,6 +27,12 @@ interface CustomerRepository {
     suspend fun signInWithEmail(
         email: String,
         password: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    )
+
+    suspend fun sendPasswordResetEmail(
+        email: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     )

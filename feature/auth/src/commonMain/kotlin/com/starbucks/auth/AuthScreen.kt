@@ -13,6 +13,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
 import com.starbucks.auth.component.AuthButton
+import com.starbucks.auth.component.ForgotPasswordDialog
 import com.starbucks.auth.component.GoogleButton
 import com.starbucks.shared.Alpha
 import com.starbucks.shared.FontSize
@@ -49,18 +51,16 @@ import rememberMessageBarState
 @Composable
 fun AuthScreen(
     navigateToHome: () -> Unit,
-    email: String,
-    password: String,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit
 ){
     val scope = rememberCoroutineScope()
     val viewModel = koinViewModel<AuthViewModel>()
     val messageBarState = rememberMessageBarState()
     var emailLoadingState by remember { mutableStateOf(false)}
     var googleLoadingState by remember { mutableStateOf(false)}
+    var resetPasswordLoadingState by remember { mutableStateOf(false)}
     val currentLanguage by LanguageManager.language.collectAsState()
     var accountState by remember { mutableStateOf(false)}
+    var showForgotPasswordDialog by remember { mutableStateOf(false) }
 
     // State for sign up fields
     var signUpEmail by remember { mutableStateOf("") }
@@ -129,6 +129,9 @@ fun AuthScreen(
                             onValueChange = { signInPassword = it },
                             placeholder = "Password",
                             enabled = !emailLoadingState,
+                            isPassword = true,
+                            passwordVisible = signInPasswordVisible,
+                            onPasswordVisibilityChange = { signInPasswordVisible = !signInPasswordVisible }
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         AuthButton(
@@ -156,6 +159,18 @@ fun AuthScreen(
                                 )
                             }
                         )
+
+                        // Forgot Password Link
+                        TextButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { showForgotPasswordDialog = true }
+                        ) {
+                            Text(
+                                text = "Forgot password?",
+                                color = SurfaceBrand,
+                                fontSize = FontSize.REGULAR
+                            )
+                        }
                         HorizontalDivider(thickness = 1.dp)
                         SecondaryButton(
                             text = "Create an account",
@@ -200,6 +215,9 @@ fun AuthScreen(
                             onValueChange = { signUpPassword = it },
                             placeholder = "Password",
                             enabled = !emailLoadingState,
+                            isPassword = true,
+                            passwordVisible = signUpPasswordVisible,
+                            onPasswordVisibilityChange = { signUpPasswordVisible = !signUpPasswordVisible }
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         AuthButton(
@@ -282,5 +300,34 @@ fun AuthScreen(
             }
 
         }
+    }
+
+    // Forgot Password Dialog
+    if (showForgotPasswordDialog) {
+        ForgotPasswordDialog(
+            onDismiss = {
+                showForgotPasswordDialog = false
+                resetPasswordLoadingState = false
+            },
+            onSendEmail = { email ->
+                resetPasswordLoadingState = true
+                viewModel.sendPasswordResetEmail(
+                    email = email,
+                    onSuccess = {
+                        scope.launch {
+                            messageBarState.addSuccess("Password reset email sent! Check your inbox.")
+                            delay(1500)
+                            showForgotPasswordDialog = false
+                            resetPasswordLoadingState = false
+                        }
+                    },
+                    onError = { error ->
+                        messageBarState.addError(error)
+                        resetPasswordLoadingState = false
+                    }
+                )
+            },
+            isLoading = resetPasswordLoadingState
+        )
     }
 }

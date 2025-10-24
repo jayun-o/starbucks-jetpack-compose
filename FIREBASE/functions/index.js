@@ -87,7 +87,7 @@ exports.createEmailDocument = onDocumentCreated("order/{orderId}", async (event)
 
     // Create email data
     const emailData = {
-      to: ["typ.pharita@gmail.com"],
+      to: customer.email,
       message: {
         subject: `🎉 New Starbucks Order Received (${order.id.substring(0, 8)})`,
         html: `
