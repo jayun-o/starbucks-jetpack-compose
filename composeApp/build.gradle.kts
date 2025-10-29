@@ -62,6 +62,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
 
+            implementation(libs.konnectivity.module)
             api(libs.kmp.notifier)
 
             implementation(project(path = ":navigation"))

@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
         NotifierManager.initialize(
             configuration = NotificationPlatformConfiguration.Android(
                 notificationIconResId = R.drawable.ic_launcher_foreground,
-                showPushNotification = false,
+                showPushNotification = true,
             )
         )
 

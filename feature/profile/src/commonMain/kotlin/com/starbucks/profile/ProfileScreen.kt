@@ -28,6 +28,7 @@ import com.starbucks.shared.LocalizedStrings
 import com.starbucks.shared.RaleWayFontFamily
 import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
+import com.starbucks.shared.SurfaceError
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.component.InfoCard
 import com.starbucks.shared.component.LoadingCard
@@ -153,7 +154,7 @@ fun ProfileScreen(
                     },
                     onError = { message ->
                         InfoCard(
-                            image = Resources.Image.Cat,
+                            image = Resources.Image.error,
                             title = "Oops!",
                             subtitle = message
                         )

@@ -42,6 +42,7 @@ import starbucks.shared.generated.resources.ventiselected
 import starbucks.shared.generated.resources.notify
 import starbucks.shared.generated.resources.view
 import starbucks.shared.generated.resources.hide
+import starbucks.shared.generated.resources.error
 
 
 object Resources {
@@ -74,6 +75,7 @@ object Resources {
         val show = Res.drawable.view
         val hide = Res.drawable.hide
 
+
         //Size
         val ShortSize = Res.drawable.shortSize
         val ShortSizeSelected = Res.drawable.shortselected
@@ -85,6 +87,7 @@ object Resources {
         val VentiSizeSelected = Res.drawable.ventiselected
     }
     object Image {
+        val error = Res.drawable.error
         val ShoppingCart = Res.drawable.shopping_cart_image
         val Checkmark = Res.drawable.checkmark_image
         val Cat = Res.drawable.cat

@@ -10,11 +10,7 @@ val GreenDarker = Color(0xFF00623B)
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 val Red = Color(0xFFDD0000)
-//Category
-val Yellow = Color(0xFFFFC738)
-val Blue = Color(0xFF38B3FF)
-val Green = Color(0x19D109)
-val Purple = Color(0xFF8E5EFF)
+
 //Text
 val TextPrimary = Color(0xFF000000)
 val TextSecondary = Color(0xFFF24C00)

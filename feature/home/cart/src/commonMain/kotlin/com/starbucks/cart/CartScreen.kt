@@ -23,6 +23,7 @@ import com.starbucks.cart.component.CartItemCard
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
+import com.starbucks.shared.SurfaceError
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.component.InfoCard
 import com.starbucks.shared.component.LoadingCard
@@ -124,7 +125,7 @@ fun CartScreen(
             },
             onError = { message ->
                 InfoCard(
-                    image = Resources.Image.Cat,
+                    image = Resources.Image.error,
                     title = "Oops!",
                     subtitle = message
                 )

@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.starbucks.products_overview.component.MainProductCard
 import com.starbucks.shared.Alpha
-import com.starbucks.shared.FontSize
 import com.starbucks.shared.Resources
 import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.component.InfoCard
@@ -138,7 +137,7 @@ fun ProductsOverviewScreen(
                         }
                     } else {
                         InfoCard(
-                            image = Resources.Image.Cat,
+                            image = Resources.Image.error,
                             title = "Nothing here",
                             subtitle = "Empty product list."
                         )
@@ -147,7 +146,7 @@ fun ProductsOverviewScreen(
             },
             onError = { message ->
                 InfoCard(
-                    image = Resources.Image.Cat,
+                    image = Resources.Image.error,
                     title = "Oops!",
                     subtitle = message
                 )

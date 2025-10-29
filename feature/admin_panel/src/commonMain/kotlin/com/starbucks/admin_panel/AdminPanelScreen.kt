@@ -1,7 +1,6 @@
 package com.starbucks.admin_panel
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +25,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,7 +54,6 @@ import com.starbucks.shared.util.DisplayResult
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import starbucks.feature.admin_panel.generated.resources.Res
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -298,7 +295,7 @@ fun AdminPanelScreen(
                         }
                     } else {
                         InfoCard(
-                            image = Resources.Image.Cat,
+                            image = Resources.Image.error,
                             title = "Oops!",
                             subtitle = "No products found."
                         )
@@ -307,7 +304,7 @@ fun AdminPanelScreen(
             },
             onError = { message ->
                 InfoCard(
-                    image = Resources.Image.Cat,
+                    image = Resources.Image.error,
                     title = "Oops!",
                     subtitle = message
                 )

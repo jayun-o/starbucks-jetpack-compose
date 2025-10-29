@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style parent="Theme.SplashScreen" name="Theme.Starbucks.Splash">
-        <item name = "windowSplashScreenBackground">#FFFFFF</item>
+        <item name = "windowSplashScreenBackground">#00623B</item>
         <item name = "postSplashScreenTheme">@android:style/Theme.Material.Light.NoActionBar</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
     </style>

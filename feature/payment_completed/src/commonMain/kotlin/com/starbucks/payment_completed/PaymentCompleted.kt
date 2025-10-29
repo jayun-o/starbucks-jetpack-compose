@@ -64,7 +64,7 @@ fun PaymentCompletedScreen(
                         InfoCard(
                             title = "Oops!",
                             subtitle = message,
-                            image = Resources.Image.Cat
+                            image = Resources.Image.error
                         )
                     }
                     PrimaryButton(

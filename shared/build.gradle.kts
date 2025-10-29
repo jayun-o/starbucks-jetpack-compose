@@ -70,6 +70,7 @@ kotlin {
             implementation(libs.multiplatform.settings.make.observable)
 
             implementation(libs.kmp.notifier)
+
         }
     }
 }

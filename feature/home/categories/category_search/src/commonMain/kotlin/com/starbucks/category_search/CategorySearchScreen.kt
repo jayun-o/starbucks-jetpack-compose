@@ -198,7 +198,7 @@ fun CategorySearchScreen(
                         }
                     } else {
                         InfoCard(
-                            image = Resources.Image.Cat,
+                            image = Resources.Image.error,
                             title = if (searchQuery.isNotEmpty()) "No results" else "Nothing here",
                             subtitle = if (searchQuery.isNotEmpty())
                                 "We couldn't find any products matching \"$searchQuery\"."
@@ -211,7 +211,7 @@ fun CategorySearchScreen(
             onError = { message ->
                 InfoCard(
                     modifier = Modifier.padding(padding),
-                    image = Resources.Image.Cat,
+                    image = Resources.Image.error,
                     title = "Oops!",
                     subtitle = message,
                 )
