@@ -16,3 +16,14 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+
+# Kotlin Multiplatform build
+/shared/build/
+shared/.gradle/
+shared/Constants.kt
+
+composeApp/src/androidMain/AndroidManifest.xml
+
+# Sensitive files
+.env
+google-services.json
