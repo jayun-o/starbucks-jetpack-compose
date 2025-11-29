@@ -11,6 +11,10 @@ enum class DrawerItem (
         titleKey = "profile",
         icon = Resources.Icon.Person
     ),
+    Order(
+        titleKey = "order",
+        icon = Resources.Icon.ShoppingCart
+    ),
     Blog(
         titleKey = "blog",
         icon = Resources.Icon.Book

@@ -26,6 +26,8 @@ sealed class Screen {
     @Serializable
     data object Profile: Screen()
     @Serializable
+    data object Order: Screen()
+    @Serializable
     data class Maps(
         val location: String? = null
     ): Screen()

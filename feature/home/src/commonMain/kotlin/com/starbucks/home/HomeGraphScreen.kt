@@ -70,6 +70,7 @@ import rememberMessageBarState
 fun HomeGraphScreen(
     navigateToAuth : () -> Unit,
     navigateToProfile: () -> Unit,
+    navigateToOrder: () -> Unit,
     navigateToAdminPanel: () -> Unit,
     navigateToDetails: (String) -> Unit,
     navigateToMap: () -> Unit,
@@ -129,6 +130,7 @@ fun HomeGraphScreen(
         CustomDrawer(
             customer = customer,
             onProfileClick = navigateToProfile,
+            onOrderClick = navigateToOrder,
             onContactUsClick = {},
             onSignOutClick = {
                 viewModel.signOut(

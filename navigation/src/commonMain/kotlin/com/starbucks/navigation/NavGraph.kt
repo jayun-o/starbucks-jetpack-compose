@@ -17,6 +17,7 @@ import com.starbucks.payment_completed.PaymentCompletedScreen
 import com.starbucks.profile.ProfileScreen
 import com.starbucks.shared.navigation.Screen
 import androidx.compose.runtime.getValue
+import com.starbucks.order.OrderScreen
 import com.starbucks.shared.util.IntentHandler
 import com.starbucks.shared.util.PreferencesRepository
 import org.koin.compose.koinInject
@@ -77,6 +78,9 @@ fun SetupNavGraph(
                 navigateToProfile = {
                     navController.navigate(Screen.Profile)
                 },
+                navigateToOrder = {
+                    navController.navigate(Screen.Order)
+                },
                 navigateToAdminPanel = {
                     navController.navigate(Screen.AdminPanel)
                 },
@@ -106,6 +110,12 @@ fun SetupNavGraph(
                     navController.navigate(Screen.Maps())
                 },
                 selectedLocation = selectedLocation?.value
+            )
+        }
+
+        composable<Screen.Order> {
+            OrderScreen(
+                navigateBack = { navController.navigateUp() }
             )
         }
 

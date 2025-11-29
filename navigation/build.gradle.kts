@@ -68,6 +68,7 @@ kotlin {
             implementation(project(path = ":feature:home:categories"))
             implementation(project(path = ":feature:home:categories:category_search"))
             implementation(project(path = ":feature:home:cart:checkout"))
+            implementation(project(path = ":feature:home:cart:order"))
             implementation(project(path = ":feature:home:categories:all_products"))
             implementation(project(path = ":feature:profile"))
             implementation(project(path = ":feature:map"))

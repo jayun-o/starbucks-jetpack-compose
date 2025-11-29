@@ -27,6 +27,7 @@ import org.jetbrains.compose.resources.painterResource
 fun CustomDrawer(
     customer: RequestState<Customer>,
     onProfileClick: () -> Unit,
+    onOrderClick:() -> Unit,
     onContactUsClick: () -> Unit,
     onSignOutClick: () -> Unit,
     onAdminPanelClick: () -> Unit
@@ -49,13 +50,14 @@ fun CustomDrawer(
         )
         Spacer(modifier = Modifier.height(50.dp))
 
-        DrawerItem.entries.take(5).forEach { item ->
+        DrawerItem.entries.take(6).forEach { item ->
             DrawerItemCard(
                 drawerItem = item,
                 title = LocalizedStrings.get(item.titleKey, currentLanguage),
                 onClick = {
                     when (item) {
                         DrawerItem.Profile -> onProfileClick()
+                        DrawerItem.Order -> onOrderClick()
                         DrawerItem.Contact -> onContactUsClick()
                         DrawerItem.SignOut -> onSignOutClick()
                         else -> {}

@@ -9,4 +9,11 @@ interface OrderRepository {
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     )
+
+    suspend fun getOrdersByCustomerId(
+        customerId: String,
+        onResult: (List<Order>) -> Unit,
+        onError: (String) -> Unit
+    )
+    
 }
