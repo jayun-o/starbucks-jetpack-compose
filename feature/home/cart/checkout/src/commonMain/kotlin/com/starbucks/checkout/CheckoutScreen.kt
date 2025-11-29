@@ -18,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.starbucks.shared.ButtonPayPal
 import com.starbucks.shared.FontSize
 import com.starbucks.shared.MontserratFontFamily
 import com.starbucks.shared.Resources
 import com.starbucks.shared.Surface
+import com.starbucks.shared.TextPrimary
 import com.starbucks.shared.component.PrimaryButton
 import com.starbucks.shared.component.ProfileForm
 import org.koin.compose.viewmodel.koinViewModel
@@ -65,11 +67,11 @@ fun CheckoutScreen(
                     text = "Pay with PayPal",
                     icon = Resources.Image.PaypalLogo,
                     enabled = isFormValid,
+                    colorButton = ButtonPayPal,
+                    textColor = TextPrimary,
                     onClick = {
                         viewModel.payWithPayPal(
-                            onSuccess = {
-
-                            },
+                            onSuccess = {},
                             onError = { message ->
                                 messageBarState.addError(message)
                             }
@@ -80,7 +82,6 @@ fun CheckoutScreen(
                 PrimaryButton(
                     text = "Pay on Delivery",
                     icon = Resources.Icon.ShoppingCart,
-                    secondary = true,
                     enabled = isFormValid,
                     onClick = {
                         viewModel.payOnDelivery(

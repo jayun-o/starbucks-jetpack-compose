@@ -36,6 +36,8 @@ fun PrimaryButton(
     enabled: Boolean = true,
     secondary: Boolean = false,
     onClick: () -> Unit,
+    colorButton: Color = ButtonPrimary,
+    textColor: Color = TextWhite
 ){
     Button(
         modifier = modifier.fillMaxWidth(),
@@ -43,8 +45,8 @@ fun PrimaryButton(
         enabled = enabled,
         shape = RoundedCornerShape(size = 6.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if(secondary) ButtonSecondary else ButtonPrimary,
-            contentColor = if(enabled)TextWhite else TextPrimary.copy(alpha = Alpha.DISABLED),
+            containerColor = if(secondary) ButtonSecondary else colorButton,
+            contentColor = if(enabled)textColor else TextPrimary.copy(alpha = Alpha.DISABLED),
             disabledContainerColor = ButtonDisabled,
             disabledContentColor = TextPrimary.copy(alpha = Alpha.DISABLED)
         ),

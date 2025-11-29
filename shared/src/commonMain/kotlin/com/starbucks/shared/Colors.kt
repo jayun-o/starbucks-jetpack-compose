@@ -10,6 +10,7 @@ val GreenDarker = Color(0xFF00623B)
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 val Red = Color(0xFFDD0000)
+val Yellow = Color(0xFFFFDE21)
 
 //Text
 val TextPrimary = Color(0xFF000000)
@@ -31,6 +32,7 @@ val SurfaceError = Red
 val ButtonPrimary = GreenDarker
 val ButtonSecondary = GrayDarker
 val ButtonDisabled = GrayDarker
+val ButtonPayPal = Yellow
 
 val IconPrimary = Black
 val IconSecondary = GreenDarker
